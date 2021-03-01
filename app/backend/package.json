@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./api/server.js",
-    "postinstall": "(cd node_modules && npm install)"
+    "start": "nodemon ./api/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -14,10 +13,10 @@
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "sqlite3": "^5.0.2",
+    "jade": "^1.9.2",
     "knex": "^0.21.18",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

@@ -1,0 +1,21 @@
+{
+    "name": "upnext",
+    "version": "1.0",
+    "private": true,
+    "scripts": {
+      "install": "npm --prefix ./backend install ./backend && npm --prefix ./ui install ./ui",
+      "dev": "docker compose -f docker-compose.yml up -d --build",
+      "prod": "docker compose -f docker-compose.prod.yml up -d --build",
+      "stop-dev": "docker compose -f docker-compose.yml stop",
+      "stop-prod": "docker compose -f docker-compose.prod.yml stop",
+      "log-dev": "docker compose -f docker-compose.yml logs --follow --timestamps",
+      "log-prod": "docker compose -f docker-compose.prod.yml logs --follow --timestamps"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/giangpro93/UpNext.git"
+    },
+    "comments": {
+        "inspiration": "https://github.com/jerryryle/react-express-docker-skeleton.git"
+    }
+  }

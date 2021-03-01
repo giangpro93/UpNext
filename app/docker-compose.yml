@@ -1,0 +1,26 @@
+# inspiration from https://github.com/jerryryle/react-express-docker-skeleton
+
+version: '3'
+services:
+  backend_dev:
+    build:
+      context: ./backend/
+    command: npm start
+    volumes:
+      - ./backend/:/backend
+    ports:
+      - "9000:9000"
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+
+  ui_dev:
+    build:
+      context: ./ui/
+    command: npm start
+    volumes:
+      - ./ui/:/ui
+    depends_on:
+      - backend_dev
+    ports:
+      - "3000:3000"
