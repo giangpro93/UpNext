@@ -11,10 +11,10 @@
 
 https://docs.docker.com/engine/install/
 
-### `Install Node/npm`
+### `Install NodeJS/npm`
 
 1. Download and install from https://nodejs.org/en/download/
-2. If on Windows, restart computer for `npm` command to be visible in the terminal
+2. If on Windows, restart computer for `npm` command to be callable in the terminal
 
 ### `Clone/Pull the GitHub Repo`
 Clone or pull our project's GitHub repository: `git clone https://github.com/giangpro93/UpNext.git`
