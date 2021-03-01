@@ -1,12 +1,15 @@
 # Development Environment Instruction
 
-`Install Docker`
+## `Install Docker`
+
 https://docs.docker.com/engine/install/
 
-`Pull Docker Image`
+## `Pull Docker Image`
+
 docker pull giangit93/upnextdevenv
 
-`First Run`
+## `First Run`
+
 Run from image:
 ```
 docker run -t -d --name DESIRED_CONTAINER_NAME -p DESIRED_PORT:APP_PORT IMAGE_ID_OR_NAME
@@ -17,15 +20,19 @@ Open terminal(s):
 docker exec -it CONTAINER_ID_OR_NAME bin/bash
 ```
 Stop container:
-```docker stop CONTAINER_ID_OR_NAME
+```
+docker stop CONTAINER_ID_OR_NAME
 ```
 
-`After First Run`
+## `After First Run`
+
 Start old container:
-```docker start CONTAINER_ID_OR_NAME
+```
+docker start CONTAINER_ID_OR_NAME
 ```
 
-`Some docker commands`
+## `Some docker commands`
+
 ### To list images
 ```
 docker images (or docker image ls)
@@ -37,7 +44,8 @@ List running containers:
 docker container ls (or docker ps)
 ```
 List all containers:
-```docker container ls -a (or docker ps -a)
+```
+docker container ls -a (or docker ps -a)
 ```
 
 ### Remove image
