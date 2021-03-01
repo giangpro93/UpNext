@@ -14,9 +14,9 @@ docker pull giangit93/upnextdevenv
 
 Run from image:
 ```
-docker run -t -d --name DESIRED_CONTAINER_NAME -p DESIRED_PORT:APP_PORT IMAGE_ID_OR_NAME
+docker run -t -d --name DESIRED_CONTAINER_NAME -p 3000:3000 -p 9000:9000 IMAGE_ID_OR_NAME
 ```
-(In this project: APP_PORT is `3000`. Access the app using http://localhost/DESIRED_PORT.)<br />
+(Access the app at http://localhost:3000. Access the backend at http://localhost:9000 )<br />
 Open terminal(s):
 ```
 docker exec -it CONTAINER_ID_OR_NAME bin/bash
