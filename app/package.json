@@ -10,7 +10,7 @@
       "log-dev": "docker compose -f docker-compose.yml logs --follow --timestamps",
       "migrate": "cd backend && npx knex migrate:rollback && npx knex migrate:latest",
       "seeds": "cd backend && npx knex seed:run",
-      "start": "npm run dev; ./wait-for-it.sh localhost:3306 -t 60 -- echo \"Waiting for database bootup to run migrations...\" && sleep 10 && npm run migrate && cd .."
+      "start": "npm run dev; ./wait-for-it.sh localhost:3306 -t 60 -- echo \"Waiting for database bootup to run migrations...\" && sleep 10 && npm run migrate && npm run seeds"
     },
     "repository": {
       "type": "git",

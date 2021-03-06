@@ -51,6 +51,40 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
         tbl.primary(['user_id', 'group_id']);
     })
+    .createTable('FriendRequest', tbl => {
+        tbl.integer('requester_id')
+            .unsigned()
+            .notNullable();
+        tbl.integer('requested_id')
+            .unsigned()
+            .notNullable();
+        tbl.timestamp('created_at')
+            .defaultTo(knex.fn.now());
+        tbl.foreign('requester_id')
+            .references('User.id')
+            .onDelete('CASCADE');
+        tbl.foreign('requested_id')
+            .references('User.id')
+            .onDelete('CASCADE');
+        tbl.primary(['requester_id', 'requested_id']);
+    })
+    .createTable('Friendship', tbl => {
+        tbl.integer('user1_id')
+            .unsigned()
+            .notNullable();
+        tbl.integer('user2_id')
+            .unsigned()
+            .notNullable();
+        tbl.timestamp('created_at')
+            .defaultTo(knex.fn.now());
+        tbl.foreign('user1_id')
+            .references('User.id')
+            .onDelete('CASCADE');
+        tbl.foreign('user2_id')
+            .references('User.id')
+            .onDelete('CASCADE');
+        tbl.primary(['user1_id', 'user2_id']);
+    })
     .createTable('ScheduleItem', tbl => {
         tbl.increments();
         tbl.integer('entity_id')
@@ -115,7 +149,8 @@ exports.up = function(knex) {
         tbl.text('content')
             .notNullable();
         tbl.timestamp('created_at')
-            .notNullable();
+            .notNullable()
+            .defaultTo(knex.fn.now());
         tbl.foreign('sender_id')
             .references('Entity.id')
             .onDelete('CASCADE');
@@ -131,7 +166,8 @@ exports.up = function(knex) {
         tbl.text('content')
             .notNullable();
         tbl.timestamp('created_at')
-            .notNullable();
+            .notNullable()
+            .defaultTo(knex.fn.now());
         tbl.foreign('creator_id')
             .references('Entity.id')
             .onDelete('CASCADE');
@@ -144,6 +180,8 @@ exports.down = function(knex) {
     .dropTableIfExists('User')
     .dropTableIfExists('Group')
     .dropTableIfExists('Membership')
+    .dropTableIfExists('FriendRequest')
+    .dropTableIfExists('Friendship')
     .dropTableIfExists('ScheduleItem')
     .dropTableIfExists('ScheduleEvent')
     .dropTableIfExists('ScheduleTask')
