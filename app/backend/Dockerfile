@@ -7,6 +7,7 @@ ENV NODE_ENV development
 
 COPY package*.json /backend
 RUN npm install
+RUN apk add --no-cache bash
 
 COPY . /backend
 

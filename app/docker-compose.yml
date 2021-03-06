@@ -2,24 +2,41 @@
 
 version: '3'
 services:
+  db_dev:
+    build:
+      context: ./backend/db/
+    restart: always
+    environment:
+      MYSQL_DATABASE: upnext
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    ports:
+    - "3306:3306"
   backend_dev:
     build:
       context: ./backend/
-    command: npm start
+    restart: always
     volumes:
       - ./backend/:/backend
+    links:
+      - db_dev
+    depends_on:
+      - db_dev
     ports:
       - "9000:9000"
     environment:
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
-
   ui_dev:
     build:
       context: ./ui/
-    command: npm start
+    restart: always
     volumes:
       - ./ui/:/ui
+    links:
+      - backend_dev
     depends_on:
       - backend_dev
     ports:

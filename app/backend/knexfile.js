@@ -2,9 +2,13 @@
 
 module.exports = {
   development: {
-    client: 'sqlite3',
+    client: 'mysql',
+    version: '8',
     connection: {
-      filename: './db/data/dev.db3'
+      host: 'localhost',
+      user: 'admin',
+      password: 'password',
+      database: 'upnext'
     },
     migrations: {
       directory: './db/migrations'
@@ -14,4 +18,17 @@ module.exports = {
     },
     useNullAsDefault: true
   }
+  // development: {
+  //   client: 'sqlite3',
+  //   connection: {
+  //     filename: './db/data/dev.db3'
+  //   },
+  //   migrations: {
+  //     directory: './db/migrations'
+  //   },
+  //   seeds: {
+  //     directory: './db/seeds'
+  //   },
+  //   useNullAsDefault: true
+  // }
 };
