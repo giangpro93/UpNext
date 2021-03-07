@@ -4,6 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 import Appbar from '../base/Appbar';
 import MyCalendar from '../calendar/MyCalendar'
+import Groups from '../groups/Groups'
+import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
 import Login from '../login/Login'
 // const useStyles = makeStyles(theme => ({
@@ -36,8 +38,11 @@ function LoggedIn() {
                 <MyCalendar />
             </Route>
             <Route exact path="/groups">
-                Groups
+                <Groups />
             </Route>
+	   <Route exact path="/groupPage">
+	    	<GroupPage />
+	    </Route>
             <Route exact path="/connect">
                 Connect
             </Route>
