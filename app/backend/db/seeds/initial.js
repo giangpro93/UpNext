@@ -1,5 +1,6 @@
 const faker = require('faker');
-const { hashPassword } = require('../../api/helpers');
+const { hashPassword } = require('../../api/helpers/passwords');
+const { addDays, addHours } = require('../../api/helpers/dates');
 
 const USERS = 9;
 const GROUPS = 3;
@@ -130,18 +131,125 @@ exports.seed = function(knex) {
     knex('Post').del()
     .then(() => 
       knex.select('id').from('User')
-      .then(user_ids => user_ids.map(u => u.id))
-      .then(ids => {
-        const POSTS_PER_PERSON = 5;
-        let posts = [];
-        for(let i = 0; i < POSTS_PER_PERSON; i++) {
-          for(uid of ids) {
-            posts.push({creator_id: uid, content: faker.lorem.paragraph()});
+      .then(us =>
+        knex.select('id').from('Group')
+        .then(gs => {
+          const POSTS_PER_ENTITY = 5;
+          let posts = [];
+
+          const pushEntityPosts = es => {
+            let isGlobal = true;
+            for(let i = 0; i < POSTS_PER_ENTITY; i++) {
+              for(e of es) {
+                posts.push({creator_id: e.id, content: faker.lorem.paragraph(), context_id: (isGlobal ? null : e.id)});
+              }
+              isGlobal = !isGlobal;
+            }
           }
-        }
-        return knex('Post').insert(posts);
-      })
+          
+          pushEntityPosts(us);
+          pushEntityPosts(gs);
+
+          for(let i = 0; i < POSTS_PER_ENTITY; i++) {
+            for(g of gs) {
+              for(u of us) {
+                posts.push({creator_id: u.id, content: faker.lorem.paragraph(), context_id: g.id});
+              }
+            }
+          }
+
+          return knex('Post').insert(posts);
+        })
+      )
     )
+
+  // for each person/group, create...
+  // an event that is (id * 2) number of hrs out and lasts 1 hr
+  // a task that starts at id number of hrs out and ends (id * 3) number of hrs out
+  const populateScheduleItems = () =>
+      knex('ScheduleItem').del()
+      .then(() => knex('ScheduleEvent').del())
+      .then(() => knex('ScheduleTask').del())
+      .then(() => knex('ScheduleReminder').del())
+      .then(() => knex.select('id').from('Entity'))
+      .then(es => {
+        const ITEMS_PER_ENTITY = 9;
+        const now = new Date();
+        let items = [];
+        let reminders = [];
+        let events = [];
+        let tasks = [];
+        // create schedule items for each entity
+        const pushItem = (e, type) => {
+          items.push({
+            entity_id: e.id, 
+            title: `${type} for entity ${e.id}`, 
+            description: faker.lorem.sentence()
+          });
+        }
+        let i = 0;
+        for (e of es) {
+          pushItem(e, 'Event 1');
+          pushItem(e, 'Reminder for Event 1');
+          pushItem(e, 'Task 1');
+          pushItem(e, 'Reminder for Task 1');
+          pushItem(e, 'Event 2');
+          pushItem(e, 'Reminder for Event 2');
+          pushItem(e, 'Task 2');
+          pushItem(e, 'Reminder for Task 2');
+          pushItem(e, 'Standalone Reminder');
+          const offset = i * ITEMS_PER_ENTITY;
+          events.push({
+            id: offset + 1,
+            start: addHours(now, e.id * 2),
+            end: addHours(now, e.id * 2 + 1)
+          });
+          reminders.push({
+            id: offset + 2,
+            time: addHours(now, e.id * 2 - 0.5),
+            link_id: offset + 1
+          });
+          tasks.push({
+            id: offset + 3,
+            assigned: addHours(now, e.id),
+            due: addHours(now, e.id * 3)
+          });
+          reminders.push({
+            id: offset + 4,
+            time: addHours(now, e.id - 0.5),
+            link_id: offset + 3
+          });
+          events.push({
+            id: offset + 5,
+            start: addDays(now, e.id * 2),
+            end: addDays(now, e.id * 2 + 1)
+          });
+          reminders.push({
+            id: offset + 6,
+            time: addDays(now, e.id * 2 - 0.5),
+            link_id: offset + 5
+          });
+          tasks.push({
+            id: offset + 7,
+            assigned: addDays(now, e.id),
+            due: addDays(now, e.id * 3)
+          });
+          reminders.push({
+            id: offset + 8,
+            time: addDays(now, e.id * 3 - 0.5),
+            link_id: offset + 7
+          });
+          reminders.push({
+            id: offset + 9,
+            time: addHours(now, 0.5)
+          });
+          i++;
+        }
+        return knex('ScheduleItem').insert(items)
+          .then(() => knex('ScheduleEvent').insert(events))
+          .then(() => knex('ScheduleTask').insert(tasks))
+          .then(() => knex('ScheduleReminder').insert(reminders));
+      })
   
   return populateUsers()
           .then(populateGroups)
@@ -149,5 +257,6 @@ exports.seed = function(knex) {
           .then(populateMessages)
           .then(populateFriendRequestsAndFriendships)
           .then(populatePosts)
+          .then(populateScheduleItems)
           .catch(err => console.log(err));
 };

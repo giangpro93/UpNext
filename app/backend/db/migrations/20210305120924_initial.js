@@ -105,8 +105,6 @@ exports.up = function(knex) {
             .notNullable();
         tbl.time('end')
             .notNullable();
-        tbl.integer('reminder_id')
-            .unsigned();
         tbl.foreign('id')
             .references('ScheduleItem.id')
             .onDelete('CASCADE');
@@ -120,8 +118,6 @@ exports.up = function(knex) {
             .notNullable();
         tbl.time('due')
             .notNullable();
-        tbl.integer('reminder_id')
-            .unsigned();
         tbl.foreign('id')
             .references('ScheduleItem.id')
             .onDelete('CASCADE');
@@ -133,7 +129,12 @@ exports.up = function(knex) {
             .notNullable();
         tbl.time('time')
             .notNullable();
+        tbl.integer('link_id')
+            .unsigned();
         tbl.foreign('id')
+            .references('ScheduleItem.id')
+            .onDelete('CASCADE');
+        tbl.foreign('link_id')
             .references('ScheduleItem.id')
             .onDelete('CASCADE');
         tbl.primary('id');
@@ -165,10 +166,15 @@ exports.up = function(knex) {
             .notNullable();
         tbl.text('content')
             .notNullable();
+        tbl.integer('context_id')
+            .unsigned();
         tbl.timestamp('created_at')
             .notNullable()
             .defaultTo(knex.fn.now());
         tbl.foreign('creator_id')
+            .references('Entity.id')
+            .onDelete('CASCADE');
+        tbl.foreign('context_id')
             .references('Entity.id')
             .onDelete('CASCADE');
     })

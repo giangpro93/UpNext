@@ -14,6 +14,13 @@ services:
       MYSQL_ROOT_HOST: '%'
     ports:
     - "3306:3306"
+  # db_initialize_dev:
+  #   build:
+  #     dockerfile: ./backend/dbInitialize.dockerfile
+  #   command: bash -c "sleep 10000"
+  #   # command: bash -c "./wait-for-it.sh db_dev:3306 -t 60 -- echo \"Waiting for database bootup to run migrations...\" && sleep 15 && npm run migrate && npm run seeds"
+    # depends_on:
+    #   - db_dev
   backend_dev:
     build:
       context: ./backend/
