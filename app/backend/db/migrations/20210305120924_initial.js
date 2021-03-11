@@ -182,16 +182,16 @@ exports.up = function(knex) {
     
 exports.down = function(knex) {
     return knex.schema
-    .dropTableIfExists('Entity')
-    .dropTableIfExists('User')
-    .dropTableIfExists('Group')
+    .dropTableIfExists('ScheduleReminder')
+    .dropTableIfExists('ScheduleEvent')
+    .dropTableIfExists('ScheduleTask')
+    .dropTableIfExists('ScheduleItem')
+    .dropTableIfExists('Message')
+    .dropTableIfExists('Post')
     .dropTableIfExists('Membership')
     .dropTableIfExists('FriendRequest')
     .dropTableIfExists('Friendship')
-    .dropTableIfExists('ScheduleItem')
-    .dropTableIfExists('ScheduleEvent')
-    .dropTableIfExists('ScheduleTask')
-    .dropTableIfExists('ScheduleReminder')
-    .dropTableIfExists('Message')
-    .dropTableIfExists('Post');
+    .dropTableIfExists('User')
+    .dropTableIfExists('Group')
+    .dropTableIfExists('Entity');
 };

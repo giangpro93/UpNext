@@ -6,9 +6,11 @@ module.exports = {
 };
 
 function hashPassword(password) {
-    return bcrypt.hashSync(password, 10);
+    return new Promise((resolve, reject) => 
+        resolve(bcrypt.hashSync(password, 10)));
 }
 
 function comparePasswords(password, hash) {
-    return bcrypt.compareSync(password, hash)
+    return new Promise((resolve, reject) =>
+     bcrypt.compareSync(password, hash) ? resolve(true) : reject(false))
 }

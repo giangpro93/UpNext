@@ -41,13 +41,14 @@ exports.seed = function(knex) {
       const users = spawnMany(spawnUser, USERS);
       return knex('Entity')
               .insert([customUser, ...users.map(u => ({ name: u.name, email: u.email }))])
-              .then(() => {
-                const password_hash = hashPassword('password');
-                return knex.select('id').from('Entity')
-                .then(ids => 
-                  knex('User')
-                  .insert(ids.map(res => ({ id: res.id, password_hash }))))
-                });
+              .then(() =>
+                hashPassword('password')
+                .then(password_hash =>
+                  knex.select('id').from('Entity')
+                  .then(ids => 
+                    knex('User')
+                    .insert(ids.map(res => ({ id: res.id, password_hash }))))
+              ));
     });
   
   const populateGroups = () => 
