@@ -10,7 +10,7 @@ import {MoreVertIcon} from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
-var messages = [['hunter',"this is a message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"]];
+var messages = [['hunter',"this is a message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"]];
 var events = [ ["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const useStyles = makeStyles((theme) => ({
 	          root: {
@@ -139,23 +139,25 @@ export default function GroupPage(props) {
 			         </div>
 				  <h1>{name}</h1>
 				 <Tabs value={value} onChange={handleChange}>
-			    <Tab label="Forum"
+			    <Tab label="Events"
 				value="one"
 			       
 			    />
-			    <Tab label="Events"
+			    <Tab label="Forum"
 				value = "two"
 			  />
 			  </Tabs>
-			<TabPanel value={value} index="one">
-				<List className={classes.messageBoard}>
+			<TabPanel value={value} index="two">
+				<div className={classes.messageBoard}>
+				<div style={{overflow: 'auto', height: 'inherit', display: 'block' ,marginLeft: 20,}}>
 					{messages.map(message => (
 						<Paper className={classes.message}>
 							<div className={classes.messageText}> {message[0]}</div>
 							<div className={classes.messageText}>{message[1]}</div>
 						</Paper>
 					))}
-				 </List>
+				 </div>
+				</div>
 				
 				<div>
 				  <TextField
@@ -169,7 +171,7 @@ export default function GroupPage(props) {
 			          />
 				</div>
 			</TabPanel>
-			<TabPanel value={value} index="two">
+			<TabPanel value={value} index="one">
 			<div className={classes.eventBoard}>
 				{events.map(eventt => (
 					                                        
