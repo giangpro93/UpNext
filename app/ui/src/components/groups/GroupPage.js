@@ -5,9 +5,13 @@ import Grid from '@material-ui/core/Grid';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { FormControl, InputLabel, Input, FormHelperText, TextField } from '@material-ui/core';
-
-var messages = [['hunter',"this is a message"],["Cobb","This is another Message"]];
+import { FormControl, InputLabel,Box,List,Typography, Input,CardMedia,CardContent, FormHelperText, TextField, Tabs, Tab, Card, CardHeader, Avatar,IconButton,CardActions,FavoriteButton,Collapse} from '@material-ui/core';
+import {MoreVertIcon} from '@material-ui/icons/MoreVert';
+import ShareIcon from '@material-ui/icons/Share';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import clsx from 'clsx';
+var messages = [['hunter',"this is a message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"]];
+var events = [ ["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const useStyles = makeStyles((theme) => ({
 	          root: {
 			display: 'flex',
@@ -37,11 +41,11 @@ const useStyles = makeStyles((theme) => ({
 			       backgroundColor: 'gray',
 			       display: 'flex',
 			       color: 'black',
-			       minHeight: 400,
-			       maxHeight: 400,
+			       height: 400,
+			       position: 'relative',
 			       flexDirection: 'column',
 			       justifyContent: 'flex-end',
-			       overflow: 'auto',
+			      overflow: 'auto',
 		},
 		messageForm: {
 			     display: 'flex',
@@ -66,17 +70,63 @@ const useStyles = makeStyles((theme) => ({
 		        
 			marginLeft: 16,
 		},
+		card: {
+		width: 345,
+		marginBottom: 16,
+		marginRight: 16,
+		marginLeft: 16,
+		marginTop: 16,
+		},
+		avatar: {
+		backgroundColor: 'red',
+		},
+		eventBoard: {
+		 backgroundColor: 'gray',
+			                               display: 'flex',
+			                               color: 'black',                         
+			                               position: 'relative',
+			                               flexDirection: 'row',
+						       flexWrap: 'wrap',
+						      
+		},
 }));
+function TabPanel(props) {
+	  const { children, value, index, ...other } = props;
 
+	  return (
+		      <div
+		        role="tabpanel"
+		        hidden={value !== index}
+		        id={`wrapped-tabpanel-${index}`}
+		        aria-labelledby={`wrapped-tab-${index}`}
+		        {...other}
+		      >
+		        {value === index && (
+				        <Box p={3}>
+				          <Typography>{children}</Typography>
+				        </Box>
+				      )}
+		      </div>
+		    );
+}
 export default function GroupPage(props) {
 	const location = useLocation();
+	const [value, setValue] = React.useState('one');
 	const name = location.state.detail;
+	const [expanded, setExpanded] = React.useState(false);
+
+	  function handleExpandClick(f) {
+		      setExpanded(!expanded);
+		    };
 	function changeBackground(e) {
            e.target.style.opacity = '0.5';
 	}
 	function changeBack(e){
           e.target.style.opacity = '1';
 	}
+	  const handleChange = (event, newValue) => {
+		      setValue(newValue);
+		    };
 	const history = useHistory();
 	const goLogin = () => history.push('groups');
 	        const classes = useStyles()
@@ -88,14 +138,25 @@ export default function GroupPage(props) {
 			            </Paper>
 			         </div>
 				  <h1>{name}</h1>
-				  <div className={classes.messageBoard}>
+				 <Tabs value={value} onChange={handleChange}>
+			    <Tab label="Forum"
+				value="one"
+			       
+			    />
+			    <Tab label="Events"
+				value = "two"
+			  />
+			  </Tabs>
+			<TabPanel value={value} index="one">
+				<List className={classes.messageBoard}>
 					{messages.map(message => (
 						<Paper className={classes.message}>
 							<div className={classes.messageText}> {message[0]}</div>
 							<div className={classes.messageText}>{message[1]}</div>
 						</Paper>
 					))}
-				 </div>
+				 </List>
+				
 				<div>
 				  <TextField
 				    className={classes.messageForm}
@@ -107,6 +168,35 @@ export default function GroupPage(props) {
 			            variant="filled"
 			          />
 				</div>
+			</TabPanel>
+			<TabPanel value={value} index="two">
+			<div className={classes.eventBoard}>
+				{events.map(eventt => (
+					                                        
+				<Card className={classes.card}>
+			      <CardHeader
+			        avatar={
+					          <Avatar className={classes.avatar}>
+						{eventt[0][0]}
+					          </Avatar>
+					        }
+			        title={eventt[1]}
+			        subheader={eventt[3]}
+			      />
+			
+			      <CardContent>
+			        <Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+			         	Location: {eventt[2]}
+					
+			        </Typography>
+				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
+					{eventt[5]}
+				</Typography>
+			      </CardContent>
+				</Card>
+				))}
+			</div>
+			</TabPanel>
 				</div>
 		      );
 
