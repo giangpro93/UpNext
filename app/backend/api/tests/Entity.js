@@ -1,4 +1,3 @@
-const db = require('../../knex_db');
 const Entity = require('../models/Entity');
 
 const testEntity = {
@@ -10,16 +9,25 @@ const testEntity = {
 module.exports = [
     {
         title: 'Create entity',
-        test: () => Entity.create(testEntity)
+        test: () => 
+            Entity.create(testEntity)
+            .then(console.log)
     },
     {
         title: 'Get all entities',
-        test: () => Entity.getAll()
+        test: () => 
+            Entity.getAll()
+            .then(entities => {
+                console.log(`Number of entities: ${entities.length}`);
+            })
     },
     {
         title: 'Update entity',
-        test: () => Entity.getByEmail(testEntity.email)
-        .then(entity => Entity.update({ id: entity.id, ...testEntity, name: 'Test Updated', description: 'Description Updated'}))
+        test: () => Entity.update({
+            ...testEntity, 
+            name: 'Test Updated',
+            description: 'Description Updated'
+        })
     },
     {
         title: 'Get entity by email',

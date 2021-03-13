@@ -10,7 +10,8 @@ module.exports = {
     authenticate,
     deleteById,
     getById,
-    getByEmail
+    getByEmail,
+    getAll
 };
 
 function create(user) {
@@ -24,6 +25,7 @@ function create(user) {
             .then(entity => 
                 db('User')
                 .insert({ id: entity.id, password_hash })
+                .then(() => getById(entity.id))
         ))
         // .then(() => authenticate({ email, password }))
         .catch(logAndThrow('User creation failed'));
@@ -58,22 +60,36 @@ function authenticate({ email, password }) {
 
 function deleteById(id) {
     // automatically deletes user due to CASCADE
-    return Entity.deleteById(id);
+    return getById(id)
+    .then(user => 
+        Entity.deleteById(id)
+        .then(() => user)
+    );
 }
 
 function getById(id) {
     // get the entity
-    return Entity.getById(id)
-    // check that the entity is a user
-    // if so, return the entity object
-    .then(entity => 
-        db.select()
-        .from('User')
-        .where('id', id)
-        .then(users => users[0])
-        .then(user => ({...entity, password_hash: user.password_hash}))
-        .catch(logAndThrow('Could not fetch user'))
-    )
+    return db
+    .select('Entity.*', 'User.password_hash')
+    .from('User')
+    .leftJoin('Entity', function() {
+        this.on('User.id', '=', 'Entity.id')
+    })
+    .where('Entity.id', id)
+    .then(users => users[0])
+    .catch(logAndThrow('Could not fetch user'));
+    
+    // return Entity.getById(id)
+    // // check that the entity is a user
+    // // if so, return the entity object
+    // .then(entity => 
+    //     db.select()
+    //     .from('User')
+    //     .where('id', id)
+    //     .then(users => users[0])
+    //     .then(user => ({...entity, password_hash: user.password_hash}))
+    //     .catch(logAndThrow('Could not fetch user'))
+    // )
 }
 
 function getByEmail(email) {
@@ -81,12 +97,14 @@ function getByEmail(email) {
     return Entity.getByEmail(email)
     // check that the entity is a user
     // if so, return the entity object
-    .then(entity => 
-        db.select()
-        .from('User')
-        .where('id', entity.id)
-        .then(users => users[0])
-        .then(user => ({...entity, password_hash: user.password_hash}))
-        .catch(logAndThrow('Could not fetch user'))
-    )
+    .then(entity => getById(entity.id))
+}
+
+function getAll() {
+    return db
+    .select('Entity.*', 'User.password_hash')
+    .from('User')
+    .leftJoin('Entity', function() {
+        this.on('User.id', '=', 'Entity.id')
+    });
 }
