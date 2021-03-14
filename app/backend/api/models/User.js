@@ -2,7 +2,6 @@
 const Entity = require('./Entity');
 const { hashPassword, comparePasswords } = require('../helpers/passwords');
 const db = require('../../knex_db');
-const { logAndThrow } = require('../helpers/errors');
 
 module.exports = {
     create,
@@ -27,8 +26,7 @@ function create(user) {
                 .insert({ id: entity.id, password_hash })
                 .then(() => getById(entity.id))
         ))
-        // .then(() => authenticate({ email, password }))
-        .catch(logAndThrow('User creation failed'));
+        .then(() => authenticate({ email, password }));
 }
 
 function update(user) {
@@ -42,7 +40,7 @@ function update(user) {
                 .where('id', id)
                 .update({ id, password_hash }))
         : Promise.resolve()
-    )
+    );
 }
 
 // checks for user with that email and password,
@@ -54,8 +52,7 @@ function authenticate({ email, password }) {
             // compare the user's password hash with given password
             comparePasswords(password, user.password_hash)
             .then(() => user)
-        )
-        .catch(logAndThrow(`User authentication failed (email = ${email})`))
+        );
 }
 
 function deleteById(id) {
@@ -70,26 +67,12 @@ function deleteById(id) {
 function getById(id) {
     // get the entity
     return db
-    .select('Entity.*', 'User.password_hash')
+    .first('Entity.*', 'User.password_hash')
     .from('User')
     .leftJoin('Entity', function() {
         this.on('User.id', '=', 'Entity.id')
     })
-    .where('Entity.id', id)
-    .then(users => users[0])
-    .catch(logAndThrow('Could not fetch user'));
-    
-    // return Entity.getById(id)
-    // // check that the entity is a user
-    // // if so, return the entity object
-    // .then(entity => 
-    //     db.select()
-    //     .from('User')
-    //     .where('id', id)
-    //     .then(users => users[0])
-    //     .then(user => ({...entity, password_hash: user.password_hash}))
-    //     .catch(logAndThrow('Could not fetch user'))
-    // )
+    .where('Entity.id', id);
 }
 
 function getByEmail(email) {
@@ -97,14 +80,12 @@ function getByEmail(email) {
     return Entity.getByEmail(email)
     // check that the entity is a user
     // if so, return the entity object
-    .then(entity => getById(entity.id))
+    .then(entity => getById(entity.id));
 }
 
 function getAll() {
     return db
     .select('Entity.*', 'User.password_hash')
     .from('User')
-    .leftJoin('Entity', function() {
-        this.on('User.id', '=', 'Entity.id')
-    });
+    .leftJoin('Entity', 'User.id', 'Entity.id');
 }

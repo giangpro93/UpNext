@@ -107,25 +107,22 @@ exports.seed = function(knex) {
 
   // if same parity, users are friends
   // otherwise, the lower id friend will send a friend request to the other
-  const populateFriendRequestsAndFriendships = () =>
+  const populateFriendRequests = () =>
       knex('FriendRequest').del()
       .then(() => 
         knex.select('id').from('User')
         .then(user_ids => {
-          let friendships = [];
           let requests = [];
           for(u of user_ids) {
             for(u2 of user_ids.filter(u2 => u2.id > u.id)) {
-              if(((u.id + u2.id) % 2) === 0) {
-                friendships.push({user1_id: u.id, user2_id: u2.id})
-              } else {
-                requests.push({requester_id: u.id, requested_id: u2.id})
-              }
+              requests.push({
+                requester_id: u.id, 
+                requested_id: u2.id,
+                is_accepted: faker.random.boolean()
+              });
             }
           }
           return knex('FriendRequest').insert(requests)
-                  .then(() =>
-                    knex('Friendship').insert(friendships))
         }))
 
   const populatePosts = () => 
@@ -256,7 +253,7 @@ exports.seed = function(knex) {
           .then(populateGroups)
           .then(populateMemberships)
           .then(populateMessages)
-          .then(populateFriendRequestsAndFriendships)
+          .then(populateFriendRequests)
           .then(populatePosts)
           .then(populateScheduleItems)
           .catch(err => console.log(err));

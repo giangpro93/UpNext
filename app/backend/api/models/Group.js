@@ -1,6 +1,5 @@
 const Entity = require('./Entity');
 const db = require('../../knex_db');
-const { logAndThrow } = require('../helpers/errors');
 
 module.exports = {
     create,
@@ -21,9 +20,7 @@ function create(group) {
                 db('Group')
                 .insert({ id: entity.id })
                 .then(() => getById(entity.id))
-        ))
-        // .then(() => authenticate({ email, password }))
-        .catch(logAndThrow('Group creation failed'));
+        ));
 }
 
 function update(group) {
@@ -39,14 +36,12 @@ function deleteById(id) {
 function getById(id) {
     // get the entity
     return db
-    .select('Entity.*')
+    .first('Entity.*')
     .from('Group')
     .leftJoin('Entity', function() {
         this.on('Group.id', '=', 'Entity.id')
     })
-    .where('Entity.id', id)
-    .then(groups => groups[0])
-    .catch(logAndThrow('Could not fetch group'));
+    .where('Entity.id', id);
 }
 
 function getByEmail(email) {
@@ -61,7 +56,5 @@ function getAll() {
     return db
     .select('Entity.*')
     .from('Group')
-    .leftJoin('Entity', function() {
-        this.on('Group.id', '=', 'Entity.id')
-    });
+    .leftJoin('Entity', 'Group.id', 'Entity.id');
 }

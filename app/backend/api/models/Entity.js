@@ -1,5 +1,4 @@
 const db = require('../../knex_db');
-const { logAndThrow } = require('../helpers/errors');
 
 module.exports = {
     create,
@@ -14,8 +13,7 @@ function create(entity) {
     const { name, email, description, image } = entity;
     return db('Entity')
         .insert({ name, email, description, image })
-        .then(() => getByEmail(email))
-        .catch(logAndThrow('Entity creation error'));
+        .then(() => getByEmail(email));
 }
 
 function getAll() {
@@ -32,8 +30,7 @@ function update(entity) {
         db('Entity')
         .where('id', id)
         .update({id, name, description, image})
-        .then(() => getById(id))
-        .catch(logAndThrow('Entity update error'));
+        .then(() => getById(id));
 
     return entity.id 
     ? query(entity.id) 
@@ -48,22 +45,17 @@ function deleteById(id) {
             .where('id', id)
             .del()
             .then(() => entity)
-            .catch(logAndThrow(`Could not delete entity with id = ${id}`))
         );
 }
 
 function getById(id) {
-    return db.select()
+    return db.first()
     .from('Entity')
-    .where('id', id)
-    .then(entities => entities[0])
-    .catch(logAndThrow(`Could not fetch entity with id = ${id}`));
+    .where('id', id);
 }
 
 function getByEmail(email) {
-    return db.select()
+    return db.first()
     .from('Entity')
-    .where('email', email)
-    .then(entities => entities[0])
-    .catch(logAndThrow(`Could not fetch entity with email = ${email}`));
+    .where('email', email);
 }

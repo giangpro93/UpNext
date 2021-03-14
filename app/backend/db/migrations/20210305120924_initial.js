@@ -58,6 +58,9 @@ exports.up = function(knex) {
         tbl.integer('requested_id')
             .unsigned()
             .notNullable();
+        tbl.boolean('is_accepted')
+            .notNullable()
+            .defaultTo(false);
         tbl.timestamp('created_at')
             .defaultTo(knex.fn.now());
         tbl.foreign('requester_id')
@@ -67,23 +70,6 @@ exports.up = function(knex) {
             .references('User.id')
             .onDelete('CASCADE');
         tbl.primary(['requester_id', 'requested_id']);
-    })
-    .createTable('Friendship', tbl => {
-        tbl.integer('user1_id')
-            .unsigned()
-            .notNullable();
-        tbl.integer('user2_id')
-            .unsigned()
-            .notNullable();
-        tbl.timestamp('created_at')
-            .defaultTo(knex.fn.now());
-        tbl.foreign('user1_id')
-            .references('User.id')
-            .onDelete('CASCADE');
-        tbl.foreign('user2_id')
-            .references('User.id')
-            .onDelete('CASCADE');
-        tbl.primary(['user1_id', 'user2_id']);
     })
     .createTable('ScheduleItem', tbl => {
         tbl.increments();
@@ -140,7 +126,7 @@ exports.up = function(knex) {
         tbl.primary('id');
     })
     .createTable('Message', tbl => {
-        tbl.increments();
+        tbl.increments('message_id');
         tbl.integer('sender_id')
             .unsigned()
             .notNullable();
@@ -160,7 +146,7 @@ exports.up = function(knex) {
             .onDelete('CASCADE');
     })
     .createTable('Post', tbl => {
-        tbl.increments();
+        tbl.increments('post_id');
         tbl.integer('creator_id')
             .unsigned()
             .notNullable();
@@ -190,7 +176,6 @@ exports.down = function(knex) {
     .dropTableIfExists('Post')
     .dropTableIfExists('Membership')
     .dropTableIfExists('FriendRequest')
-    .dropTableIfExists('Friendship')
     .dropTableIfExists('User')
     .dropTableIfExists('Group')
     .dropTableIfExists('Entity');
