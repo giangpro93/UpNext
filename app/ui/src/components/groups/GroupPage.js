@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
+import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
+import { useForm } from '../common/useForm'
+import { DialogForm } from '../common/DialogForm'
 import { useLocation } from "react-router-dom";
-import { FormControl, InputLabel,Box,List,Typography, Input,CardMedia,CardContent, FormHelperText, TextField, Tabs, Tab, Card, CardHeader, Avatar,IconButton,CardActions,FavoriteButton,Collapse} from '@material-ui/core';
+import { FormControl, InputLabel,Box,List, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography, Input,CardMedia,CardContent, FormHelperText, TextField, Tabs, Tab, Card, CardHeader, Avatar,IconButton,CardActions,FavoriteButton,Collapse} from '@material-ui/core';
 import {MoreVertIcon} from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
+var owner = true;
 var messages = [['hunter',"this is a message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"]];
 var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."],["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."], ["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const useStyles = makeStyles((theme) => ({
@@ -81,13 +85,19 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: 'red',
 		},
 		eventBoard: {
-		 backgroundColor: 'gray',
+		 
 			                               display: 'flex',
 			                               color: 'black',                         
 			                               position: 'relative',
 			                               flexDirection: 'row',
 						       flexWrap: 'wrap',
 						      
+		},
+		createPostButton: {
+				display: 'flex',
+				flexDirection: 'row',
+				justifyContent: 'flex-end',
+				marginTop: 16,
 		},
 }));
 function TabPanel(props) {
@@ -111,13 +121,9 @@ function TabPanel(props) {
 }
 export default function GroupPage(props) {
 	const location = useLocation();
-	const [value, setValue] = React.useState('one');
+	const [eventWindow, setEventWindow] = useState(false);
+	const [value, setValue] = useState('one');
 	const name = location.state.detail;
-	const [expanded, setExpanded] = React.useState(false);
-
-	  function handleExpandClick(f) {
-		      setExpanded(!expanded);
-		    };
 	function changeBackground(e) {
            e.target.style.opacity = '0.5';
 	}
@@ -128,12 +134,12 @@ export default function GroupPage(props) {
 		      setValue(newValue);
 		    };
 	const history = useHistory();
-	const goLogin = () => history.push('groups');
+	const goBack = () => history.push('groups');
 	        const classes = useStyles()
 	        return (
 			        <div>
 			          <div>
-			            <Paper onClick={goLogin}onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.paper}>
+			            <Paper onClick={goBack}onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.paper}>
 			               <div className={classes.groupNames}> Back </div>
 			            </Paper>
 			         </div>
@@ -198,6 +204,69 @@ export default function GroupPage(props) {
 				</Card>
 				))}
 			</div>
+			{owner == true ? (
+				         <div className={classes.createPostButton}>
+				         	<Button variant="outlined" color="#3CB371" onClick={() => { setEventWindow(true); }}>
+				                	Create Event
+				                </Button>
+						<Dialog open={eventWindow} onClose={() => { setEventWindow(false); }} aria-labelledby="form-dialog-title">
+				        <DialogTitle id="form-dialog-title">Create Event</DialogTitle>
+				        <DialogContent>
+				          <DialogContentText>
+				            To subscribe to this website, please enter your email address here. We will send updates
+				            occasionally.
+				          </DialogContentText>
+				          <TextField
+				            autoFocus
+				            margin="dense"
+				            id="eventName"
+				            label="Event Name"
+				            type="email"
+				            fullWidth
+				          />
+					  <TextField
+				            autoFocus
+				            margin="dense"
+				            id="eventName"
+				            label="Event Location"
+				            type="email"
+				            fullWidth
+				                                          />
+					  <TextField
+					  autoFocus
+				   	   id="datetime-local"
+					   margin="dense"
+				    	   label="Event Time"
+				           type="datetime-local"
+				    	   defaultValue="2021-01-24T10:30"
+				    	  
+				    	   InputLabelProps={{
+					          shrink: true,
+						        }}
+					  fullWidth
+				 	  />
+					<TextField
+				          id="filled-multiline-static"
+				          label="Event Description"
+				          multiline
+				          rows={4}
+					  margin = "dense" 
+				          variant="filled"
+					  fullWidth
+					  autoFocus
+				        />
+				        </DialogContent>
+				        <DialogActions>
+				          <Button onClick={() => { setEventWindow(false); }} color="primary">
+				            Cancel
+				          </Button>
+				          <Button onClick={() => { setEventWindow(false); }} color="primary">
+				            Subscribe
+				          </Button>
+				        </DialogActions>
+				      </Dialog>
+				        </div>
+				                                  ) : null}
 			</TabPanel>
 				</div>
 		      );
