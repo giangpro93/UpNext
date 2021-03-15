@@ -8,6 +8,7 @@ import Groups from '../groups/Groups'
 import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
 import Login from '../login/Login'
+import Profile from '../profile/Profile'
 // const useStyles = makeStyles(theme => ({
 //     content: theme.mixins.toolbar
 // }))
@@ -20,7 +21,7 @@ export function Router() {
 
     return (
         <BrowserRouter>
-        { auth ? <LoggedIn /> : <Login />}
+            { auth ? <LoggedIn /> : <Login />}
         </BrowserRouter>
     )
 }
@@ -28,32 +29,32 @@ export function Router() {
 function LoggedIn() {
     return (
         <>
-        <Appbar />
-        <Container>
-        <Switch>
-            <Route exact path="/">
-                Dashboard
+            <Appbar />
+            <Container>
+                <Switch>
+                    <Route exact path="/">
+                        Dashboard
             </Route>
-            <Route exact path="/schedule">
-                <MyCalendar />
+                    <Route exact path="/schedule">
+                        <MyCalendar />
+                    </Route>
+                    <Route exact path="/groups">
+                        <Groups />
+                    </Route>
+                    <Route exact path="/groupPage">
+                        <GroupPage />
+                    </Route>
+                    <Route exact path="/connect">
+                        Connect
             </Route>
-            <Route exact path="/groups">
-                <Groups />
+                    <Route exact path="/create">
+                        Create
             </Route>
-	   <Route exact path="/groupPage">
-	    	<GroupPage />
-	    </Route>
-            <Route exact path="/connect">
-                Connect
-            </Route>
-            <Route exact path="/create">
-                Create
-            </Route>
-            <Route exact path="/profile">
-                Profile
-            </Route>
-        </Switch>
-        </Container>
+                    <Route exact path="/profile">
+                        <Profile />
+                    </Route>
+                </Switch>
+            </Container>
         </>
     )
 }
