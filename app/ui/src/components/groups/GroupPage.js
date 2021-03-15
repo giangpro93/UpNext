@@ -261,7 +261,7 @@ export default function GroupPage(props) {
 				            Cancel
 				          </Button>
 				          <Button onClick={() => { setEventWindow(false); }} color="primary">
-				            Subscribe
+				            Post
 				          </Button>
 				        </DialogActions>
 				      </Dialog>
