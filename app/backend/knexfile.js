@@ -1,14 +1,14 @@
-// Update with your config settings.
+// Load environment settings from '.env' file
+require('dotenv').config();
 
-module.exports = {
-  development: {
+module.exports[process.env.NODE_ENV || 'development'] = {
     client: 'mysql',
     version: '8',
     connection: {
-      host: 'localhost',
-      user: 'admin',
-      password: 'password',
-      database: 'upnext'
+      host: process.env.MYSQL_HOSTNAME || 'localhost',
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE
     },
     migrations: {
       directory: './db/migrations'
@@ -17,18 +17,4 @@ module.exports = {
       directory: './db/seeds'
     },
     useNullAsDefault: true
-  }
-  // development: {
-  //   client: 'sqlite3',
-  //   connection: {
-  //     filename: './db/data/dev.db3'
-  //   },
-  //   migrations: {
-  //     directory: './db/migrations'
-  //   },
-  //   seeds: {
-  //     directory: './db/seeds'
-  //   },
-  //   useNullAsDefault: true
-  // }
 };

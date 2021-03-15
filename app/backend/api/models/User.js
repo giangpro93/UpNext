@@ -33,13 +33,14 @@ function update(user) {
     const { id, name, email, description, image, password } = user;
     return Entity.update({id, name, email, description, image})
     .then(() =>
-        password 
+        (password 
         ? hashPassword(password)
             .then(password_hash => 
                 db('User')
                 .where('id', id)
                 .update({ id, password_hash }))
-        : Promise.resolve()
+        : Promise.resolve())
+        .then(() => getById(id))
     );
 }
 

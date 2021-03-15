@@ -21,21 +21,10 @@ function getAll() {
 }
 
 function update(entity) {
-    let { email, name, description, image } = entity;
-    if(!name) name = null;
-    if(!description) description = null;
-    if(!image) image = null;
-
-    const query = id =>
-        db('Entity')
-        .where('id', id)
-        .update({id, name, description, image})
-        .then(() => getById(id));
-
-    return entity.id 
-    ? query(entity.id) 
-    : getByEmail(email)
-        .then(e => query(e.id))
+    return db('Entity')
+        .where('id', entity.id)
+        .update(entity)
+        .then(() => getById(entity.id));
 }
 
 function deleteById(id) {

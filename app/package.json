@@ -3,20 +3,21 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-      "install": "npm --prefix ./backend install ./backend && npm --prefix ./ui install ./ui",
-      "dev": "docker compose -f docker-compose.yml up -d --build",
-      "stop": "docker compose down",
-      "restart": "npm run stop && npm run start",
-      "log-dev": "docker compose -f docker-compose.yml logs --follow --timestamps",
-      "migrate": "cd backend && npx knex migrate:rollback && npx knex migrate:latest",
-      "seeds": "cd backend && npx knex seed:run",
-      "start": "npm run dev && node ./db_initialize.js"
+        "install": "npm --prefix ./backend install ./backend && npm --prefix ./ui install ./ui",
+        "up": "docker compose -f docker-compose.yml up -d --build",
+        "down": "docker compose down",
+        "restart": "npm run down && npm run start",
+        "log-dev": "docker compose -f docker-compose.yml logs --follow --timestamps",
+        "migrate": "cd backend && npx knex migrate:rollback && npx knex migrate:latest",
+        "seeds": "cd backend && npx knex seed:run",
+        "initdb": "node ./db_initialize.js",
+        "start": "npm run up && npm run initdb"
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/giangpro93/UpNext.git"
+        "type": "git",
+        "url": "https://github.com/giangpro93/UpNext.git"
     },
     "comments": {
         "inspiration": "https://github.com/jerryryle/react-express-docker-skeleton.git"
     }
-  }
+}

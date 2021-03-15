@@ -2,49 +2,42 @@
 
 version: '3'
 services:
-  db_dev:
+  db:
+    container_name: db
     build:
       context: ./backend/db/
-    restart: always
-    environment:
-      MYSQL_DATABASE: upnext
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_ROOT_HOST: '%'
+    restart: unless-stopped
+    env_file: ./backend/.env
     ports:
     - "3306:3306"
-  # db_initialize_dev:
-  #   build:
-  #     dockerfile: ./backend/dbInitialize.dockerfile
-  #   command: bash -c "sleep 10000"
-  #   # command: bash -c "./wait-for-it.sh db_dev:3306 -t 60 -- echo \"Waiting for database bootup to run migrations...\" && sleep 15 && npm run migrate && npm run seeds"
-    # depends_on:
-    #   - db_dev
-  backend_dev:
+    # command: --default-authentication-plugin=mysql_native_password
+  api:
+    container_name: api
     build:
       context: ./backend/
-    restart: always
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      MYSQL_HOSTNAME: db
     volumes:
       - ./backend/:/backend
     links:
-      - db_dev
+      - db
     depends_on:
-      - db_dev
+      - db
     ports:
       - "9000:9000"
-    environment:
-      NODE_ENV: development
-      CHOKIDAR_USEPOLLING: "true"
-  ui_dev:
+  ui:
+    container_name: ui
     build:
       context: ./ui/
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./ui/:/ui
     links:
-      - backend_dev
+      - api
     depends_on:
-      - backend_dev
+      - api
     ports:
       - "3000:3000"

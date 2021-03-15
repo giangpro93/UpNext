@@ -1,37 +1,37 @@
 // All these routes are prefixed with 'users/'
 
-const { json } = require('express');
 var express = require('express');
 var router = express.Router();
-const responses = require('../responses');
-const users = require('../models/users');
+const { respond } = require('../responses');
+const User = require('../models/User');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/', function(req, res) {
+  req.query.id
+  ? respond(req, res, User.getById, req.query.id)
+  : respond(req, res, User.getAll);
 });
 
-// post a users signup
-router.post('/signup', (req, res) => {
-  console.log(req.body);
-  users.createUser(req.body)
-    .then(newuser => responses.okResponse(res, newuser))
-    .catch(err => responses.errResponse(res, err));
-  // res.json(req.body);
+router.get('/:id', function(req, res) {
+  respond(req, res, User.getById, req.params.id);
 });
 
-// login a user
-router.post('/login', (req, res) => {
-  console.log(req.body);
-  users.loginUser(req.body)
-    .then(user => responses.okResponse(res, user))
-    .catch(err => responses.errResponse(res, err));
+// post a user creation
+router.post('/', (req, res) => {
+  respond(req, res, User.create);
 });
 
-// logout a user
-router.post('/logout', (req, res) => {
-  console.log(req.body);
-  res.json(req.body);
+router.put('/', (req, res) => {
+  respond(req, res, User.update);
+})
+
+router.delete('/:id', (req, res) => {
+  respond(req, res, User.deleteById, req.params.id);
+})
+
+// authenticate a user
+router.post('/authenticate', (req, res) => {
+  respond(req, res, User.authenticate);
 });
 
 module.exports = router;
