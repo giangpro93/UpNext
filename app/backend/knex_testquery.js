@@ -1,6 +1,8 @@
 const db = require('./knex_db');
 const ScheduleEvent = require('./api/models/ScheduleEvent');
+const User = require('./api/models/User');
 
+const term = 'user';
 const id = 1;
 const user_id = 1;
 const requested_id = 1;
@@ -26,8 +28,7 @@ const tasks_attrs = ['ScheduleItem.*', 'ScheduleTask.assigned', 'ScheduleTask.du
 const events_attrs = ['ScheduleItem.*', 'ScheduleEvent.start', 'ScheduleEvent.end', 'Entity.name'];
 
 const query = 
-ScheduleEvent.eventsInfo()
-.where('ScheduleEvent.id', id);
+User.search({term});
 
 console.log(query.toSQL().toNative());
 query.then(console.log).catch(console.log)

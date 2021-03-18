@@ -10,13 +10,14 @@ module.exports = {
     deleteById,
     getById,
     getByEmail,
-    getAll
+    getAll,
+    search
 };
 
 function create(user) {
     const { name, email, password } = user;
     // generate password hash
-    return Entity.create({name, email})
+    return Entity.create({name, email, type: 'user'})
         .then(() => hashPassword(password))
     // insert user into db
         .then(password_hash =>
@@ -50,8 +51,14 @@ function authenticate({ email, password }) {
     // get user with that email
     return getByEmail(email)
         .then(user => 
-            // compare the user's password hash with given password
-            comparePasswords(password, user.password_hash)
+            db.first('password_hash')
+            .from('User')
+            .where('id', user.id)
+            .then(res => res.password_hash)
+            .then(hash => 
+                // compare the user's password hash with given password
+                comparePasswords(password, hash)
+            )
             .then(() => user)
         );
 }
@@ -68,25 +75,29 @@ function deleteById(id) {
 function getById(id) {
     // get the entity
     return db
-    .first('Entity.*', 'User.password_hash')
+    .first('Entity.*')
     .from('User')
-    .leftJoin('Entity', function() {
-        this.on('User.id', '=', 'Entity.id')
-    })
+    .leftJoin('Entity', 'User.id', 'Entity.id')
     .where('Entity.id', id);
 }
 
 function getByEmail(email) {
     // get the entity
     return Entity.getByEmail(email)
-    // check that the entity is a user
-    // if so, return the entity object
-    .then(entity => getById(entity.id));
+        .where('type', 'user');
 }
 
 function getAll() {
     return db
-    .select('Entity.*', 'User.password_hash')
-    .from('User')
-    .leftJoin('Entity', 'User.id', 'Entity.id');
+    .select()
+    .from('Entity')
+    .where('type', 'user');
+}
+
+function search({term}) {
+    return getAll()
+    .andWhere(function(q) {
+        q.where('name', 'like', `%${term}%`)
+        .orWhere('email', 'like', `%${term}%`)
+    });
 }

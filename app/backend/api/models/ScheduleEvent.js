@@ -1,4 +1,5 @@
 const ScheduleItem = require('./ScheduleItem');
+const ScheduleReminder = require('./ScheduleReminder');
 const db = require('../../knex_db');
 
 module.exports = {
@@ -20,11 +21,20 @@ function eventsInfo() {
 
 function create(event) {
     const { entity_id, title, description, start, end } = event;
-    return ScheduleItem.create({ entity_id, title, description })
+    let obj = {};
+    if(start) obj.start = start;
+    if(end) obj.end = end;
+    return ScheduleItem.create({ entity_id, title, description, type: 'event'})
     .then(item => 
         db('ScheduleEvent')
-        .insert({ id: item.id, start, end })
+        .insert({ id: item.id, ...obj})
         .then(() => getById(item.id))
+        .then(event => 
+            (reminder 
+            ? ScheduleReminder.create({...reminder, link_id: event.id})
+            : Promise.resolve())
+            .then(() => event)
+        )
     );
 }
 
@@ -35,12 +45,26 @@ function getById(id) {
 }
 
 function update(event) {
-    const { id, title, description, start, end } = event;
+    const { id, title, description, start, end, reminder } = event;
+    let obj = {};
+    if(start) obj.start = start;
+    if(end) obj.end = end;
     return ScheduleItem.update({id, title, description})
     .then(() => 
-        db('ScheduleEvent')
-        .update({id, start, end})
-        .then(() => getById(id))
+        (Object.keys(obj).length === 0
+        ? Promise.resolve()
+        : db('ScheduleEvent')
+            .where({id})
+            .update(obj))
+        .then(() =>
+            getById(id)
+            .then(e =>
+                (reminder 
+                ? ScheduleReminder.create({...reminder, entity_id: e.entity_id, link_id: id})
+                : Promise.resolve())
+                .then(() => e)
+            )
+        )
     );
 }
 

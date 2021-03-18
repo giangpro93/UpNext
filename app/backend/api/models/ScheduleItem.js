@@ -8,7 +8,7 @@ module.exports = {
 }
 
 function create(item) {
-    const { entity_id, title, description } = item;
+    const { entity_id, title, description, type } = item;
     return db('ScheduleItem')
     .insert(item)
     .then(() =>
@@ -30,13 +30,19 @@ function getById(id) {
 
 function update(item) {
     const { id, title, description } = item;
-    return db('ScheduleItem')
-    .update(item)
-    .then(() => getById(id));
+    let obj = {};
+    if(title) obj.title = title;
+    if(description) obj.description = description;
+    return Object.keys(obj).length === 0
+    ? getById(id)
+    : db('ScheduleItem')
+        .where({id})
+        .update(item)
+        .then(() => getById(id))
 }
 
 function deleteById(id) {
-    return db.getById(id)
+    return getById(id)
     .then(item => 
         db('ScheduleItem')
         .where('id', id)

@@ -6,13 +6,14 @@ module.exports = {
     update,
     deleteById,
     getById,
-    getByEmail
+    getByEmail,
+    getType
 };
 
 function create(entity) {
-    const { name, email, description, image } = entity;
+    const { name, email, description, image, type } = entity;
     return db('Entity')
-        .insert({ name, email, description, image })
+        .insert(entity)
         .then(() => getByEmail(email));
 }
 
@@ -47,4 +48,10 @@ function getByEmail(email) {
     return db.first()
     .from('Entity')
     .where('email', email);
+}
+
+function getType(id) {
+    return db.first('type')
+    .from('Entity')
+    .where('id', id);
 }

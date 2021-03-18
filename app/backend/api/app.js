@@ -7,6 +7,13 @@ var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var groupsRouter = require('./routes/groups');
+var membershipsRouter = require('./routes/memberships');
+var messagesRouter = require('./routes/messages');
+var friendsRouter = require('./routes/friends');
+var postsRouter = require('./routes/posts');
+var scheduleRouter = require('./routes/schedule');
+
 
 var app = express();
 
@@ -24,6 +31,12 @@ app.use(cors());
 // Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/groups', groupsRouter);
+app.use('/memberships', membershipsRouter);
+app.use('/messages', messagesRouter);
+app.use('/friends', friendsRouter);
+app.use('/posts', postsRouter);
+app.use('/schedule', scheduleRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

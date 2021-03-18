@@ -7,13 +7,14 @@ module.exports = {
     deleteById,
     getById,
     getByEmail,
-    getAll
+    getAll,
+    search
 };
 
 function create(group) {
     const { name, email, description, image } = group;
     // generate password hash
-    return Entity.create(group)
+    return Entity.create({...group, type: 'group'})
         .then(() =>
             Entity.getByEmail(email)
             .then(entity => 
@@ -47,14 +48,20 @@ function getById(id) {
 function getByEmail(email) {
     // get the entity
     return Entity.getByEmail(email)
-    // check that the entity is a group
-    // if so, return the entity object
-    .then(entity => getById(entity.id));
+        .where('type', 'group');
 }
 
 function getAll() {
     return db
-    .select('Entity.*')
-    .from('Group')
-    .leftJoin('Entity', 'Group.id', 'Entity.id');
+    .select()
+    .from('Entity')
+    .where('type', 'group');
+}
+
+function search({term}) {
+    return getAll()
+    .andWhere(function(q) {
+        q.where('name', 'like', `%${term}%`)
+        .orWhere('email', 'like', `%${term}%`)
+    });
 }

@@ -4,8 +4,9 @@ const Membership = require('./Membership');
 
 module.exports = {
     getContextFeed,
-    getProfilePageFeed,
-    getGlobalFeed
+    getGlobalProfileFeed,
+    getGlobalFeed,
+    getGroupFeed
 };
 
 // posts from a particular group (visible only to members & the group itself)
@@ -19,9 +20,10 @@ function getContextFeed(context_id) {
 // feed from a user's page
 // if viewer is a friend, they can see the private posts
 // otherwise, they see only posts with null context
-function getProfilePageFeed(creator_id) {
+function getGlobalProfileFeed(creator_id) {
     return postsInfo()
     .where('Post.creator_id', creator_id)
+    .andWhere('Post.context_id', null)
     .orderBy('Post.created_at', 'desc');
 }
 
@@ -48,4 +50,10 @@ function getGlobalFeed(user_id) {
             )
         )
     );
+}
+
+function getGroupFeed(group_id) {
+    return postsInfo()
+    .where('Post.context_id', group_id)
+    .orderBy('Post.created_at', 'desc');
 }

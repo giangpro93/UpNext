@@ -11,6 +11,8 @@ exports.up = function(knex) {
         tbl.binary('image');
         tbl.timestamp('created_at')
             .defaultTo(knex.fn.now());
+        tbl.enum('type', ['user', 'group'])
+            .notNullable();
     })
     .createTable('User', tbl => {
         tbl.integer('id')
@@ -40,7 +42,8 @@ exports.up = function(knex) {
             .unsigned()
             .notNullable();
         tbl.boolean('is_admin')
-            .notNullable();
+            .notNullable()
+            .defaultTo(false);
         tbl.timestamp('created_at')
             .defaultTo(knex.fn.now());
         tbl.foreign('user_id')
@@ -79,6 +82,8 @@ exports.up = function(knex) {
         tbl.string('title')
             .notNullable();
         tbl.text('description');
+        tbl.enum('type', ['event', 'task', 'reminder'])
+            .notNullable();
         tbl.foreign('entity_id')
             .references('Entity.id')
             .onDelete('CASCADE');
@@ -87,10 +92,12 @@ exports.up = function(knex) {
         tbl.integer('id')
             .unsigned()
             .notNullable();
-        tbl.time('start')
-            .notNullable();
-        tbl.time('end')
-            .notNullable();
+        tbl.timestamp('start')
+            .notNullable()
+            .defaultTo(knex.fn.now());
+        tbl.timestamp('end')
+            .notNullable()
+            .defaultTo(knex.fn.now());
         tbl.foreign('id')
             .references('ScheduleItem.id')
             .onDelete('CASCADE');
@@ -100,10 +107,12 @@ exports.up = function(knex) {
         tbl.integer('id')
             .unsigned()
             .notNullable();
-        tbl.time('assigned')
-            .notNullable();
-        tbl.time('due')
-            .notNullable();
+        tbl.timestamp('assigned')
+            .notNullable()
+            .defaultTo(knex.fn.now());
+        tbl.timestamp('due')
+            .notNullable()
+            .defaultTo(knex.fn.now());
         tbl.foreign('id')
             .references('ScheduleItem.id')
             .onDelete('CASCADE');
@@ -113,8 +122,9 @@ exports.up = function(knex) {
         tbl.integer('id')
             .unsigned()
             .notNullable();
-        tbl.time('time')
-            .notNullable();
+        tbl.timestamp('time')
+            .notNullable()
+            .defaultTo(knex.fn.now());
         tbl.integer('link_id')
             .unsigned();
         tbl.foreign('id')

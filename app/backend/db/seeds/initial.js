@@ -7,20 +7,29 @@ const GROUPS = 3;
 
 const customUser = {
   name: 'User User',
-  email: 'user@user.com'
+  email: 'user@user.com',
+  type: 'user'
 };
+
+const customGroup = {
+  name: 'Group',
+  email: 'group@group.com',
+  type: 'group'
+}
 
 const spawnUser = () => {
   return {
     name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    email: faker.internet.email()
+    email: faker.internet.email(),
+    type: 'user'
   }
 }
 
 const spawnGroup = () => {
   return {
     name: faker.company.companyName(),
-    email: faker.internet.email()
+    email: faker.internet.email(),
+    type: 'group'
   }
 }
 
@@ -40,7 +49,7 @@ exports.seed = function(knex) {
     .then(() => {
       const users = spawnMany(spawnUser, USERS);
       return knex('Entity')
-              .insert([customUser, ...users.map(u => ({ name: u.name, email: u.email }))])
+              .insert([customUser, ...users.map(u => ({ name: u.name, email: u.email, type: u.type }))])
               .then(() =>
                 hashPassword('password')
                 .then(password_hash =>
@@ -56,19 +65,19 @@ exports.seed = function(knex) {
     .then(() => {
       const groups = spawnMany(spawnGroup, GROUPS);
       return knex('Entity')
-              .insert(groups.map(g => ({ name: g.name, email: g.email })))
+              .insert([customGroup, ...groups.map(g => ({ name: g.name, email: g.email, type: g.type }))])
               .then(() => 
                 knex.select('id')
                       .from('Entity')
-                      .whereIn('email', groups.map(g => g.email))
+                      .where('type', 'group')
               )
               .then(ids => 
                 knex('Group')
                 .insert(ids.map(res => ({ id: res.id }))))
     })
   
-  // every user belongs to every group
-  // every user is an admin
+  // every user belongs to every group where user_id and group_id are same parity
+  // every user is randomly an admin or not
   const populateMemberships = () =>
     knex('Membership').del()
     .then(() =>
@@ -79,7 +88,8 @@ exports.seed = function(knex) {
           let memberships = [];
           for(g of group_ids) {
             for(u of user_ids) {
-              memberships.push({user_id: u.id, group_id: g.id, is_admin: true});
+              if((u.id + g.id) % 2 == 0)
+                memberships.push({user_id: u.id, group_id: g.id, is_admin: faker.random.boolean()});
             }
           }
           return knex('Membership').insert(memberships);
@@ -115,11 +125,12 @@ exports.seed = function(knex) {
           let requests = [];
           for(u of user_ids) {
             for(u2 of user_ids.filter(u2 => u2.id > u.id)) {
-              requests.push({
-                requester_id: u.id, 
-                requested_id: u2.id,
-                is_accepted: faker.random.boolean()
-              });
+              if((u.id + u2.id) % 2 == 0)
+                requests.push({
+                  requester_id: u.id, 
+                  requested_id: u2.id,
+                  is_accepted: faker.random.boolean()
+                });
             }
           }
           return knex('FriendRequest').insert(requests)
@@ -178,24 +189,25 @@ exports.seed = function(knex) {
         let events = [];
         let tasks = [];
         // create schedule items for each entity
-        const pushItem = (e, type) => {
+        const pushItem = (type, e, lbl) => {
           items.push({
             entity_id: e.id, 
-            title: `${type} for entity ${e.id}`, 
-            description: faker.lorem.sentence()
+            title: `${lbl} for entity ${e.id}`, 
+            description: faker.lorem.sentence(),
+            type: type
           });
         }
         let i = 0;
         for (e of es) {
-          pushItem(e, 'Event 1');
-          pushItem(e, 'Reminder for Event 1');
-          pushItem(e, 'Task 1');
-          pushItem(e, 'Reminder for Task 1');
-          pushItem(e, 'Event 2');
-          pushItem(e, 'Reminder for Event 2');
-          pushItem(e, 'Task 2');
-          pushItem(e, 'Reminder for Task 2');
-          pushItem(e, 'Standalone Reminder');
+          pushItem('event', e, 'Event 1');
+          pushItem('reminder', e, 'Reminder for Event 1');
+          pushItem('task', e, 'Task 1');
+          pushItem('reminder', e, 'Reminder for Task 1');
+          pushItem('event', e, 'Event 2');
+          pushItem('reminder', e, 'Reminder for Event 2');
+          pushItem('task', e, 'Task 2');
+          pushItem('reminder', e, 'Reminder for Task 2');
+          pushItem('reminder', e, 'Standalone Reminder');
           const offset = i * ITEMS_PER_ENTITY;
           events.push({
             id: offset + 1,

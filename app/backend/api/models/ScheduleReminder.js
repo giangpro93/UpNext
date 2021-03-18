@@ -21,10 +21,12 @@ function remindersInfo() {
 
 function create(reminder) {
     const { entity_id, title, description, time, link_id } = reminder;
-    return ScheduleItem.create({ entity_id, title, description })
+    let obj = {};
+    if(time) obj.time = time;
+    return ScheduleItem.create({ entity_id, title, description, type: 'reminder' })
     .then(item => 
         db('ScheduleReminder')
-        .insert({ id: item.id, time, link_id })
+        .insert({ id: item.id, ...obj, link_id })
         .then(() => getById(item.id))
     );
 }
@@ -37,10 +39,16 @@ function getById(id) {
 
 function update(reminder) {
     const { id, title, description, time, link_id } = reminder;
+    let obj = {};
+    if(time) obj.time = time;
+    if(link_id) obj.link_id = link_id;
     return ScheduleItem.update({id, title, description})
-    .then(() => 
-        db('ScheduleReminder')
-        .update({id, time, link_id})
+    .then(() =>
+        (Object.keys(obj).length === 0
+        ? Promise.resolve()
+        : db('ScheduleReminder')
+        .where({id})
+        .update(obj))
         .then(() => getById(id))
     );
 }

@@ -1,11 +1,25 @@
+const ScheduleItem = require('./ScheduleItem');
 const ScheduleEvent = require('./ScheduleEvent');
 const ScheduleReminder = require('./ScheduleReminder');
 const ScheduleTask = require('./ScheduleTask');
 const Membership = require('./Membership');
 
 module.exports = {
+    getById,
     getEntitySchedule
 };
+
+function getById(id) {
+    return ScheduleItem.getById(id)
+    .then(item => {
+        if(item.id === 'event') 
+            return ScheduleEvent.getById(id)
+        else if(item.id === 'task') 
+            return ScheduleTask.getById(id)
+        else 
+            return ScheduleReminder.getById(id)
+    });
+}
 
 function getEntitySchedule(entity_id) {
     return Membership.getUserMemberships(entity_id)

@@ -13,7 +13,7 @@ module.exports = {
 
 
 function postsInfo() {
-    const post_attrs = ['Post.post_id', 'Post.creator_id', 'Post.content', 'Entity.name', 'Entity.email', 'Entity.image', 'Post.created_at'];
+    const post_attrs = ['Post.*', 'Entity.name', 'Entity.email', 'Entity.image'];
 
     return db
     .select(...post_attrs)
@@ -22,12 +22,11 @@ function postsInfo() {
 }
 
 function create(post) {
-    let { creator_id, content, context_id } = post;
-    context_id = context_id ? context_id : null;
+    const { creator_id, content, context_id } = post;
 
     return db('Post')
-    .insert({creator_id, content, context_id})
-    .then(() => getLatest({creator_id, context_id}));
+    .insert(post)
+    .then(() => getLatest({creator_id, context_id: context_id ? context_id : null}));
 }
 
 function getById(post_id) {
