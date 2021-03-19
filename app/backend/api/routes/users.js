@@ -29,13 +29,13 @@ router.delete('/:id', (req, res) => {
   respond(req, res, User.deleteById, req.params.id);
 });
 
-router.get('/search', (req, res) => {
-  respond(req, res, User.search);
-});
-
 // authenticate a user & return user info
 router.post('/authenticate', (req, res) => {
   respond(req, res, User.authenticate);
+});
+
+router.get('/search/:term', function(req, res) {
+  respond(req, res, User.search, req.params.term);
 });
 
 module.exports = router;

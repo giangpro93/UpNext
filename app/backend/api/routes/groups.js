@@ -26,8 +26,8 @@ router.delete('/:id', (req, res) => {
   respond(req, res, Group.deleteById, req.params.id);
 });
 
-router.get('/search', (req, res) => {
-  respond(req, res, Group.search);
+router.get('/search/:term', function(req, res) {
+  respond(req, res, Group.search, req.params.term);
 });
 
 module.exports = router;

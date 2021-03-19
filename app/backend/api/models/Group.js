@@ -58,7 +58,7 @@ function getAll() {
     .where('type', 'group');
 }
 
-function search({term}) {
+function search(term) {
     return getAll()
     .andWhere(function(q) {
         q.where('name', 'like', `%${term}%`)
