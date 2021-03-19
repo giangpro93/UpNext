@@ -5,8 +5,7 @@
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js ./api/server.js",
     "migrate": "npx knex migrate:rollback && npx knex migrate:latest",
-    "seeds": "npx knex seed:run", 
-    "db-initialize": "node ./db_initialize.js"
+    "seeds": "npx knex seed:run"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",

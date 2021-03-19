@@ -10,7 +10,6 @@ services:
     env_file: ./backend/.env
     ports:
     - "3306:3306"
-    # command: --default-authentication-plugin=mysql_native_password
   api:
     container_name: api
     build:
