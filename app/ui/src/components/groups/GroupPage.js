@@ -2,24 +2,24 @@ import React, { Component } from 'react';
 import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import InfoIcon from '@material-ui/icons/Info';
 import Grid from '@material-ui/core/Grid';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from '../common/useForm'
 import { DialogForm } from '../common/DialogForm'
 import { useLocation } from "react-router-dom";
-import { FormControl, InputLabel,Box,List, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography, Input,CardMedia,CardContent, FormHelperText, TextField, Tabs, Tab, Card, CardHeader, Avatar,IconButton,CardActions,FavoriteButton,Collapse} from '@material-ui/core';
+import { FormControl,Tooltip, InputLabel,Box,List, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography, Input,CardMedia,CardContent, FormHelperText, TextField, Tabs, Tab, Card, CardHeader, Avatar,IconButton,CardActions,FavoriteButton,Collapse} from '@material-ui/core';
 import {MoreVertIcon} from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 var owner = true;
-var messages = [['hunter',"this is a message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"],["Cobb","This is another Message"]];
 var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."],["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."], ["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const useStyles = makeStyles((theme) => ({
 	          root: {
 			display: 'flex',
-			justifyContent: 'space-between',
+			flexDirection: 'row',	
 			flexWrap: 'wrap',
 
 	          },
@@ -122,6 +122,7 @@ function TabPanel(props) {
 export default function GroupPage(props) {
 	const location = useLocation();
 	const [eventWindow, setEventWindow] = useState(false);
+	const [infoWindow, setInfoWindow] = useState(false);
 	const [value, setValue] = useState('one');
 	const name = location.state.detail;
 	function changeBackground(e) {
@@ -143,41 +144,27 @@ export default function GroupPage(props) {
 			               <div className={classes.groupNames}> Back </div>
 			            </Paper>
 			         </div>
+				<div className={classes.root}>
 				  <h1>{name}</h1>
-				 <Tabs value={value} onChange={handleChange}>
-			    <Tab label="Events"
-				value="one"
-			       
-			    />
-			    <Tab label="Forum"
-				value = "two"
-			  />
-			  </Tabs>
-			<TabPanel value={value} index="two">
-				<div className={classes.messageBoard}>
-				<div style={{overflow: 'auto', height: 'inherit', display: 'block' ,marginLeft: 20,}}>
-					{messages.map(message => (
-						<Paper className={classes.message}>
-							<div className={classes.messageText}> {message[0]}</div>
-							<div className={classes.messageText}>{message[1]}</div>
-						</Paper>
-					))}
-				 </div>
-				</div>
-				
-				<div>
-				  <TextField
-				    className={classes.messageForm}
-			            id="filled-multiline-flexible"
-			            label="Type Message Here..."
-			            multiline
-			            rowsMax={2}
-			            rowsMin={2}
-			            variant="filled"
-			          />
-				</div>
-			</TabPanel>
-			<TabPanel value={value} index="one">
+				<Tooltip title="group description" placement="bottom">
+				<IconButton onClick={() => { setInfoWindow(true); }}>
+			          <InfoIcon />
+			        </IconButton>
+				</Tooltip>
+			       </div>
+				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">
+			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>
+			                                        <DialogContent>
+			                                          <DialogContentText>
+									This is a description of the group including what they do and possibly when they meet if they have weekly meetings
+			                                          </DialogContentText>
+			                                        </DialogContent>
+								<DialogActions>
+			                                          <Button onClick={() => { setInfoWindow(false); }} color="primary">
+			                                            Close
+			                                          </Button>
+			                                        </DialogActions>
+			                                      </Dialog>
 			<div className={classes.eventBoard}>
 				{events.map(eventt => (
 					                                        
@@ -213,8 +200,7 @@ export default function GroupPage(props) {
 				        <DialogTitle id="form-dialog-title">Create Event</DialogTitle>
 				        <DialogContent>
 				          <DialogContentText>
-				            To subscribe to this website, please enter your email address here. We will send updates
-				            occasionally.
+				         
 				          </DialogContentText>
 				          <TextField
 				            autoFocus
@@ -267,7 +253,7 @@ export default function GroupPage(props) {
 				      </Dialog>
 				        </div>
 				                                  ) : null}
-			</TabPanel>
+			
 				</div>
 		      );
 
