@@ -22,10 +22,10 @@
     "react-scripts": "4.0.2"
   },
   "scripts": {
-    "start": "./node_modules/react-scripts/bin/react-scripts.js start",
-    "build": "./node_modules/react-scripts/bin/react-scripts.js build",
-    "test": "./node_modules/react-scripts/bin/react-scripts.js test",
-    "eject": "./node_modules/react-scripts/bin/react-scripts.js eject"
+    "start": "./node_modules/react-scripts/scripts/start.js",
+    "build": "./node_modules/react-scripts/scripts/build.js",
+    "test": "./node_modules/react-scripts/scripts/test.js",
+    "eject": "./node_modules/react-scripts/scripts/eject.js"
   },
   "eslintConfig": {
     "extends": "react-app"

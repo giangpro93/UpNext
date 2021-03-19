@@ -12,4 +12,4 @@ COPY . /backend
 
 EXPOSE 9000
 
-CMD ["sh", "-c", "node ./db_initialize.js && npm run start"]
+CMD ["npm", "start"]
