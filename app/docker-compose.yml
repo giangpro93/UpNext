@@ -32,6 +32,9 @@ services:
     build:
       context: ./ui/
     restart: unless-stopped
+    environment:
+      NODE_PORT: 9000
+      NODE_HOST: api
     volumes:
       - ./ui/:/ui
     links:
