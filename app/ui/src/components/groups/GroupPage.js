@@ -15,7 +15,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 var owner = true;
-var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."],["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."], ["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
+var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const useStyles = makeStyles((theme) => ({
 	          root: {
 			display: 'flex',

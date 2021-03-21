@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { makeStyles, Paper, Grid, Button, Box,Typography,AppBar,Tabs,Tab} from '@material-ui/core/';
 import {Redirect,useHistory} from 'react-router-dom';
-var names = [" nd stuff to see if this fits well","Group 2", "Group 3","Group 2", "Group 3","Group 4","Group 5","Group 6", "Group 8","Group 9", "Group 10", "Group 11", "Group 12","Group 1","Group 2", "Group 3","Group 4","Group 4","Group 5"];
+var names = ["example group"];
 var fill = [];
 var i;
 for(i = 0; i < 6 - names.length % 6; i++){
