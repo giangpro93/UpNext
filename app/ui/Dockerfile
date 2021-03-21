@@ -4,8 +4,9 @@ WORKDIR /ui
 
 ENV PATH /ui/node_modules/.bin:$PATH
 
-COPY package*.json /ui
-COPY yarn.lock /ui
+COPY package.json /ui/
+COPY package-lock.json /ui/
+COPY yarn.lock /ui/
 RUN npm install
 
 COPY . /ui

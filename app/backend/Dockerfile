@@ -5,7 +5,8 @@ WORKDIR /backend
 ENV PATH /backend/node_modules/.bin:$PATH
 ENV NODE_ENV development
 
-COPY package*.json /backend
+COPY package.json /backend/
+COPY package-lock.json /backend/
 RUN npm install
 
 COPY . /backend
