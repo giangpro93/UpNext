@@ -18,7 +18,7 @@ function getAll() {
 }
 
 function create(membershipInfo) {
-    return logAPICall(userInfo, () => 
+    return logAPICall(membershipInfo, () => 
         axiosInstance.post('/memberships/', membershipInfo)
     );
 }
