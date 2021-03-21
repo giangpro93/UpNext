@@ -4,23 +4,39 @@ version: '3'
 services:
   db:
     container_name: db
-    build:
-      context: ./backend/db/
+    image: cykline/upnext-db
     restart: unless-stopped
-    env_file: ./backend/.env
+    env_file: ./api/.env
     ports:
     - "3306:3306"
-  api:
-    container_name: api
-    build:
-      context: ./backend/
-    restart: unless-stopped
-    env_file: ./backend/.env
+  db-setup:
+    container_name: db-setup
+    image: cykline/upnext-api
+    command: node ./db_initialize.js
+    restart: never
+    env_file: ./api/.env
     environment:
       CHOKIDAR_USEPOLLING: "true"
       MYSQL_HOSTNAME: db
     volumes:
-      - ./backend/:/backend
+      - ./api/:/api/
+      - /api/node_modules/ # Exclude overwriting container's node_modules folder
+    links:
+      - db
+    depends_on:
+      - db
+  api:
+    container_name: api
+    image: cykline/upnext-api
+    command: npm start
+    restart: unless-stopped
+    env_file: ./api/.env
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      MYSQL_HOSTNAME: db
+    volumes:
+      - ./api/:/api/
+      - /api/node_modules/ # Exclude overwriting container's node_modules folder
     links:
       - db
     depends_on:
@@ -29,14 +45,14 @@ services:
       - "9000:9000"
   ui:
     container_name: ui
-    build:
-      context: ./ui/
+    image: cykline/upnext-ui
     restart: unless-stopped
     environment:
       NODE_PORT: 9000
       NODE_HOST: api
     volumes:
-      - ./ui/:/ui
+      - ./ui/:/ui/
+      - /ui/node_modules/ # Exclude overwriting container's node_modules folder
     links:
       - api
     depends_on:

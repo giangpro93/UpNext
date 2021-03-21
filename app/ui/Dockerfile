@@ -8,6 +8,7 @@ COPY package.json /ui/
 COPY package-lock.json /ui/
 COPY yarn.lock /ui/
 RUN npm install
+RUN npm config set unsafe-perm true
 
 COPY . /ui
 
