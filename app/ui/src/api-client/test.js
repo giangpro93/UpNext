@@ -1,3 +1,3 @@
-const userRequests = require('./requests/users');
+const api = require('./api');
 
-userRequests.getAll();
+api.schedule.getScheduleItemById(95);

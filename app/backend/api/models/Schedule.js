@@ -12,9 +12,9 @@ module.exports = {
 function getById(id) {
     return ScheduleItem.getById(id)
     .then(item => {
-        if(item.id === 'event') 
+        if(item.type === 'event') 
             return ScheduleEvent.getById(id)
-        else if(item.id === 'task') 
+        else if(item.type === 'task') 
             return ScheduleTask.getById(id)
         else 
             return ScheduleReminder.getById(id)
