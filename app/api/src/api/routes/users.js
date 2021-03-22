@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const User = require('../models/User');
+const User = require('../../db/models/User');
 
 // get all users
 router.get('/', function(req, res) {

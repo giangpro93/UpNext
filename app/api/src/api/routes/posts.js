@@ -3,8 +3,8 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const Post = require('../models/Post');
-const PostFeed = require('../models/PostFeed');
+const Post = require('../../db/models/Post');
+const PostFeed = require('../../db/models/PostFeed');
 
 // get all posts
 router.get('/', function(req, res) {

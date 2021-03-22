@@ -1,6 +1,6 @@
 
 const Entity = require('./Entity');
-const { hashPassword, comparePasswords } = require('../helpers/passwords');
+const { hashPassword, comparePasswords } = require('../../helpers/passwords');
 const db = require('../../knex_db');
 
 module.exports = {

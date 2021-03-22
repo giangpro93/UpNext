@@ -28,5 +28,5 @@ function setupWithRetries(tries=10, delay_ms=5000) {
         .then(() => { console.log('Running database migrations and seeds...');})
         .then(() => retryWithDelay(setup, tries, delay_ms))
         .then(() => { console.log('Migrations and seeds complete'); })
-        .catch(() => { console.log(`Database migrations failed after ${TRIES} attempts`);})
+        .catch(() => { console.log(`Database migrations failed after ${tries} attempts`);})
 }

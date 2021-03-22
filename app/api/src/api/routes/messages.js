@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const Message = require('../models/Message');
+const Message = require('../../db/models/Message');
 
 // get all messages
 router.get('/', function(req, res) {

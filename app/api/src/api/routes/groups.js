@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const Group = require('../models/Group');
+const Group = require('../../db/models/Group');
 
 router.get('/', function(req, res) {
     respond(req, res, Group.getAll);

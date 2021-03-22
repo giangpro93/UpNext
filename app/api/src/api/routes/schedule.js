@@ -3,11 +3,11 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const Schedule = require('../models/Schedule');
-const ScheduleItem = require('../models/ScheduleItem');
-const ScheduleEvent = require('../models/ScheduleEvent');
-const ScheduleTask = require('../models/ScheduleTask');
-const ScheduleReminder = require('../models/ScheduleReminder');
+const Schedule = require('../../db/models/Schedule');
+const ScheduleItem = require('../../db/models/ScheduleItem');
+const ScheduleEvent = require('../../db/models/ScheduleEvent');
+const ScheduleTask = require('../../db/models/ScheduleTask');
+const ScheduleReminder = require('../../db/models/ScheduleReminder');
 
 router.get('/:id', function(req, res) {
     respond(req, res, Schedule.getById, req.params.id);

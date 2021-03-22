@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./api/server.js",
+    "start": "nodemon ./src/api/server.js",
     "migrate": "npx knex migrate:rollback && npx knex migrate:latest",
     "seeds": "npx knex seed:run"
   },

@@ -12,15 +12,14 @@ services:
   db-setup:
     container_name: db-setup
     image: cykline/upnext-api
-    command: node ./db_initialize.js
-    restart: never
+    command: node /api/src/db_initialize.js
+    restart: on-failure
     env_file: ./api/.env
     environment:
       CHOKIDAR_USEPOLLING: "true"
       MYSQL_HOSTNAME: db
     volumes:
-      - ./api/:/api/
-      - /api/node_modules/ # Exclude overwriting container's node_modules folder
+      - ./api/src/:/api/src/
     links:
       - db
     depends_on:
@@ -35,8 +34,7 @@ services:
       CHOKIDAR_USEPOLLING: "true"
       MYSQL_HOSTNAME: db
     volumes:
-      - ./api/:/api/
-      - /api/node_modules/ # Exclude overwriting container's node_modules folder
+      - ./api/src/:/api/src/
     links:
       - db
     depends_on:
@@ -51,8 +49,7 @@ services:
       NODE_PORT: 9000
       NODE_HOST: api
     volumes:
-      - ./ui/:/ui/
-      - /ui/node_modules/ # Exclude overwriting container's node_modules folder
+      - ./ui/src/:/ui/src/
     links:
       - api
     depends_on:

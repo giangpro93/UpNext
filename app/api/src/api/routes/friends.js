@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const FriendRequest = require('../models/FriendRequest');
+const FriendRequest = require('../../db/models/FriendRequest');
 
 // get all friend requests
 router.get('/', function(req, res) {

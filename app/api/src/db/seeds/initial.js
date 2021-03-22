@@ -1,6 +1,6 @@
 const faker = require('faker');
-const { hashPassword } = require('../../api/helpers/passwords');
-const { addDays, addHours } = require('../../api/helpers/dates');
+const { hashPassword } = require('../../helpers/passwords');
+const { addDays, addHours } = require('../../helpers/dates');
 
 const USERS = 9;
 const GROUPS = 3;

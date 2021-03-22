@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 const { respond } = require('../responses');
-const Membership = require('../models/Membership');
+const Membership = require('../../db/models/Membership');
 
 // get all memberships
 router.get('/', function(req, res) {
