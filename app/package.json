@@ -5,6 +5,7 @@
     "scripts": {
         "install-all": "cd api && npm install && cd ../ui && npm install && cd .. && npm install",
         "start": "docker-compose up -d",
+        "dev": "npm run start",
         "stop": "docker-compose down",
         "restart": "npm run stop && npm run start",
         "log-dev": "docker compose -f docker-compose.yml logs --follow --timestamps",
