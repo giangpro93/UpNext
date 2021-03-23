@@ -9652,6 +9652,11 @@
     "regenerator-runtime" "^0.13.7"
     "whatwg-fetch" "^3.4.1"
 
+"react-async@^10.0.1":
+  "integrity" "sha512-ORUz5ca0B57QgBIzEZM5SuhJ6xFjkvEEs0gylLNlWf06vuVcLZsjIw3wx58jJkZG38p+0nUAxRgFW2b7mnVZzA=="
+  "resolved" "https://registry.npmjs.org/react-async/-/react-async-10.0.1.tgz"
+  "version" "10.0.1"
+
 "react-big-calendar@^0.32.0":
   "integrity" "sha512-IidodG2oCd9VH7f9AsZAMyPZw12wLoicjHzEECrqdg3PIOuKOTScYhsqrSdNq+5j3vfy5sby5cWdBxgViMz9Mg=="
   "resolved" "https://registry.npmjs.org/react-big-calendar/-/react-big-calendar-0.32.0.tgz"
@@ -9868,7 +9873,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^16.6.1", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4", "react@^17.0.1", "react@>= 16", "react@>=15", "react@>=15.0.0", "react@>=16.3.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@17.0.1":
+"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^16.6.1", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4", "react@^17.0.1", "react@>= 16", "react@>=15", "react@>=15.0.0", "react@>=16.3.0", "react@>=16.3.1", "react@>=16.6.0", "react@>=16.8", "react@>=16.8.0", "react@17.0.1":
   "integrity" "sha512-lG9c9UuMHdcAexXtigOZLX8exLWkW0Ku29qPRU8uhF2R9BN96dLCt0psvzPLlHc5OWkgymP3qwTRgbnw5BKx3w=="
   "resolved" "https://registry.yarnpkg.com/react/-/react-17.0.1.tgz"
   "version" "17.0.1"

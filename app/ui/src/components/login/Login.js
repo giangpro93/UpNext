@@ -3,7 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux'
 import { signup as submitSignup, login as submitLogin } from '../../state/users/actions'
 import { Typography } from '@material-ui/core'
 import { Input } from '../common/Input'
-import { useForm } from '../common/useForm'
+import useForm from '../../hooks/useForm'
 import { DialogForm } from '../common/DialogForm'
 
 const PASS_LEN = 8;

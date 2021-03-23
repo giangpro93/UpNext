@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 import Appbar from '../base/Appbar';
-import MyCalendar from '../calendar/MyCalendar'
+import Schedule from '../schedule/Schedule'
 import Groups from '../groups/Groups'
 import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
@@ -34,9 +34,10 @@ function LoggedIn() {
                 <Switch>
                     <Route exact path="/">
                         Dashboard
-            </Route>
+                    </Route>
                     <Route exact path="/schedule">
-                        <MyCalendar />
+                        <Schedule />
+                        {/* <Schedule /> */}
                     </Route>
                     <Route exact path="/groups">
                         <Groups />

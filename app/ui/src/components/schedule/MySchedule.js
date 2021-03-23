@@ -4,9 +4,9 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
 
-export default function MyCalendar(props) {
+export default function MySchedule(props) {
 
-    const { style, events } = props;
+    const { events, style, ...opts } = props;
 
     return (
     <div>
@@ -16,6 +16,7 @@ export default function MyCalendar(props) {
             events={events || []}
             startAccessor="start"
             endAccessor="end"
+            {...opts}
         />
     </div>);
 }
