@@ -17,13 +17,13 @@ import clsx from 'clsx';
 var owner = true;
 var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const useStyles = makeStyles((theme) => ({
-	          root: {
-			display: 'flex',
-			flexDirection: 'row',	
-			flexWrap: 'wrap',
+	  root: {
+				display: 'flex',
+				flexDirection: 'row',
+				flexWrap: 'wrap',
+		},
 
-	          },
-	          paper: {
+		paper: {
 			 textAlign: 'center',
 			 marginTop: 8,
 			 position: 'relative',
@@ -33,65 +33,30 @@ const useStyles = makeStyles((theme) => ({
 			 color: 'white',
 			 height: '40%',
 			 backgroundColor: '#3CB371',
-		  },
-	          groupNames: {
-			      position: 'absolute',
-			      top: '50%',
-			      left: '50%',
-			      transform: 'translate(-50%, -50%)',
-			      backgroundColor: 'transparent',
-		 },
-	         messageBoard: {
-			       backgroundColor: 'gray',
-			       display: 'flex',
-			       color: 'black',
-			       height: 400,
-			       position: 'relative',
-			       flexDirection: 'column',
-			       justifyContent: 'flex-end',
-			      overflow: 'auto',
 		},
-		messageForm: {
-			     display: 'flex',
-			     alignItems:'stretch' ,
-			     backgroundColor: '#3CB371',
-			     fontSize: 'xx-large',
-			     flexDirection: 'column',
-			    
-			     
-
-		},
-		message: {
-			backgroundColor: 'white',
-			marginTop: 8,
-			marginBottom: 8,
-			minHeight: 50,
-			color: 'black',
-			marginLeft: 8,
-			marginRight: 8,
-	        },
-		messageText: {
-		        
-			marginLeft: 16,
+	  groupNames: {
+			 position: 'absolute',
+			 top: '50%',
+			 left: '50%',
+			 transform: 'translate(-50%, -50%)',
+			 backgroundColor: 'transparent',
 		},
 		card: {
-		width: 345,
-		marginBottom: 16,
-		marginRight: 16,
-		marginLeft: 16,
-		marginTop: 16,
+			 width: 345,
+			 marginBottom: 16,
+			 marginRight: 16,
+			 marginLeft: 16,
+			 marginTop: 16,
 		},
 		avatar: {
-		backgroundColor: 'red',
+			 backgroundColor: 'red',
 		},
 		eventBoard: {
-		 
-			                               display: 'flex',
-			                               color: 'black',                         
-			                               position: 'relative',
-			                               flexDirection: 'row',
-						       flexWrap: 'wrap',
-						      
+			 display: 'flex',
+			 color: 'black',
+			 position: 'relative',
+			 flexDirection: 'row',
+		   flexWrap: 'wrap',
 		},
 		createPostButton: {
 				display: 'flex',
@@ -100,25 +65,7 @@ const useStyles = makeStyles((theme) => ({
 				marginTop: 16,
 		},
 }));
-function TabPanel(props) {
-	  const { children, value, index, ...other } = props;
 
-	  return (
-		      <div
-		        role="tabpanel"
-		        hidden={value !== index}
-		        id={`wrapped-tabpanel-${index}`}
-		        aria-labelledby={`wrapped-tab-${index}`}
-		        {...other}
-		      >
-		        {value === index && (
-				        <Box p={3}>
-				          <Typography>{children}</Typography>
-				        </Box>
-				      )}
-		      </div>
-		    );
-}
 export default function GroupPage(props) {
 	const location = useLocation();
 	const [eventWindow, setEventWindow] = useState(false);
@@ -156,7 +103,7 @@ export default function GroupPage(props) {
 			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>
 			                                        <DialogContent>
 			                                          <DialogContentText>
-									This is a description of the group including what they do and possibly when they meet if they have weekly meetings
+									This is a description of the y when they meet if they have weekly meetings
 			                                          </DialogContentText>
 			                                        </DialogContent>
 								<DialogActions>
@@ -167,7 +114,7 @@ export default function GroupPage(props) {
 			                                      </Dialog>
 			<div className={classes.eventBoard}>
 				{events.map(eventt => (
-					                                        
+
 				<Card className={classes.card}>
 			      <CardHeader
 			        avatar={
@@ -178,11 +125,11 @@ export default function GroupPage(props) {
 			        title={eventt[1]}
 			        subheader={eventt[3]}
 			      />
-			
+
 			      <CardContent>
 			        <Typography display='block' variant="subtitle1" color="textSecondary" component="p">
 			         	Location: {eventt[2]}
-					
+
 			        </Typography>
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
 					{eventt[5]}
@@ -200,7 +147,7 @@ export default function GroupPage(props) {
 				        <DialogTitle id="form-dialog-title">Create Event</DialogTitle>
 				        <DialogContent>
 				          <DialogContentText>
-				         
+
 				          </DialogContentText>
 				          <TextField
 				            autoFocus
@@ -225,7 +172,7 @@ export default function GroupPage(props) {
 				    	   label="Event Time"
 				           type="datetime-local"
 				    	   defaultValue="2021-01-24T10:30"
-				    	  
+
 				    	   InputLabelProps={{
 					          shrink: true,
 						        }}
@@ -236,7 +183,7 @@ export default function GroupPage(props) {
 				          label="Event Description"
 				          multiline
 				          rows={4}
-					  margin = "dense" 
+					  margin = "dense"
 				          variant="filled"
 					  fullWidth
 					  autoFocus
@@ -253,7 +200,7 @@ export default function GroupPage(props) {
 				      </Dialog>
 				        </div>
 				                                  ) : null}
-			
+
 				</div>
 		      );
 
