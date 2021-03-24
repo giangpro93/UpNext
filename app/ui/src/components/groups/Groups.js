@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {useState} from 'react';
-import Suspense from 'react';
-import Fragment from 'react';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { makeStyles, Paper, Grid, Button, Box,Typography,AppBar,Tabs,Tab} from '@material-ui/core/';
 import {Redirect,useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 const api = require('../../api-client/api.js');
-var fill = [];
-var i;
+
 
 const useStyles = makeStyles((theme) => ({
 	  root: {
@@ -37,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	  groupPaper: {
 		      		textAlign: 'center',
 		      		marginTop: 8,
-		      		marginLeft: 4,
+		      		marginRight: 16,
 		      		position: 'relative',
 		      		minWidth: 200,
 		      		minHeight: 200,
@@ -57,14 +54,23 @@ const useStyles = makeStyles((theme) => ({
 		  			left: '50%',
 		  			transform: 'translate(-50%, -50%)',
 		  			background: 'transparent',
-	}
+	},
+	createGroupButton: {
+		  display: 'flex',
+			justifyContent: 'flex-end',
+
+	},
 }));
 
 export default function Groups(props) {
+	const location = useLocation();
+	const history = useHistory();
+	const classes = useStyles();
+	{/* This begins the fetching process for the JSON data */}
 	const currentUser = useSelector(state => state.users.currentUser);
 	var id = currentUser['id'];
 	const [groupTiles, setGroupTiles] = useState([]);
-
+{/* fetchGroupData takes care of promise with JSON data */}
 	function fetchGroupData(userID){
 		return Promise.all([
 			api.memberships.getGroupsOfUser(userID)
@@ -72,25 +78,23 @@ export default function Groups(props) {
 			return({groups})
 		})
 	}
+{/* actual fetch of the group data */}
 	const groupPromise = fetchGroupData(id);
-
+{/* useEffect is where the groupTiles array is actually populated. useEffect will re-render the components that have just come in.*/}
 	useEffect(() => {
 		groupPromise.then(data => {
 			setGroupTiles(data.groups[0]);
 		});
 	}, []);
 
-	const location = useLocation();
-	var groups = [];
-
-	const history = useHistory();
-	const classes = useStyles()
   function changeBackground(e) {
 	   e.target.style.opacity = '0.5';
 	}
+
 	function changeBack(e){
     e.target.style.opacity = '1';
 	}
+
 	function goToGroupPage(name,id){
 		history.push({
 		   pathname: '/groupPage',
@@ -100,26 +104,24 @@ export default function Groups(props) {
 
 	return (
 	<div>
+	<div>
 		<h3>my groups </h3>
+		<div className={classes.createGroupButton}>
+		 <Button variant="outlined" color="#3CB371">
+						 Create Group
+		 </Button>
+		</div>
+		</div>
 	  <div className={classes.root}>
 
 		{
 
-			groupTiles.map(group => (
+groupTiles.map(group => (
 	<Paper key={group.name} onClick={() => goToGroupPage(group.name,group.id)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
 		<div className={classes.groupNames}>{group.name}</div>
 	</Paper>
 ))
-}
-
-		{
-			fill.map(name => (
-			<div color="dark-gray" className={classes.nothingPaper}>
-
-			</div>
-			))
-		}
-
+   }
 
 	 </div>
 	</div>

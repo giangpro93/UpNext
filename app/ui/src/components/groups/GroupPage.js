@@ -104,7 +104,7 @@ export default function GroupPage(props) {
 			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>
 			                                        <DialogContent>
 			                                          <DialogContentText>
-									This is a description of the y when they meet if they have weekly meetings
+																									This is a description of the y when they meet if they have weekly meetings
 			                                          </DialogContentText>
 			                                        </DialogContent>
 								<DialogActions>
