@@ -13,9 +13,11 @@ import { FormControl,Tooltip, InputLabel,Box,List, Button,Dialog,DialogActions,D
 import {MoreVertIcon} from '@material-ui/icons/MoreVert';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { useSelector } from 'react-redux'
 import clsx from 'clsx';
 var owner = true;
 var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
+const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
 	  root: {
 				display: 'flex',
@@ -70,9 +72,13 @@ export default function GroupPage(props) {
 	const location = useLocation();
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
+	const [groupInfo, setGroupInfo] = useState([]);
 	const [value, setValue] = useState('one');
 	const name = location.state.groupName;
-	const id = location.state.id;
+	const currentUser = useSelector(state => state.users.currentUser);
+	const groupId = location.state.groupID;
+	var userId = currentUser['id'];
+console.log(groupId);
 	function changeBackground(e) {
            e.target.style.opacity = '0.5';
 	}
@@ -82,6 +88,25 @@ export default function GroupPage(props) {
 	  const handleChange = (event, newValue) => {
 		      setValue(newValue);
 		    };
+	function fetchGroupData(userID,groupID){
+					return Promise.all([
+						api.memberships.get(userID,groupID)
+					]).then((groupInfo) => {
+						console.log(groupInfo);
+					})
+	}
+				console.log(userId);
+				console.log(groupId);
+{/*				const groupPromise = fetchGroupData(userId,groupId);
+
+				useEffect(() => {
+					groupPromise.then(data => {
+						setGroupInfo(data.groupInfo);
+					});
+				}, []);
+
+*/}
+
 	const history = useHistory();
 	const goBack = () => history.push('groups');
 	        const classes = useStyles()
