@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import useState from 'react';
+import {useState} from 'react';
+import Suspense from 'react';
+import Fragment from 'react';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { makeStyles, Paper, Grid, Button, Box,Typography,AppBar,Tabs,Tab} from '@material-ui/core/';
 import {Redirect,useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
@@ -62,16 +66,27 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Groups(props) {
 	const currentUser = useSelector(state => state.users.currentUser);
-	var userID = currentUser['id'];
-	const groupsPromise = api.memberships.getGroupsOfUser(userID);
-		var groups = [];
-  groupsPromise.then(function(result) {
-     for(var i=0; i< result.length; i++){
-			 var name = result[i].name;
-			 console.log(name);
-			 groups.push(name);
-		 }
-  });
+	var id = currentUser['id'];
+	const [groupTiles, setGroupTiles] = useState([]);
+
+	function fetchGroupData(userID){
+		return Promise.all([
+			api.memberships.getGroupsOfUser(userID)
+		]).then((groups) => {
+			return({groups})
+		})
+	}
+	const groupPromise = fetchGroupData(id);
+
+	useEffect(() => {
+		groupPromise.then(data => {
+			setGroupTiles(data.groups[0]);
+		});
+	}, []);
+
+	const location = useLocation();
+	var groups = [];
+
 	const history = useHistory();
 	const classes = useStyles()
   function changeBackground(e) {
@@ -91,20 +106,25 @@ export default function Groups(props) {
 	<div>
 		<h3>my groups </h3>
 	  <div className={classes.root}>
-				{
+		<React.Suspense>
+			<React.Fragment>
+		{
 
-					 groups.map(group => (
-						<Paper key={group[0]} onClick={() => goToGroupPage(group[0])} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
-							<div className={classes.groupNames}>{group[0]}</div>
-						</Paper>
-					))
-				}
-		{fill.map(name => (
+			groupTiles.map(group => (
+	<Paper key={group.name} onClick={() => goToGroupPage(group.name)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
+		<div className={classes.groupNames}>{group.name}</div>
+	</Paper>
+))
+}
+		{
+			fill.map(name => (
 			<div color="dark-gray" className={classes.nothingPaper}>
 
 			</div>
 			))
 		}
+		</React.Fragment>
+		</React.Suspense>
 
 	 </div>
 	</div>
