@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import MySchedule from './MySchedule';
 import useAsync from '../../hooks/useAsync';
 import { schedule } from '../../api-client/api';
 import { CheckboxInput } from '../common/CheckboxInput';
-import { Grid, GridItem, Typography } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
+import EventForm from './EventForm';
+import TaskForm from './TaskForm';
+import ReminderForm from './ReminderForm';
 const api = require('../../api-client/api');
 
 export default function Schedule(props) {
@@ -16,13 +19,25 @@ export default function Schedule(props) {
         api.memberships.getGroupsOfUser(currentUser.id)
         .then(res => [currentUser, ...res])
     );
-    const allScheduleEntities = entitiesState.data ? entitiesState.data : [];
+    const allScheduleEntities = useMemo((() =>
+        entitiesState.data ? entitiesState.data : []),
+        [entitiesState]
+    );
 
     const itemsState = useAsync(() => api.schedule.getEntityScheduleById(currentUser.id));
-    const allScheduleItems = itemsState.data ? itemsState.data : [];
+    const allScheduleItems = useMemo(
+        (() => itemsState.data ? itemsState.data : []),
+        [itemsState]
+    );
 
     // all entities that are selected to have their events appear on the schedule
     const [entityFilters, setEntityFilters] = useState([]);
+
+    // holds the value of the type of window to open
+    const [createWindow, setCreateWindow] = useState(null);
+
+    // boolean indicating if we are 
+    const [updateWindow, setUpdateWindow] = useState(null);
 
     // reset the entity filters when entities are loaded/change
     useEffect(() => {
@@ -30,12 +45,17 @@ export default function Schedule(props) {
             setEntityFilters(allScheduleEntities)
     }, [allScheduleEntities])
 
-    const entityFilterIds = entityFilters.map(entity => entity.id);
+    const entityFilterIds = useMemo(
+        (() => entityFilters.map(entity => entity.id)),
+        [entityFilters]
+    )
 
-    const filteredScheduleItems = 
-        allScheduleItems.filter(item => 
+    const filteredScheduleItems = useMemo(
+        (() => allScheduleItems.filter(item => 
             entityFilterIds.includes(item.entity_id)
-        )
+        )),
+        [allScheduleItems, entityFilterIds]
+    );
 
     const displayedEvents = (() => {
         let events = [];
@@ -115,12 +135,64 @@ export default function Schedule(props) {
                 )}
             </Grid>
             <Grid
+                container
                 item
+                spacing={2}
+                direction="column"
                 xs={9}
             >
-            <MySchedule events={displayedEvents}/>
+                <Grid item>
+                    <MySchedule events={displayedEvents}/>
+                </Grid>
+                <Grid container item spacing={2}>
+                    <Grid item>
+                        <Button 
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => { setCreateWindow('event') }}
+                        >
+                        Create Event
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button 
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => { setCreateWindow('task') }}
+                        >
+                        Create Task
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button 
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => { setCreateWindow('reminder') }}
+                        >
+                        Create Reminder
+                        </Button>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
+        <EventForm
+            isCreate={true}
+            open={createWindow === 'event'}
+            onClose={() => setCreateWindow(null)}
+            onSubmit={() => {}}
+        />
+        <TaskForm
+            isCreate={true}
+            open={createWindow === 'task'}
+            onClose={() => setCreateWindow(null)}
+            onSubmit={() => {}}
+        />
+        <ReminderForm
+            isCreate={true}
+            open={createWindow === 'reminder'}
+            onClose={() => setCreateWindow(null)}
+            onSubmit={() => {}}
+        />
         </div>
     );
 }
