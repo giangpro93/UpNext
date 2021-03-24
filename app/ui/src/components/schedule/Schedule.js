@@ -8,6 +8,8 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import EventForm from './EventForm';
 import TaskForm from './TaskForm';
 import ReminderForm from './ReminderForm';
+import EventView from './EventView';
+import Snackbar from '../common/Snackbar';
 const api = require('../../api-client/api');
 
 export default function Schedule(props) {
@@ -24,7 +26,17 @@ export default function Schedule(props) {
         [entitiesState]
     );
 
-    const itemsState = useAsync(() => api.schedule.getEntityScheduleById(currentUser.id));
+    // used as a signal to reload the schedule items
+    const [reloadItems, setReloadItems] = useState(0);
+
+    function toggleReloadItems() {
+        setReloadItems(prev => prev + 1);
+    }
+
+    const itemsState = useAsync(() => 
+        api.schedule.getEntityScheduleById(currentUser.id),
+        [reloadItems]
+    );
     const allScheduleItems = useMemo(
         (() => itemsState.data ? itemsState.data : []),
         [itemsState]
@@ -36,8 +48,11 @@ export default function Schedule(props) {
     // holds the value of the type of window to open
     const [createWindow, setCreateWindow] = useState(null);
 
-    // boolean indicating if we are 
-    const [updateWindow, setUpdateWindow] = useState(null);
+    // state determinining whether there was an error
+    // on an api transaction
+    const [error, setError] = useState(false);
+
+    const [success, setSuccess] = useState(false);
 
     // reset the entity filters when entities are loaded/change
     useEffect(() => {
@@ -57,7 +72,7 @@ export default function Schedule(props) {
         [allScheduleItems, entityFilterIds]
     );
 
-    const displayedEvents = (() => {
+    const displayedEvents = useMemo(() => {
         let events = [];
         for(let item of filteredScheduleItems) {
             if(item.type === 'event') {
@@ -99,7 +114,16 @@ export default function Schedule(props) {
             }
         }
         return events;
-    })();
+    }, [filteredScheduleItems]);
+
+    function onError(err) {
+        setError(true);
+    }
+
+    function onSuccess() {
+        setSuccess(true);
+        toggleReloadItems();
+    }
 
     return (
         <div style={{ padding: 20 }}>
@@ -142,7 +166,11 @@ export default function Schedule(props) {
                 xs={9}
             >
                 <Grid item>
-                    <MySchedule events={displayedEvents}/>
+                    <MySchedule 
+                        events={displayedEvents}
+                        onItemUpdate={onSuccess}
+                        onError={onError}
+                    />
                 </Grid>
                 <Grid container item spacing={2}>
                     <Grid item>
@@ -179,19 +207,43 @@ export default function Schedule(props) {
             isCreate={true}
             open={createWindow === 'event'}
             onClose={() => setCreateWindow(null)}
-            onSubmit={() => {}}
+            onSubmit={onSuccess}
+            onError={onError}
         />
         <TaskForm
             isCreate={true}
             open={createWindow === 'task'}
             onClose={() => setCreateWindow(null)}
-            onSubmit={() => {}}
+            onSubmit={onSuccess}
+            onError={onError}
         />
         <ReminderForm
             isCreate={true}
             open={createWindow === 'reminder'}
             onClose={() => setCreateWindow(null)}
-            onSubmit={() => {}}
+            onSubmit={onSuccess}
+            onError={onError}
+        />
+        <Snackbar
+            open={error || success}
+            onClose={() => {
+                setError(false);
+                setSuccess(false);
+            }}
+            severity={error ? 'error' : 'success'}
+            message={error ? 'Error completing transaction' : 'Success'}
+        />
+        <Snackbar
+            open={itemsState.error}
+            onClose={() => {}}
+            severity='error'
+            message='Could not load schedule data'
+        />
+        <Snackbar
+            open={entitiesState.error}
+            onClose={() => {}}
+            severity='error'
+            message='Could not load groups data'
         />
         </div>
     );

@@ -28,9 +28,6 @@ export function DateTimeInput(props) {
             label={label}
             value={value}
             onChange={onChange}
-            InputLabelProps={{
-                shrink: true,
-            }}
         />
     );
 }

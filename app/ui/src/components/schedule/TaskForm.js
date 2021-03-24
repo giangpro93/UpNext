@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import useForm from '../../hooks/useForm';
 import { DialogForm } from '../common/DialogForm';
 import { Input } from '../common/Input';
+import api from '../../api-client/api';
 
 const defaultVals = {
     type: 'task',
@@ -17,7 +19,7 @@ const defaultVals = {
 export default function TaskForm(props) {
 
     // isCreate : if true, then creation form. Otherwise, update form.
-    const { isCreate, initVals, open, onClose, onSubmit } = props;
+    const { isCreate, initVals, open, onClose, onSubmit, onError } = props;
 
     const {
         vals, 
@@ -27,6 +29,8 @@ export default function TaskForm(props) {
         onChange,
         reset
     } = useForm(initVals ? initVals : defaultVals, validate, true);
+
+    const currentUser = useSelector(state => state.users.currentUser);
 
     function validate(fields = vals) {
         let es = {...errs};
@@ -50,7 +54,18 @@ export default function TaskForm(props) {
 
     function onConfirm() {
         if(validate()) {
-            onSubmit();
+            const call = isCreate 
+                ? api.schedule.createTask
+                : api.schedule.updateTask;
+
+            call(isCreate
+                    ? {...vals, entity_id: currentUser.id}
+                    : vals)
+            .then(res => {
+                onSubmit();
+                onClose();
+            })
+            .catch(onError)
         }
     }
 

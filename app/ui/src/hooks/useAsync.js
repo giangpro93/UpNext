@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-export default function useAsync(promiseFn) {
+export default function useAsync(promiseFn, watchList=[]) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
@@ -15,7 +15,7 @@ export default function useAsync(promiseFn) {
 
     useEffect(() => {
         execute()
-    }, [])
+    }, watchList)
 
     return { loading, error, data };
 }

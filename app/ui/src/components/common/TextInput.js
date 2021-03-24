@@ -13,6 +13,9 @@ export function TextInput(props) {
             value={value}
             onChange={onChange}
             fullWidth
+            InputLabelProps={{
+                shrink: true,
+            }}
             {...other}
         />
     )
