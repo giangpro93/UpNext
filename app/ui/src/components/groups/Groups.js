@@ -8,17 +8,13 @@ import { makeStyles, Paper, Grid, Button, Box,Typography,AppBar,Tabs,Tab} from '
 import {Redirect,useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 const api = require('../../api-client/api.js');
-var names = ["example"];
 var fill = [];
 var i;
-for(i = 0; i < 6 - names.length % 6; i++){
-fill.push("nothing");
-}
 
 const useStyles = makeStyles((theme) => ({
 	  root: {
 		      display: 'flex',
-		  		justifyContent: 'space-evenly',
+		  		justifyContent: 'flex-start',
 		  		flexWrap: 'wrap',
 		  		bottomMargin: 16,
 
@@ -95,10 +91,10 @@ export default function Groups(props) {
 	function changeBack(e){
     e.target.style.opacity = '1';
 	}
-	function goToGroupPage(name){
+	function goToGroupPage(name,id){
 		history.push({
 		   pathname: '/groupPage',
-		   state: { detail: name }
+		   state: { groupName: name, groupID: id  }
 		});
   }
 
@@ -106,16 +102,16 @@ export default function Groups(props) {
 	<div>
 		<h3>my groups </h3>
 	  <div className={classes.root}>
-		<React.Suspense>
-			<React.Fragment>
+
 		{
 
 			groupTiles.map(group => (
-	<Paper key={group.name} onClick={() => goToGroupPage(group.name)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
+	<Paper key={group.name} onClick={() => goToGroupPage(group.name,group.id)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
 		<div className={classes.groupNames}>{group.name}</div>
 	</Paper>
 ))
 }
+
 		{
 			fill.map(name => (
 			<div color="dark-gray" className={classes.nothingPaper}>
@@ -123,8 +119,7 @@ export default function Groups(props) {
 			</div>
 			))
 		}
-		</React.Fragment>
-		</React.Suspense>
+
 
 	 </div>
 	</div>

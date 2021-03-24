@@ -71,7 +71,8 @@ export default function GroupPage(props) {
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [value, setValue] = useState('one');
-	const name = location.state.detail;
+	const name = location.state.groupName;
+	const id = location.state.id;
 	function changeBackground(e) {
            e.target.style.opacity = '0.5';
 	}
