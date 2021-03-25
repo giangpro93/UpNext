@@ -93,22 +93,25 @@ console.log(groupId);
 	  const handleChange = (event, newValue) => {
 		      setValue(newValue);
 		    };
-	{/*	function fetchGroupData(userID,groupID){
+				{/*the block of code below is the broken stuff.*/}
+{/*}	const userObj = {user_id: 1, group_id: 11};
+	function fetchGroupData(){
 					return Promise.all([
-						api.memberships.get(userID,groupID)
+						api.memberships.get(userObj)
 					]).then((groupInfo) => {
 						console.log(groupInfo);
-					})
+					}).catch(console.log)
 	}
 
-
-			const groupPromise = fetchGroupData(userId,groupId);
+			const groupPromise = fetchGroupData();
 			useEffect(() => {
 					groupPromise.then(data => {
-						setGroupInfo(data.groupInfo);
+						console.log(data);
 					});
 				}, []);
-			function leaveGroup(){
+			*/}
+
+		{/*		function leaveGroup(){
 				const promise = api.memberships.deleteMembership(userId,groupId);
 				goBack();
 			}
@@ -131,7 +134,7 @@ console.log(groupId);
 			          <InfoIcon />
 			        </IconButton>
 				</Tooltip>
-				<Button variant="outlined" color="#3CB371" className={classes.leaveGroupButton} onClick={() => { leaveGroup(); }}>
+				<Button variant="outlined" color="#3CB371" className={classes.leaveGroupButton} onClick={() => { /*leaveGroup();*/ }}>
 								Leave
 				</Button>
 			       </div>
