@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
 				justifyContent: 'flex-end',
 				marginTop: 16,
 		},
+		leaveGroupButton: {
+			marginLeft: 16,
+		},
 }));
 
 export default function GroupPage(props) {
@@ -85,30 +88,34 @@ console.log(groupId);
 	function changeBack(e){
           e.target.style.opacity = '1';
 	}
+	const history = useHistory();
+	const goBack = () => history.push('groups');
 	  const handleChange = (event, newValue) => {
 		      setValue(newValue);
 		    };
-	function fetchGroupData(userID,groupID){
+	{/*	function fetchGroupData(userID,groupID){
 					return Promise.all([
 						api.memberships.get(userID,groupID)
 					]).then((groupInfo) => {
 						console.log(groupInfo);
 					})
 	}
-				console.log(userId);
-				console.log(groupId);
-{/*				const groupPromise = fetchGroupData(userId,groupId);
 
-				useEffect(() => {
+
+			const groupPromise = fetchGroupData(userId,groupId);
+			useEffect(() => {
 					groupPromise.then(data => {
 						setGroupInfo(data.groupInfo);
 					});
 				}, []);
-
+			function leaveGroup(){
+				const promise = api.memberships.deleteMembership(userId,groupId);
+				goBack();
+			}
 */}
 
-	const history = useHistory();
-	const goBack = () => history.push('groups');
+
+
 	        const classes = useStyles()
 	        return (
 			        <div>
@@ -124,6 +131,9 @@ console.log(groupId);
 			          <InfoIcon />
 			        </IconButton>
 				</Tooltip>
+				<Button variant="outlined" color="#3CB371" className={classes.leaveGroupButton} onClick={() => { leaveGroup(); }}>
+								Leave
+				</Button>
 			       </div>
 				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">
 			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>

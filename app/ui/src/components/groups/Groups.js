@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
 			justifyContent: 'flex-end',
 
 	},
+
 }));
 
 export default function Groups(props) {
@@ -118,6 +119,7 @@ export default function Groups(props) {
 	<div>
 	<div>
 		<h3>my groups </h3>
+		
 		<div className={classes.createGroupButton}>
 		 <Button variant="outlined" color="#3CB371" onClick={() => { setCreateGroupWindow(true); }}>
 						 Create Group
