@@ -27,6 +27,6 @@ function recentMessengers(entity_id) {
 
 function getConversation(messengers) {
     return logAPICall(messengers, () => 
-        axiosInstance.get('/messages/conversation/', messengers)
+        axiosInstance.get('/messages/conversation/', {data: messengers})
     );
 }
