@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-export function useForm(initVals, validate, validateOnChange=false) {
+export default function useForm(initVals, validate, validateOnChange=false) {
     // manages the internal state of a form
     const [vals, setVals] = useState(initVals);
     const [errs, setErrs] = useState({});

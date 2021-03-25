@@ -20,7 +20,7 @@ function eventsInfo() {
 }
 
 function create(event) {
-    const { entity_id, title, description, start, end } = event;
+    const { entity_id, title, description, start, end, reminder } = event;
     let obj = {};
     if(start) obj.start = start;
     if(end) obj.end = end;
@@ -31,7 +31,7 @@ function create(event) {
         .then(() => getById(item.id))
         .then(event => 
             (reminder 
-            ? ScheduleReminder.create({...reminder, link_id: event.id})
+            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, description: `Reminder: ${title}`, link_id: event.id})
             : Promise.resolve())
             .then(() => event)
         )

@@ -17,7 +17,7 @@ function errResponse(res, err) {
 }
 
 function respond(req, res, promiseThunk, arg=req.body) {
-    console.log(req.body);
+    console.log(arg);
     return promiseThunk(arg)
         .then(data => okResponse(res, data))
         .catch(err => errResponse(res, err));

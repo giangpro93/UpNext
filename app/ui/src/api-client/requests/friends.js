@@ -30,7 +30,7 @@ function deleteFriend(friendRequest) {
 
 function get(friendRequest) {
     return logAPICall(friendRequest, () => 
-        axiosInstance.get('/friends/get', friendRequest)
+        axiosInstance.get('/friends/get', {data: friendRequest})
     );
 }
 

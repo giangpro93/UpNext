@@ -4,13 +4,13 @@ import { Input } from './Input'
 
 export function DialogForm(props) {
 
-    const { children, open, onClose, title, cancelLabel, onCancel, confirmLabel, onConfirm } = props;
+    const { children, open, onClose, title, cancelLabel, onCancel, confirmLabel, onConfirm, submitDisabled } = props;
 
     return (
     <div>
         <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">{title}</DialogTitle>
-            <DialogContent>
+            <DialogContent dividers>
                 {children}
             </DialogContent>
             <DialogActions>
@@ -21,7 +21,8 @@ export function DialogForm(props) {
             <Input.ButtonInput 
                 label={confirmLabel}
                 onClick={onConfirm}
-                color="primary" />
+                color="primary"
+                disabled={submitDisabled || false} />
             </DialogActions>
         </Dialog>
     </div>

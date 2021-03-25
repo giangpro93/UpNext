@@ -20,7 +20,7 @@ function tasksInfo() {
 }
 
 function create(task) {
-    const { entity_id, title, description, assigned, due } = task;
+    const { entity_id, title, description, assigned, due, reminder } = task;
     let obj = {};
     if(assigned) obj.assigned = assigned;
     if(due) obj.due = due;
@@ -31,7 +31,7 @@ function create(task) {
         .then(() => getById(item.id))
         .then(task => 
             (reminder 
-            ? ScheduleReminder.create({...reminder, link_id: task.id})
+            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, description: `Reminder: ${title}`, link_id: task.id})
             : Promise.resolve())
             .then(() => task)
         )
