@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import api from '../../api-client/api';
+import Calendar from './Calendar';
 import EventForm from './EventForm';
 import TaskForm from './TaskForm';
 import ReminderForm from './ReminderForm';
@@ -10,7 +7,7 @@ import EventView from './EventView';
 import TaskView from './TaskView';
 import ReminderView from './ReminderView';
 
-const localizer = momentLocalizer(moment);
+
 
 export default function MySchedule(props) {
 
@@ -46,13 +43,8 @@ export default function MySchedule(props) {
     return (
     <div>
         <Calendar
-            style={style || {height: 500}}
-            localizer={localizer}
-            events={events || []}
-            startAccessor="start"
-            endAccessor="end"
-            onDoubleClickEvent={onSelect}
-            {...opts}
+            events={events}
+            onSelect={onSelect}
         />
         {selectedItem && 
             <>

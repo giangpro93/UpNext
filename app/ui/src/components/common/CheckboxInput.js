@@ -21,6 +21,7 @@ export function CheckboxInput(props) {
                     <Checkbox
                         name={name}
                         checked={checked}
+                        color="primary"
                         onChange={e => onChange(convertCheckedEvent(e))}
                         {...other}
                     />}

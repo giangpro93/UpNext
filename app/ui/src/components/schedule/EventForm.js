@@ -106,7 +106,7 @@ export default function EventForm(props) {
                 <Input.DateTimeInput
                     name='end'
                     label= 'End Time'
-                    value={vals.start}
+                    value={vals.end}
                     onChange={onChange}
                     required
                 />

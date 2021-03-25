@@ -154,6 +154,7 @@ export default function Schedule(props) {
                                 if(e.target.checked) setEntityFilters(prevFilters => [...prevFilters, entity])
                                 else setEntityFilters(prevFilters => prevFilters.filter(entity2 => entity2.id != entity.id))
                             }}
+                            color="secondary"
                         />
                     </Grid>
                 )}
