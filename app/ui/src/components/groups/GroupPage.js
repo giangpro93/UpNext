@@ -93,8 +93,10 @@ console.log(groupId);
 	  const handleChange = (event, newValue) => {
 		      setValue(newValue);
 		    };
+
+
 				{/*the block of code below is the broken stuff.*/}
-{/*}	const userObj = {user_id: 1, group_id: 11};
+{/*}
 	function fetchGroupData(){
 					return Promise.all([
 						api.memberships.get(userObj)

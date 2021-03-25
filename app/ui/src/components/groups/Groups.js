@@ -6,7 +6,7 @@ import { makeStyles, Paper, Grid, Button, Box,Typography,AppBar,Tabs,Tab,Dialog,
 import {Redirect,useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 const api = require('../../api-client/api.js');
-
+const { axiosInstance } = require('../../api-client/api-client.js');
 
 const useStyles = makeStyles((theme) => ({
 	  root: {
@@ -83,13 +83,7 @@ export default function Groups(props) {
 		})
 	}
 {/* actual fetch of the group data */}
-	const groupPromise = fetchGroupData(id);
-{/* useEffect is where the groupTiles array is actually populated. useEffect will re-render the components that have just come in.*/}
-	useEffect(() => {
-		groupPromise.then(data => {
-			setGroupTiles(data.groups[0]);
-		});
-	}, []);
+	var groupPromise = fetchGroupData(id);
 
   function changeBackground(e) {
 	   e.target.style.opacity = '0.5';
@@ -109,17 +103,33 @@ export default function Groups(props) {
 		setCreateGroupWindow(false);
 		console.log(name);
 		console.log(desc);
-		const responsePromise = api.groups.create("name","mail@mail.com","this is a new description");
+		var reqData = {name: name,email: "email@email.com", description: desc};
+		const responsePromise = api.groups.create(reqData);
 		responsePromise.then((resp) => {
-			console.log(typeof resp);
+			addToNewGroup(resp);
 		})
 	}
 
+	function addToNewGroup(group){
+		var addData = {user_id: id, group_id: group.id}
+		const newGroupPromise = api.memberships.create(addData);
+		newGroupPromise.then((resp) => {
+			console.log(resp);
+		})
+	}
+
+{/* useEffect is where the groupTiles array is actually populated. useEffect will re-render the components that have just come in.*/}
+	useEffect(() => {
+		groupPromise.then(data => {
+			setGroupTiles(data.groups[0]);
+		});
+
+	}, []);
 	return (
 	<div>
 	<div>
 		<h3>my groups </h3>
-		
+
 		<div className={classes.createGroupButton}>
 		 <Button variant="outlined" color="#3CB371" onClick={() => { setCreateGroupWindow(true); }}>
 						 Create Group
