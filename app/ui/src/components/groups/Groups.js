@@ -67,8 +67,9 @@ export default function Groups(props) {
 	const location = useLocation();
 	const history = useHistory();
 	const classes = useStyles();
-	const [createGroupName,setCreateGroupName] = useState('');
-	const [createGroupDesc,setCreateGroupDesc] = useState('');
+	var [createGroupName,setCreateGroupName] = useState('');
+	var [createGroupDesc,setCreateGroupDesc] = useState('');
+	var [createGroupEmail,setCreateGroupEmail] = useState('');
 	{/* This begins the fetching process for the JSON data */}
 	const currentUser = useSelector(state => state.users.currentUser);
 	var id = currentUser['id'];
@@ -99,22 +100,27 @@ export default function Groups(props) {
 		   state: { groupName: name, groupID: id  }
 		});
   }
-	function createGroup(name,desc){
+	function createGroup(name,desc,email){
 		setCreateGroupWindow(false);
 		console.log(name);
 		console.log(desc);
-		var reqData = {name: name,email: "email@email.com", description: desc};
-		const responsePromise = api.groups.create(reqData);
+		console.log(email);
+		var reqData = {name: name,email: email, description: desc};
+		console.log(reqData);
+		var responsePromise = api.groups.create(reqData);
 		responsePromise.then((resp) => {
+			console.log(resp);
 			addToNewGroup(resp);
 		})
 	}
 
 	function addToNewGroup(group){
-		var addData = {user_id: id, group_id: group.id}
-		const newGroupPromise = api.memberships.create(addData);
+		console.log(group);
+		var addData = {user_id: id, group_id: group.id, is_admin: 1}
+		var newGroupPromise = api.memberships.create(addData);
 		newGroupPromise.then((resp) => {
 			console.log(resp);
+			goToGroupPage(group.name,group.id);
 		})
 	}
 
@@ -174,13 +180,25 @@ groupTiles.map(group => (
 					fullWidth
 					autoFocus
 					/>
+					<TextField
+					 id="filled-multiline-static"
+					 label="Group email"
+					 multiline
+					 rows={4}
+					 type="text"
+					 margin = "dense"
+					 variant="filled"
+					 onChange={(e) => setCreateGroupEmail(e.target.value)}
+					 fullWidth
+					 autoFocus
+					 />
 
 			 </DialogContent>
 			 <DialogActions>
 				 <Button onClick={() => { setCreateGroupWindow(false); }} color="primary">
 					 Cancel
 				 </Button>
-				 <Button onClick={() => { createGroup(createGroupName,createGroupDesc);}} color="primary">
+				 <Button onClick={() => { createGroup(createGroupName,createGroupDesc,createGroupEmail);}} color="primary">
 					 Create
 				 </Button>
 			 </DialogActions>

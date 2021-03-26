@@ -89,20 +89,28 @@ console.log(groupId);
           e.target.style.opacity = '1';
 	}
 	const history = useHistory();
-	const goBack = () => history.push('groups');
+	function goBack(name,id){
+		history.push({
+			 pathname: '/groups',
+		});
+	}
 	  const handleChange = (event, newValue) => {
 		      setValue(newValue);
 		    };
 
 
 				{/*the block of code below is the broken stuff.*/}
-{/*}
+{/*
 	function fetchGroupData(){
+		console.log(userId)
+		console.log(groupId)
+					var userObj = {user_id: userId, group_id: groupId};
+					console.log(userObj);
 					return Promise.all([
 						api.memberships.get(userObj)
 					]).then((groupInfo) => {
-						console.log(groupInfo);
-					}).catch(console.log)
+					return({groupInfo})
+					})
 	}
 
 			const groupPromise = fetchGroupData();
@@ -113,11 +121,16 @@ console.log(groupId);
 				}, []);
 			*/}
 
-		{/*		function leaveGroup(){
-				const promise = api.memberships.deleteMembership(userId,groupId);
-				goBack();
+			function leaveGroup(){
+				var reqObj = {user_id: userId, group_id: groupId};
+				const promise = api.memberships.deleteMembership(reqObj);
+				promise.then((resp) => {
+					console.log(typeof resp);
+					console.log(resp);
+					goBack();
+				})
 			}
-*/}
+
 
 
 
@@ -125,7 +138,7 @@ console.log(groupId);
 	        return (
 			        <div>
 			          <div>
-			            <Paper onClick={goBack}onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.paper}>
+			            <Paper onClick={() => { goBack();}}onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.paper}>
 			               <div className={classes.groupNames}> Back </div>
 			            </Paper>
 			         </div>
@@ -136,7 +149,7 @@ console.log(groupId);
 			          <InfoIcon />
 			        </IconButton>
 				</Tooltip>
-				<Button variant="outlined" color="#3CB371" className={classes.leaveGroupButton} onClick={() => { /*leaveGroup();*/ }}>
+				<Button variant="outlined" color="#3CB371" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
 								Leave
 				</Button>
 			       </div>
