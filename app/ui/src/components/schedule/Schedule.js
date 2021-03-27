@@ -2,13 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import MySchedule from './MySchedule';
 import useAsync from '../../hooks/useAsync';
-import { schedule } from '../../api-client/api';
 import { CheckboxInput } from '../common/CheckboxInput';
 import { Button, Grid, Typography } from '@material-ui/core';
-import EventForm from './EventForm';
-import TaskForm from './TaskForm';
-import ReminderForm from './ReminderForm';
-import EventView from './EventView';
+import ScheduleItemForm from './ScheduleItemForm';
 import Snackbar from '../common/Snackbar';
 const api = require('../../api-client/api');
 
@@ -204,7 +200,15 @@ export default function Schedule(props) {
                 </Grid>
             </Grid>
         </Grid>
-        <EventForm
+        <ScheduleItemForm
+            type={createWindow}
+            mode='create'
+            open={Boolean(createWindow)}
+            onClose={() => setCreateWindow(null)}
+            onSubmit={onSuccess}
+            onError={onError}
+        />
+        {/* <EventForm
             isCreate={true}
             open={createWindow === 'event'}
             onClose={() => setCreateWindow(null)}
@@ -224,7 +228,7 @@ export default function Schedule(props) {
             onClose={() => setCreateWindow(null)}
             onSubmit={onSuccess}
             onError={onError}
-        />
+        /> */}
         <Snackbar
             open={error || success}
             onClose={() => {

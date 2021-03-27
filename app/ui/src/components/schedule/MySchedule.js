@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import Calendar from './Calendar';
-import EventForm from './EventForm';
-import TaskForm from './TaskForm';
-import ReminderForm from './ReminderForm';
-import EventView from './EventView';
-import TaskView from './TaskView';
-import ReminderView from './ReminderView';
-
+import ScheduleItemView from './ScheduleItemView';
+import ScheduleItemForm from './ScheduleItemForm';
+import ConfirmDialog from '../common/ConfirmDialog';
+import { dateInputFormat } from './dateFormat';
+const api = require('../../api-client/api');
 
 
 export default function MySchedule(props) {
@@ -15,18 +13,25 @@ export default function MySchedule(props) {
 
     const [editWindow, setEditWindow] = useState(false);
 
+    const [deleteWindow, setDeleteWindow] = useState(false);
+
     const [viewWindow, setViewWindow] = useState(false);
 
     const [selectedItem, setSelectedItem] = useState(null);
 
-    const [updatedItem, setUpdatedItem] = useState(null);
-
     // called from the useAsync hook when the value of updateItem changes
     function onUpdate() {
         setSelectedItem(null);
-        setUpdatedItem(null);
         onClose();
         onItemUpdate(); // call the function passed by parent
+    }
+
+    function onDelete() {
+        setDeleteWindow(true);
+    }
+
+    function deleteItem() {
+        return api.schedule.deleteScheduleItemById(selectedItem.id);
     }
 
     function onSelect(event) {
@@ -38,6 +43,7 @@ export default function MySchedule(props) {
     function onClose() {
         setViewWindow(false);
         setEditWindow(false);
+        setDeleteWindow(false);
     }
 
     return (
@@ -48,25 +54,33 @@ export default function MySchedule(props) {
         />
         {selectedItem && 
             <>
-            <EventView
+            <ScheduleItemView
                 item={selectedItem}
-                open={viewWindow && selectedItem.type === 'event'}
+                open={viewWindow}
                 onClose={onClose}
-                onEdit={() => setEditWindow(true)}
+                onEdit={() => { setEditWindow(true) }}
+                onDelete={() => { setDeleteWindow(true) }}
+                onError={onError}
             />
-            <TaskView
-                item={selectedItem}
-                open={viewWindow && selectedItem.type === 'task'}
+            <ScheduleItemForm
+                open={editWindow}
+                type={selectedItem.type}
+                mode='update'
                 onClose={onClose}
-                onEdit={() => setEditWindow(true)}
+                onSubmit={onUpdate}
+                onError={onError}
+                initVals={(() => {
+                    let vals = { ...selectedItem};
+                    if(vals.start) vals.start = dateInputFormat(vals.start);
+                    if(vals.end) vals.end = dateInputFormat(vals.end);
+                    if(vals.assigned) vals.assigned = dateInputFormat(vals.assigned);
+                    if(vals.due) vals.due = dateInputFormat(vals.due);
+                    if(vals.time) vals.time = dateInputFormat(vals.time);
+                    if(vals.reminder) vals.reminder = dateInputFormat(vals.reminder);
+                    return vals;
+                })()}
             />
-            <ReminderView
-                item={selectedItem}
-                open={viewWindow && selectedItem.type === 'reminder'}
-                onClose={onClose}
-                onEdit={() => setEditWindow(true)}
-            />
-            <EventForm
+            {/* <EventForm
                 isCreate={false}
                 initVals={{...selectedItem, 
                     start: new Date(selectedItem.start),
@@ -97,6 +111,16 @@ export default function MySchedule(props) {
                 onClose={onClose}
                 onSubmit={onUpdate}
                 onError={onError}
+            /> */}
+            <ConfirmDialog
+                title="Are you sure you want to delete this item?"
+                open={deleteWindow}
+                onClose={() => { setDeleteWindow(false) }}
+                onConfirm={() => {
+                    deleteItem()
+                    .then(onUpdate)
+                    .catch(onError);
+                }}
             />
             </>
         }
