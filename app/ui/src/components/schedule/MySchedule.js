@@ -77,41 +77,10 @@ export default function MySchedule(props) {
                     if(vals.due) vals.due = dateInputFormat(vals.due);
                     if(vals.time) vals.time = dateInputFormat(vals.time);
                     if(vals.reminder) vals.reminder = dateInputFormat(vals.reminder);
+                    console.log(vals);
                     return vals;
                 })()}
             />
-            {/* <EventForm
-                isCreate={false}
-                initVals={{...selectedItem, 
-                    start: new Date(selectedItem.start),
-                    end: new Date(selectedItem.end)
-                }}
-                open={editWindow && selectedItem.type === 'event'}
-                onClose={onClose}
-                onSubmit={onUpdate}
-                onError={onError}
-            />
-            <TaskForm
-                isCreate={false}
-                initVals={{...selectedItem, 
-                    assigned: new Date(selectedItem.assigned),
-                    due: new Date(selectedItem.due)
-                }}
-                open={editWindow && selectedItem.type === 'task'}
-                onClose={onClose}
-                onSubmit={onUpdate}
-                onError={onError}
-            />
-            <ReminderForm
-                isCreate={false}
-                initVals={{...selectedItem, 
-                    time: new Date(selectedItem.time)
-                }}
-                open={editWindow && selectedItem.type === 'reminder'}
-                onClose={onClose}
-                onSubmit={onUpdate}
-                onError={onError}
-            /> */}
             <ConfirmDialog
                 title="Are you sure you want to delete this item?"
                 open={deleteWindow}
