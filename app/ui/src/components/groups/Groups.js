@@ -94,10 +94,10 @@ export default function Groups(props) {
     e.target.style.opacity = '1';
 	}
 
-	function goToGroupPage(name,id){
+	function goToGroupPage(name,id,desc,email){
 		history.push({
 		   pathname: '/groupPage',
-		   state: { groupName: name, groupID: id  }
+		   state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email }
 		});
   }
 	function createGroup(name,desc,email){
@@ -120,7 +120,7 @@ export default function Groups(props) {
 		var newGroupPromise = api.memberships.create(addData);
 		newGroupPromise.then((resp) => {
 			console.log(resp);
-			goToGroupPage(group.name,group.id);
+			goToGroupPage(group.name,group.id,group.description,group.email);
 		})
 	}
 
@@ -147,7 +147,7 @@ export default function Groups(props) {
 		{
 
 groupTiles.map(group => (
-	<Paper key={group.name} onClick={() => goToGroupPage(group.name,group.id)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
+	<Paper key={group.name} onClick={() => goToGroupPage(group.name,group.id,group.description,group.email)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
 		<div className={classes.groupNames}>{group.name}</div>
 	</Paper>
 ))

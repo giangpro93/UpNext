@@ -75,8 +75,12 @@ export default function GroupPage(props) {
 	const location = useLocation();
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
-	const [groupInfo, setGroupInfo] = useState([]);
 	const [value, setValue] = useState('one');
+  var description = location.state.groupDesc;
+	if(description == null){
+		description = "this is where a description would be if it had one :(";
+	}
+	var groupEmail = location.state.groupEmail;
 	const name = location.state.groupName;
 	const currentUser = useSelector(state => state.users.currentUser);
 	const groupId = location.state.groupID;
@@ -100,34 +104,34 @@ console.log(groupId);
 
 
 				{/*the block of code below is the broken stuff.*/}
-{/*
-	function fetchGroupData(){
-		console.log(userId)
-		console.log(groupId)
-					var userObj = {user_id: userId, group_id: groupId};
-					console.log(userObj);
+
+{/*	function fetchGroupData(){
+				var reqObj = {user_id: userID, group_id: groupID};
 					return Promise.all([
-						api.memberships.get(userObj)
-					]).then((groupInfo) => {
-					return({groupInfo})
+						api.memberships.get(reqObj);
+					]).then((groupInformation) => {
+					return({groupInformation})
 					})
 	}
 
 			const groupPromise = fetchGroupData();
+
 			useEffect(() => {
 					groupPromise.then(data => {
 						console.log(data);
 					});
 				}, []);
-			*/}
 
+*/}
 			function leaveGroup(){
-				var reqObj = {user_id: userId, group_id: groupId};
+				var reqObj = { user_id: userId, group_id: groupId};
+				console.log(reqObj.user_id)
+				console.log(reqObj.group_id)
 				const promise = api.memberships.deleteMembership(reqObj);
 				promise.then((resp) => {
 					console.log(typeof resp);
 					console.log(resp);
-					goBack();
+
 				})
 			}
 
@@ -157,7 +161,7 @@ console.log(groupId);
 			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>
 			                                        <DialogContent>
 			                                          <DialogContentText>
-																									This is a description of the y when they meet if they have weekly meetings
+																									{description}
 			                                          </DialogContentText>
 			                                        </DialogContent>
 								<DialogActions>
