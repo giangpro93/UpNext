@@ -7,6 +7,7 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import ScheduleItemForm from './ScheduleItemForm';
 import Snackbar from '../common/Snackbar';
 const api = require('../../api-client/api');
+const { dateStore } = require('./dateFormat');
 
 export default function Schedule(props) {
 
@@ -74,8 +75,8 @@ export default function Schedule(props) {
             if(item.type === 'event') {
                 events.push({
                     title: item.title,
-                    start: new Date(item.start),
-                    end: new Date(item.end),
+                    start: dateStore(item.start),
+                    end: dateStore(item.end),
                     allDay: false,
                     resource: item
                 })
@@ -84,8 +85,8 @@ export default function Schedule(props) {
                 // Push an event for the assignment of the task
                 events.push({
                     title: `Assigned: ${item.title}`,
-                    start: new Date(item.assigned),
-                    end: new Date(item.assigned),
+                    start: dateStore(item.assigned),
+                    end: dateStore(item.assigned),
                     allDay: false,
                     resource: item
                 });
@@ -93,8 +94,8 @@ export default function Schedule(props) {
                 // Push an event for the due date of the task
                 events.push({
                     title: `Due: ${item.title}`,
-                    start: new Date(item.due),
-                    end: new Date(item.due),
+                    start: dateStore(item.due),
+                    end: dateStore(item.due),
                     allDay: false,
                     resource: item
                 });
@@ -102,8 +103,8 @@ export default function Schedule(props) {
             else { // item.type === 'reminder'
                 events.push({
                     title: item.title,
-                    start: new Date(item.time),
-                    end: new Date(item.time),
+                    start: dateStore(item.time),
+                    end: dateStore(item.time),
                     allDay: false,
                     resource: item
                 });
