@@ -77,6 +77,10 @@ export default function GroupPage(props) {
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [value, setValue] = useState('one');
 	const [groupEvents,setGroupEvents] = useState([]);
+	const [eventName,setEventName] = useState('');
+	const [eventLocation, setEventLocation] = useState('');
+	const [eventTime, setEventTime] = useState('');
+	const [eventDescription, setEventDescription] = useState('');
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -134,7 +138,14 @@ console.log(groupId);
 
 				})
 			}
-
+			function createPost(title,location,time,desc){
+				var requestVar = {entity_id: 11, title: "title", description: "this is great",start:time,end:time}
+			var reqEvent =	api.schedule.createEvent(requestVar);
+			reqEvent.then((resp) => {
+				console.log(resp);
+				setEventWindow(false);
+			})
+			}
 
 
 
@@ -181,7 +192,7 @@ console.log(groupId);
 					          </Avatar>
 					        }
 			        title={event.title}
-			        subheader={event.time}
+			        subheader={event.start}
 			      />
 
 			      <CardContent>
@@ -213,6 +224,7 @@ console.log(groupId);
 				            id="eventName"
 				            label="Event Name"
 				            type="email"
+										onChange={(e) => setEventName(e.target.value)}
 				            fullWidth
 				          />
 					  <TextField
@@ -221,6 +233,7 @@ console.log(groupId);
 				            id="eventName"
 				            label="Event Location"
 				            type="email"
+										onChange={(e) => setEventLocation(e.target.value)}
 				            fullWidth
 				                                          />
 					  <TextField
@@ -229,8 +242,8 @@ console.log(groupId);
 					   margin="dense"
 				    	   label="Event Time"
 				           type="datetime-local"
+									 onChange={(e) => setEventTime(e.target.value)}
 				    	   defaultValue="2021-01-24T10:30"
-
 				    	   InputLabelProps={{
 					          shrink: true,
 						        }}
@@ -241,6 +254,7 @@ console.log(groupId);
 				          label="Event Description"
 				          multiline
 				          rows={4}
+									onChange={(e) => setEventDescription(e.target.value)}
 					  margin = "dense"
 				          variant="filled"
 					  fullWidth
@@ -251,7 +265,7 @@ console.log(groupId);
 				          <Button onClick={() => { setEventWindow(false); }} color="primary">
 				            Cancel
 				          </Button>
-				          <Button onClick={() => { setEventWindow(false); }} color="primary">
+				          <Button onClick={() => { createPost(eventName,eventLocation,eventTime,eventDescription); }} color="primary">
 				            Post
 				          </Button>
 				        </DialogActions>
