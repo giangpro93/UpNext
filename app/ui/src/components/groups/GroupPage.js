@@ -76,6 +76,7 @@ export default function GroupPage(props) {
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [value, setValue] = useState('one');
+	const [groupEvents,setGroupEvents] = useState([]);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -105,12 +106,11 @@ console.log(groupId);
 
 				{/*the block of code below is the broken stuff.*/}
 
-{/*	function fetchGroupData(){
-				var reqObj = {user_id: userID, group_id: groupID};
+	function fetchGroupData(){
 					return Promise.all([
-						api.memberships.get(reqObj);
-					]).then((groupInformation) => {
-					return({groupInformation})
+						api.schedule.getEntityScheduleById(groupId)
+					]).then((groupSchedule) => {
+					return({groupSchedule})
 					})
 	}
 
@@ -118,11 +118,11 @@ console.log(groupId);
 
 			useEffect(() => {
 					groupPromise.then(data => {
-						console.log(data);
+						setGroupEvents(data.groupSchedule[0]);
 					});
 				}, []);
 
-*/}
+
 			function leaveGroup(){
 				var reqObj = { user_id: userId, group_id: groupId};
 				console.log(reqObj.user_id)
@@ -171,26 +171,26 @@ console.log(groupId);
 			                                        </DialogActions>
 			                                      </Dialog>
 			<div className={classes.eventBoard}>
-				{events.map(eventt => (
+				{groupEvents.map(event => (
 
 				<Card className={classes.card}>
 			      <CardHeader
 			        avatar={
 					          <Avatar className={classes.avatar}>
-						{eventt[0][0]}
+										H
 					          </Avatar>
 					        }
-			        title={eventt[1]}
-			        subheader={eventt[3]}
+			        title={event.title}
+			        subheader={event.time}
 			      />
 
 			      <CardContent>
 			        <Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-			         	Location: {eventt[2]}
+								Location
 
 			        </Typography>
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
-					{eventt[5]}
+					{event.description}
 				</Typography>
 			      </CardContent>
 				</Card>
