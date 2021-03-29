@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import SearchBar from "material-ui-search-bar";
+import MessageSearchBar from './SearchBar';
 
-export function MessagePage() {
+export default function MessagePage() {
 
   return (
-    <SearchBar
-      value={this.state.value}
-      onChange={(newValue) => this.setState({ value: newValue })}
-      onRequestSearch={() => doSomethingWith(this.state.value)}
-      />
-  );
+    <div>
+      <h3>
+        This is my messages.
+      </h3>
+      <MessageSearchBar />
+    </div>
+  )
+    
 }
-export default MessagePage;
