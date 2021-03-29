@@ -171,6 +171,16 @@ groupTiles.map(group => (
 				 />
 				 <TextField
 					id="filled-multiline-static"
+					label="Group email"
+					type="text"
+					margin = "dense"
+					variant="filled"
+					onChange={(e) => setCreateGroupEmail(e.target.value)}
+					fullWidth
+					autoFocus
+					/>
+				 <TextField
+					id="filled-multiline-static"
 				  label="Group Description"
 				  multiline
 				  rows={4}
@@ -180,18 +190,7 @@ groupTiles.map(group => (
 					fullWidth
 					autoFocus
 					/>
-					<TextField
-					 id="filled-multiline-static"
-					 label="Group email"
-					 multiline
-					 rows={4}
-					 type="text"
-					 margin = "dense"
-					 variant="filled"
-					 onChange={(e) => setCreateGroupEmail(e.target.value)}
-					 fullWidth
-					 autoFocus
-					 />
+
 
 			 </DialogContent>
 			 <DialogActions>
