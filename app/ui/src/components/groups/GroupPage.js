@@ -3,20 +3,12 @@ import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InfoIcon from '@material-ui/icons/Info';
-import Grid from '@material-ui/core/Grid';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
-import useForm from '../../hooks/useForm'
-import { DialogForm } from '../common/DialogForm'
 import { useLocation } from "react-router-dom";
-import { FormControl,Tooltip, InputLabel,Box,List, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography, Input,CardMedia,CardContent, FormHelperText, TextField, Tabs, Tab, Card, CardHeader, Avatar,IconButton,CardActions,FavoriteButton,Collapse} from '@material-ui/core';
-import {MoreVertIcon} from '@material-ui/icons/MoreVert';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Tooltip, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
 import { useSelector } from 'react-redux'
-import clsx from 'clsx';
 var owner = false;
-var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
 	  root: {
@@ -75,11 +67,11 @@ export default function GroupPage(props) {
 	const location = useLocation();
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
-	const [value, setValue] = useState('one');
 	const [groupEvents,setGroupEvents] = useState([]);
 	const [eventName,setEventName] = useState('');
 	const [eventLocation, setEventLocation] = useState('');
-	const [eventTime, setEventTime] = useState('');
+	const [eventStart, setEventStart] = useState('');
+	const [eventEnd, setEventEnd] = useState('');
 	const [eventDescription, setEventDescription] = useState('');
   var description = location.state.groupDesc;
 	if(description == null){
@@ -110,9 +102,7 @@ console.log(groupId);
 			 pathname: '/groups',
 		});
 	}
-	  const handleChange = (event, newValue) => {
-		      setValue(newValue);
-		    };
+
 
 
 				{/*the block of code below is the broken stuff.*/}
@@ -131,7 +121,7 @@ console.log(groupId);
 					groupPromise.then(data => {
 						setGroupEvents(data.groupSchedule[0]);
 					});
-				}, []);
+				}, [groupPromise]);
 
 
 			function leaveGroup(){
@@ -145,8 +135,8 @@ console.log(groupId);
 
 				})
 			}
-			function createPost(title,location,time,desc){
-				var requestVar = {entity_id: groupId, title: title, description: desc,start:time,end:time}
+			function createPost(title,location,start,end,desc){
+				var requestVar = {entity_id: groupId, title: title, description: desc,start:start,end:end}
 			var reqEvent =	api.schedule.createEvent(requestVar);
 			reqEvent.then((resp) => {
 				console.log(resp);
@@ -171,7 +161,7 @@ console.log(groupId);
 			          <InfoIcon />
 			        </IconButton>
 				</Tooltip>
-				<Button variant="outlined" color="#3CB371" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
+				<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
 								Leave
 				</Button>
 			       </div>
@@ -191,7 +181,7 @@ console.log(groupId);
 			<div className={classes.eventBoard}>
 				{groupEvents.map(event => (
 
-				<Card className={classes.card}>
+				<Card key={event.id} className={classes.card}>
 			      <CardHeader
 			        avatar={
 					          <Avatar className={classes.avatar}>
@@ -214,9 +204,9 @@ console.log(groupId);
 				</Card>
 				))}
 			</div>
-			{owner == true ? (
+			{owner === true ? (
 				         <div className={classes.createPostButton}>
-				         	<Button variant="outlined" color="#3CB371" onClick={() => { setEventWindow(true); }}>
+				         	<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                	Create Event
 				                </Button>
 						<Dialog open={eventWindow} onClose={() => { setEventWindow(false); }} aria-labelledby="form-dialog-title">
@@ -228,6 +218,7 @@ console.log(groupId);
 				          <TextField
 				            autoFocus
 				            margin="dense"
+										key = "one"
 				            id="eventName"
 				            label="Event Name"
 				            type="email"
@@ -237,6 +228,7 @@ console.log(groupId);
 					  <TextField
 				            autoFocus
 				            margin="dense"
+										key = "two"
 				            id="eventName"
 				            label="Event Location"
 				            type="email"
@@ -246,10 +238,25 @@ console.log(groupId);
 					  <TextField
 					  autoFocus
 				   	   id="datetime-local"
+							 key = "three"
 					   margin="dense"
-				    	   label="Event Time"
+				    	   label="Event Start"
 				           type="datetime-local"
-									 onChange={(e) => setEventTime(e.target.value)}
+									 onChange={(e) => setEventStart(e.target.value)}
+				    	   defaultValue="2021-01-24T10:30"
+				    	   InputLabelProps={{
+					          shrink: true,
+						        }}
+					  fullWidth
+				 	  />
+						<TextField
+					  autoFocus
+				   	   id="datetime-local"
+							 key = "five"
+					   margin="dense"
+				    	   label="Event End"
+				           type="datetime-local"
+									 onChange={(e) => setEventEnd(e.target.value)}
 				    	   defaultValue="2021-01-24T10:30"
 				    	   InputLabelProps={{
 					          shrink: true,
@@ -260,6 +267,7 @@ console.log(groupId);
 				          id="filled-multiline-static"
 				          label="Event Description"
 				          multiline
+									key = "four"
 				          rows={4}
 									onChange={(e) => setEventDescription(e.target.value)}
 					  margin = "dense"
@@ -272,7 +280,7 @@ console.log(groupId);
 				          <Button onClick={() => { setEventWindow(false); }} color="primary">
 				            Cancel
 				          </Button>
-				          <Button onClick={() => { createPost(eventName,eventLocation,eventTime,eventDescription); }} color="primary">
+				          <Button onClick={() => { createPost(eventName,eventLocation,eventStart,eventEnd,eventDescription); }} color="primary">
 				            Post
 				          </Button>
 				        </DialogActions>

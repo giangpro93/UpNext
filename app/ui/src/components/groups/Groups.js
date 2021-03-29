@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import {useState} from 'react';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { makeStyles, Paper, Grid, Button, Box,Typography,AppBar,Tabs,Tab,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
-import {Redirect,useHistory} from 'react-router-dom';
+import { makeStyles, Paper, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
+import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 const api = require('../../api-client/api.js');
-const { axiosInstance } = require('../../api-client/api-client.js');
 
 const useStyles = makeStyles((theme) => ({
 	  root: {
@@ -70,6 +69,7 @@ export default function Groups(props) {
 	var [createGroupName,setCreateGroupName] = useState('');
 	var [createGroupDesc,setCreateGroupDesc] = useState('');
 	var [createGroupEmail,setCreateGroupEmail] = useState('');
+	var [loadNewGroup,setLoadNewGroup] = useState(true);
 	{/* This begins the fetching process for the JSON data */}
 	const currentUser = useSelector(state => state.users.currentUser);
 	var id = currentUser['id'];
@@ -93,7 +93,6 @@ export default function Groups(props) {
 	function changeBack(e){
     e.target.style.opacity = '1';
 	}
-
 	function goToGroupPage(name,id,desc,email,admin){
 		history.push({
 		   pathname: '/groupPage',
@@ -113,6 +112,10 @@ export default function Groups(props) {
 			addToNewGroup(resp);
 		})
 	}
+{/*  var testing = api.groups.search("Nol");
+	testing.then((resp) => {
+		console.log(resp);
+	}) */}
 
 	function addToNewGroup(group){
 		console.log(group);
@@ -120,7 +123,7 @@ export default function Groups(props) {
 		var newGroupPromise = api.memberships.create(addData);
 		newGroupPromise.then((resp) => {
 			console.log(resp);
-			goToGroupPage(group.name,group.id,group.description,group.email,1);
+			setLoadNewGroup(true);
 		})
 	}
 
@@ -128,16 +131,16 @@ export default function Groups(props) {
 	useEffect(() => {
 		groupPromise.then(data => {
 			setGroupTiles(data.groups[0]);
+			setLoadNewGroup(false);
 		});
-
-	}, []);
+	}, [loadNewGroup]);
 	return (
 	<div>
 	<div>
 		<h3>my groups </h3>
 
 		<div className={classes.createGroupButton}>
-		 <Button variant="outlined" color="#3CB371" onClick={() => { setCreateGroupWindow(true); }}>
+		 <Button variant="outlined" color="primary" onClick={() => { setCreateGroupWindow(true); }}>
 						 Create Group
 		 </Button>
 		</div>
@@ -147,7 +150,7 @@ export default function Groups(props) {
 		{
 
 groupTiles.map(group => (
-	<Paper key={group.name} onClick={() => goToGroupPage(group.name,group.id,group.description,group.email,group.is_admin)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
+	<Paper key={group.id} onClick={() => goToGroupPage(group.name,group.id,group.description,group.email,group.is_admin)} onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.groupPaper}>
 		<div className={classes.groupNames}>{group.name}</div>
 	</Paper>
 ))
