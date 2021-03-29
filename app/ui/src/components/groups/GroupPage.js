@@ -15,7 +15,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux'
 import clsx from 'clsx';
-var owner = true;
+var owner = false;
 var events = [["Hunter","Event Name","location","time","ImgLocation(Optional)","This is the description of the event and will be how people descibe the events themselves."]];
 const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
@@ -89,6 +89,13 @@ export default function GroupPage(props) {
 	const name = location.state.groupName;
 	const currentUser = useSelector(state => state.users.currentUser);
 	const groupId = location.state.groupID;
+	const isAdmin = location.state.is_admin;
+	if(isAdmin === 1){
+		owner = true;
+	}
+	else{
+		owner = false;
+	}
 	var userId = currentUser['id'];
 console.log(groupId);
 	function changeBackground(e) {
@@ -139,7 +146,7 @@ console.log(groupId);
 				})
 			}
 			function createPost(title,location,time,desc){
-				var requestVar = {entity_id: 11, title: "title", description: "this is great",start:time,end:time}
+				var requestVar = {entity_id: groupId, title: title, description: desc,start:time,end:time}
 			var reqEvent =	api.schedule.createEvent(requestVar);
 			reqEvent.then((resp) => {
 				console.log(resp);
