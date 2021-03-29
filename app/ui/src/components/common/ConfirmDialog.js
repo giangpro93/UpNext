@@ -5,8 +5,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export function ConfirmDialog(props) {
-  const { title, children, open, setOpen, onConfirm } = props;
+export default function ConfirmDialog(props) {
+  const { title, children, open, setOpen, onConfirm, onClose } = props;
   return (
     <Dialog
       open={open}

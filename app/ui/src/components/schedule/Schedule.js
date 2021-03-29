@@ -2,13 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import MySchedule from './MySchedule';
 import useAsync from '../../hooks/useAsync';
-import { schedule } from '../../api-client/api';
 import { CheckboxInput } from '../common/CheckboxInput';
 import { Button, Grid, Typography } from '@material-ui/core';
-import EventForm from './EventForm';
-import TaskForm from './TaskForm';
-import ReminderForm from './ReminderForm';
-import EventView from './EventView';
+import ScheduleItemForm from './ScheduleItemForm';
 import Snackbar from '../common/Snackbar';
 const api = require('../../api-client/api');
 
@@ -147,6 +143,7 @@ export default function Schedule(props) {
                 {allScheduleEntities.map(entity =>
                     <Grid item>
                         <CheckboxInput
+                            key={entity.id}
                             name={entity.id}
                             label={entity.name}
                             checked={entityFilterIds.includes(entity.id)}
@@ -204,23 +201,10 @@ export default function Schedule(props) {
                 </Grid>
             </Grid>
         </Grid>
-        <EventForm
-            isCreate={true}
-            open={createWindow === 'event'}
-            onClose={() => setCreateWindow(null)}
-            onSubmit={onSuccess}
-            onError={onError}
-        />
-        <TaskForm
-            isCreate={true}
-            open={createWindow === 'task'}
-            onClose={() => setCreateWindow(null)}
-            onSubmit={onSuccess}
-            onError={onError}
-        />
-        <ReminderForm
-            isCreate={true}
-            open={createWindow === 'reminder'}
+        <ScheduleItemForm
+            type={createWindow}
+            mode='create'
+            open={Boolean(createWindow)}
             onClose={() => setCreateWindow(null)}
             onSubmit={onSuccess}
             onError={onError}
