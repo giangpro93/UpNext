@@ -143,6 +143,7 @@ export default function Schedule(props) {
                 {allScheduleEntities.map(entity =>
                     <Grid item>
                         <CheckboxInput
+                            key={entity.id}
                             name={entity.id}
                             label={entity.name}
                             checked={entityFilterIds.includes(entity.id)}
@@ -208,27 +209,6 @@ export default function Schedule(props) {
             onSubmit={onSuccess}
             onError={onError}
         />
-        {/* <EventForm
-            isCreate={true}
-            open={createWindow === 'event'}
-            onClose={() => setCreateWindow(null)}
-            onSubmit={onSuccess}
-            onError={onError}
-        />
-        <TaskForm
-            isCreate={true}
-            open={createWindow === 'task'}
-            onClose={() => setCreateWindow(null)}
-            onSubmit={onSuccess}
-            onError={onError}
-        />
-        <ReminderForm
-            isCreate={true}
-            open={createWindow === 'reminder'}
-            onClose={() => setCreateWindow(null)}
-            onSubmit={onSuccess}
-            onError={onError}
-        /> */}
         <Snackbar
             open={error || success}
             onClose={() => {

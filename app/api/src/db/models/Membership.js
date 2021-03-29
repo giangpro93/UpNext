@@ -63,7 +63,7 @@ function getByEntityId(id) {
 
 function getUserMembershipGroups(user_id) {
     return db
-    .select('Entity.*')
+    .select('Entity.*', 'Membership.is_admin')
     .from('Membership')
     .leftJoin('Group', 'Membership.group_id', 'Group.id')
     .leftJoin('Entity', 'Group.id', 'Entity.id')

@@ -21,17 +21,14 @@ export default function MySchedule(props) {
 
     // called from the useAsync hook when the value of updateItem changes
     function onUpdate() {
-        setSelectedItem(null);
         onClose();
         onItemUpdate(); // call the function passed by parent
     }
 
-    function onDelete() {
-        setDeleteWindow(true);
-    }
-
     function deleteItem() {
-        return api.schedule.deleteScheduleItemById(selectedItem.id);
+        return api.schedule.deleteScheduleItemById(selectedItem.id)
+            .then(onUpdate)
+            .catch(onError);
     }
 
     function onSelect(event) {
@@ -41,6 +38,7 @@ export default function MySchedule(props) {
     }
 
     function onClose() {
+        setSelectedItem(null);
         setViewWindow(false);
         setEditWindow(false);
         setDeleteWindow(false);
@@ -52,15 +50,17 @@ export default function MySchedule(props) {
             events={events}
             onSelect={onSelect}
         />
-        <ScheduleItemView
+        {selectedItem &&
+        <>
+            <ScheduleItemView
             item={selectedItem}
             open={viewWindow}
             onClose={onClose}
             onEdit={() => { setEditWindow(true) }}
             onDelete={() => { setDeleteWindow(true) }}
             onError={onError}
-        />
-        <ScheduleItemForm
+            />
+            <ScheduleItemForm
             open={editWindow}
             type={selectedItem.type}
             mode='update'
@@ -78,16 +78,14 @@ export default function MySchedule(props) {
                 console.log(vals);
                 return vals;
             })()}
-        />
-        <ConfirmDialog
+            />
+            <ConfirmDialog
             title="Are you sure you want to delete this item?"
             open={deleteWindow}
             onClose={() => { setDeleteWindow(false) }}
-            onConfirm={() => {
-                deleteItem()
-                .then(onUpdate)
-                .catch(onError);
-            }}
-        />
+            onConfirm={deleteItem}
+            />
+        </>
+        }
     </div>);
 }

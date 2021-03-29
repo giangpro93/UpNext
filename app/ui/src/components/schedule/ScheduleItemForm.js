@@ -119,6 +119,7 @@ export default function ScheduleItemForm(props) {
                     value={vals.title}
                     onChange={onChange}
                     required
+                    error={errs.title}
                 />
                 <Input.TextInput
                     label='Description'
@@ -126,15 +127,17 @@ export default function ScheduleItemForm(props) {
                     value={vals.description}
                     onChange={onChange}
                     multiline
+                    error={errs.description}
                 />
                 {
                     type === 'event' &&
                     <Input.DateTimeInput
-                    name='start'
-                    label= 'Start Time'
-                    value={dateInputFormat(vals.start)}
-                    onChange={onChange}
-                    required
+                        name='start'
+                        label= 'Start Time'
+                        value={dateInputFormat(vals.start)}
+                        onChange={onChange}
+                        required
+                        error={errs.start}
                     />
                 }
                 { 
@@ -145,6 +148,7 @@ export default function ScheduleItemForm(props) {
                         value={dateInputFormat(vals.end)}
                         onChange={onChange}
                         required
+                        error={errs.end}
                     />
                 }
                 {
@@ -155,6 +159,7 @@ export default function ScheduleItemForm(props) {
                         value={dateInputFormat(vals.assigned)}
                         onChange={onChange}
                         required
+                        error={errs.assigned}
                     />
                 }
                 {
@@ -165,6 +170,7 @@ export default function ScheduleItemForm(props) {
                         value={dateInputFormat(vals.due)}
                         onChange={onChange}
                         required
+                        error={errs.due}
                     />
                 }
                 {
@@ -175,6 +181,7 @@ export default function ScheduleItemForm(props) {
                         value={dateInputFormat(vals.time)}
                         onChange={onChange}
                         required
+                        error={errs.time}
                     />
                 }
                 {
@@ -194,6 +201,7 @@ export default function ScheduleItemForm(props) {
                         value={dateInputFormat(vals.reminder)}
                         onChange={onChange}
                         disabled={ !vals.remind }
+                        errs={errs.reminder}
                     />
                 }
             </DialogForm>
