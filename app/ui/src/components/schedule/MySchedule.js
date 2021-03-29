@@ -52,46 +52,42 @@ export default function MySchedule(props) {
             events={events}
             onSelect={onSelect}
         />
-        {selectedItem && 
-            <>
-            <ScheduleItemView
-                item={selectedItem}
-                open={viewWindow}
-                onClose={onClose}
-                onEdit={() => { setEditWindow(true) }}
-                onDelete={() => { setDeleteWindow(true) }}
-                onError={onError}
-            />
-            <ScheduleItemForm
-                open={editWindow}
-                type={selectedItem.type}
-                mode='update'
-                onClose={onClose}
-                onSubmit={onUpdate}
-                onError={onError}
-                initVals={(() => {
-                    let vals = { ...selectedItem};
-                    if(vals.start) vals.start = dateInputFormat(vals.start);
-                    if(vals.end) vals.end = dateInputFormat(vals.end);
-                    if(vals.assigned) vals.assigned = dateInputFormat(vals.assigned);
-                    if(vals.due) vals.due = dateInputFormat(vals.due);
-                    if(vals.time) vals.time = dateInputFormat(vals.time);
-                    if(vals.reminder) vals.reminder = dateInputFormat(vals.reminder);
-                    console.log(vals);
-                    return vals;
-                })()}
-            />
-            <ConfirmDialog
-                title="Are you sure you want to delete this item?"
-                open={deleteWindow}
-                onClose={() => { setDeleteWindow(false) }}
-                onConfirm={() => {
-                    deleteItem()
-                    .then(onUpdate)
-                    .catch(onError);
-                }}
-            />
-            </>
-        }
+        <ScheduleItemView
+            item={selectedItem}
+            open={viewWindow}
+            onClose={onClose}
+            onEdit={() => { setEditWindow(true) }}
+            onDelete={() => { setDeleteWindow(true) }}
+            onError={onError}
+        />
+        <ScheduleItemForm
+            open={editWindow}
+            type={selectedItem.type}
+            mode='update'
+            onClose={onClose}
+            onSubmit={onUpdate}
+            onError={onError}
+            initVals={(() => {
+                let vals = { ...selectedItem};
+                if(vals.start) vals.start = dateInputFormat(vals.start);
+                if(vals.end) vals.end = dateInputFormat(vals.end);
+                if(vals.assigned) vals.assigned = dateInputFormat(vals.assigned);
+                if(vals.due) vals.due = dateInputFormat(vals.due);
+                if(vals.time) vals.time = dateInputFormat(vals.time);
+                if(vals.reminder) vals.reminder = dateInputFormat(vals.reminder);
+                console.log(vals);
+                return vals;
+            })()}
+        />
+        <ConfirmDialog
+            title="Are you sure you want to delete this item?"
+            open={deleteWindow}
+            onClose={() => { setDeleteWindow(false) }}
+            onConfirm={() => {
+                deleteItem()
+                .then(onUpdate)
+                .catch(onError);
+            }}
+        />
     </div>);
 }
