@@ -192,7 +192,8 @@ exports.seed = function(knex) {
         const pushItem = (type, e, lbl) => {
           items.push({
             entity_id: e.id, 
-            title: `${lbl} for entity ${e.id}`, 
+            title: `${lbl} for entity ${e.id}`,
+            location: faker.address.city(),
             description: faker.lorem.sentence(),
             type: type
           });

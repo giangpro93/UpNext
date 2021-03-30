@@ -6,12 +6,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Input } from '../common/Input';
-import { dateStrFormat } from './dateFormat';
+const { dateStrFormat } = require('./dates');
 
 export default function ScheduleItemView(props) {
 
     const { item, open, onClose, onEdit, onDelete, onError, ...other } = props;
-    const { id, entity_id, title, description, type } = item;
+    const { id, entity_id, title, location, description, type } = item;
 
     const currentUser = useSelector(state => state.users.currentUser);
 
@@ -27,6 +27,10 @@ export default function ScheduleItemView(props) {
                     
                 <Typography gutterBottom>
                 Title: {title}
+                </Typography>
+
+                <Typography gutterBottom>
+                Location: {location}
                 </Typography>
 
                 <Typography gutterBottom>

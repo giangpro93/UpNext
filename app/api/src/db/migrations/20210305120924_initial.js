@@ -81,6 +81,7 @@ exports.up = function(knex) {
             .notNullable();
         tbl.string('title')
             .notNullable();
+        tbl.text('location');
         tbl.text('description');
         tbl.enum('type', ['event', 'task', 'reminder'])
             .notNullable();

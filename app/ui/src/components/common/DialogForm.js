@@ -8,7 +8,11 @@ export function DialogForm(props) {
 
     return (
     <div>
-        <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
+        <Dialog 
+            open={open} 
+            onClose={onClose} 
+            aria-labelledby="form-dialog-title"
+        >
             <DialogTitle id="form-dialog-title">{title}</DialogTitle>
             <DialogContent dividers>
                 {children}

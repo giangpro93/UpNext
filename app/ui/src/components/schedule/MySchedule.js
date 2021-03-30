@@ -3,7 +3,7 @@ import Calendar from './Calendar';
 import ScheduleItemView from './ScheduleItemView';
 import ScheduleItemForm from './ScheduleItemForm';
 import ConfirmDialog from '../common/ConfirmDialog';
-import { dateInputFormat } from './dateFormat';
+const { dateInputFormat } = require('./dates');
 const api = require('../../api-client/api');
 
 

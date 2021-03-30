@@ -4,7 +4,7 @@ import React from 'react'
 export function TextInput(props) {
 
     const {name, label, value, onChange, ...other} = props;
-    
+
     return (
         <TextField
             variant={props.variant || "outlined"}
@@ -12,6 +12,7 @@ export function TextInput(props) {
             name={name}
             value={value}
             onChange={onChange}
+            margin='normal'
             fullWidth
             InputLabelProps={{
                 shrink: true,

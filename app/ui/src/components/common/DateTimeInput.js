@@ -6,28 +6,17 @@ import { TextInput } from './TextInput';
 
 export function DateTimeInput(props) {
 
-    const {name, label, value, onChange, ...other} = props;
+    const {name, label, value, onChange, disabled, ...other} = props;
 
     return (
-        // <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
-        //     <DateTimePicker
-        //         autoOk
-        //         allowKeyboardControl
-        //         disablePast
-        //         name={name}
-        //         label={label}
-        //         value={value}
-        //         onChange={date => onChange({ target: { name, value: date }})}
-        //         fullWidth
-        //         {...other}
-        //     />
-        // </MuiPickersUtilsProvider>
         <TextInput
             type="datetime-local"
             name={name}
             label={label}
             value={value}
+            disabled={disabled}
             onChange={onChange}
+            {...other}
         />
     );
 }
