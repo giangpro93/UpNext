@@ -75,7 +75,6 @@ export default function MySchedule(props) {
                 if(vals.due) vals.due = dateInputFormat(vals.due);
                 if(vals.time) vals.time = dateInputFormat(vals.time);
                 if(vals.reminder) vals.reminder = dateInputFormat(vals.reminder);
-                console.log(vals);
                 return vals;
             })()}
             />

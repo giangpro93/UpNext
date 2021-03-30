@@ -1,9 +1,38 @@
-import moment from 'moment';
+const moment = require('moment-timezone');
 
-export function dateStrFormat(date) {
-    return moment(date).format('MMMM Do YYYY, h:mm a');
+
+const timezone = 'America/Chicago';
+module.exports = {
+    dateInputFormat,
+    dateStrFormat,
+    dateStore,
+    toUTC,
+    toLocal,
+    format
 }
 
-export function dateInputFormat(date) {
-    return moment(date).format('YYYY-MM-DDThh:mm');
+function dateStrFormat(date) {
+    return dateStore(date)
+        .format('MMMM Do YYYY, h:mm a');
+}
+
+function dateInputFormat(date) {
+    return format(dateStore(date));
+}
+
+// store as local timezone
+function dateStore(date) {
+    return moment.tz(date, timezone);
+}
+
+function toUTC(date) {
+    return dateStore(date).utc();
+}
+
+function toLocal(date) {
+    return dateStore(date);
+}
+
+function format(date) {
+    return date.format('YYYY-MM-DDTHH:mm');
 }
