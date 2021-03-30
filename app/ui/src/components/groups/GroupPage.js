@@ -136,7 +136,7 @@ console.log(groupId);
 				})
 			}
 			function createPost(title,location,start,end,desc){
-				var requestVar = {entity_id: groupId, title: title, description: desc,start:start,end:end}
+				var requestVar = {entity_id: groupId, title: title, location: location, description: desc,start:start,end:end}
 			var reqEvent =	api.schedule.createEvent(requestVar);
 			reqEvent.then((resp) => {
 				console.log(resp);
@@ -194,7 +194,7 @@ console.log(groupId);
 
 			      <CardContent>
 			        <Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-								Location
+								{event.location}
 
 			        </Typography>
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
