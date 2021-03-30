@@ -3,7 +3,7 @@ import Calendar from './Calendar';
 import ScheduleItemView from './ScheduleItemView';
 import ScheduleItemForm from './ScheduleItemForm';
 import ConfirmDialog from '../common/ConfirmDialog';
-import { dateInputFormat } from './dateFormat';
+const { dateInputFormat } = require('./dates');
 const api = require('../../api-client/api');
 
 
@@ -75,7 +75,6 @@ export default function MySchedule(props) {
                 if(vals.due) vals.due = dateInputFormat(vals.due);
                 if(vals.time) vals.time = dateInputFormat(vals.time);
                 if(vals.reminder) vals.reminder = dateInputFormat(vals.reminder);
-                console.log(vals);
                 return vals;
             })()}
             />

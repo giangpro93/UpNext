@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import MySchedule from './MySchedule';
 import useAsync from '../../hooks/useAsync';
 import { CheckboxInput } from '../common/CheckboxInput';
+import { ButtonInput } from '../common/ButtonInput';
 import { Button, Grid, Typography } from '@material-ui/core';
 import ScheduleItemForm from './ScheduleItemForm';
 import Snackbar from '../common/Snackbar';
 const api = require('../../api-client/api');
+const { dateStore, addHours } = require('./dates');
 
 export default function Schedule(props) {
 
@@ -74,8 +76,8 @@ export default function Schedule(props) {
             if(item.type === 'event') {
                 events.push({
                     title: item.title,
-                    start: new Date(item.start),
-                    end: new Date(item.end),
+                    start: new Date(dateStore(item.start)),
+                    end: new Date(dateStore(item.end)),
                     allDay: false,
                     resource: item
                 })
@@ -84,8 +86,8 @@ export default function Schedule(props) {
                 // Push an event for the assignment of the task
                 events.push({
                     title: `Assigned: ${item.title}`,
-                    start: new Date(item.assigned),
-                    end: new Date(item.assigned),
+                    start: new Date(dateStore(item.assigned)),
+                    end: addHours(new Date(dateStore(item.assigned)), 1),
                     allDay: false,
                     resource: item
                 });
@@ -93,8 +95,8 @@ export default function Schedule(props) {
                 // Push an event for the due date of the task
                 events.push({
                     title: `Due: ${item.title}`,
-                    start: new Date(item.due),
-                    end: new Date(item.due),
+                    start: new Date(dateStore(item.due)),
+                    end: addHours(new Date(dateStore(item.due)), 1),
                     allDay: false,
                     resource: item
                 });
@@ -102,8 +104,8 @@ export default function Schedule(props) {
             else { // item.type === 'reminder'
                 events.push({
                     title: item.title,
-                    start: new Date(item.time),
-                    end: new Date(item.time),
+                    start: new Date(dateStore(item.time)),
+                    end: addHours(new Date(dateStore(item.time)), 1),
                     allDay: false,
                     resource: item
                 });
@@ -130,9 +132,43 @@ export default function Schedule(props) {
             <Grid
                 item
                 container
-                xs={3}
+                xs={4}
                 direction="column"
             >
+                <Grid 
+                    container 
+                    item 
+                    spacing={0}
+                    direction="row"
+                >
+                    <Grid item>
+                        <ButtonInput
+                            size='small' 
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => { setCreateWindow('event') }}
+                            label={'Create Event'}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <ButtonInput
+                            size='small'
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => { setCreateWindow('task') }}
+                            label={'Create Task'}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <ButtonInput
+                            size='small'
+                            variant="contained" 
+                            color="primary"
+                            onClick={() => { setCreateWindow('reminder') }}
+                            label={'Create Reminder'}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid item>
                     <Typography 
                         variant="h6"
@@ -161,7 +197,7 @@ export default function Schedule(props) {
                 item
                 spacing={2}
                 direction="column"
-                xs={9}
+                xs={8}
             >
                 <Grid item>
                     <MySchedule 
@@ -169,35 +205,6 @@ export default function Schedule(props) {
                         onItemUpdate={onSuccess}
                         onError={onError}
                     />
-                </Grid>
-                <Grid container item spacing={2}>
-                    <Grid item>
-                        <Button 
-                            variant="contained" 
-                            color="primary"
-                            onClick={() => { setCreateWindow('event') }}
-                        >
-                        Create Event
-                        </Button>
-                    </Grid>
-                    <Grid item>
-                        <Button 
-                            variant="contained" 
-                            color="primary"
-                            onClick={() => { setCreateWindow('task') }}
-                        >
-                        Create Task
-                        </Button>
-                    </Grid>
-                    <Grid item>
-                        <Button 
-                            variant="contained" 
-                            color="primary"
-                            onClick={() => { setCreateWindow('reminder') }}
-                        >
-                        Create Reminder
-                        </Button>
-                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

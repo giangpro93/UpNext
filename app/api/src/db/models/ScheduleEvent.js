@@ -20,18 +20,18 @@ function eventsInfo() {
 }
 
 function create(event) {
-    const { entity_id, title, description, start, end, reminder } = event;
+    const { entity_id, title, description, location, start, end, reminder } = event;
     let obj = {};
     if(start) obj.start = start;
     if(end) obj.end = end;
-    return ScheduleItem.create({ entity_id, title, description, type: 'event'})
+    return ScheduleItem.create({ entity_id, title, description, location, type: 'event'})
     .then(item => 
         db('ScheduleEvent')
         .insert({ id: item.id, ...obj})
         .then(() => getById(item.id))
         .then(event => 
             (reminder 
-            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, description: `Reminder: ${title}`, link_id: event.id})
+            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, location, description: `Reminder: ${title}`, link_id: event.id})
             : Promise.resolve())
             .then(() => event)
         )
@@ -45,11 +45,11 @@ function getById(id) {
 }
 
 function update(event) {
-    const { id, title, description, start, end, reminder } = event;
+    const { id, title, location, description, start, end, reminder } = event;
     let obj = {};
     if(start) obj.start = start;
     if(end) obj.end = end;
-    return ScheduleItem.update({id, title, description})
+    return ScheduleItem.update({id, title, location, description})
     .then(() => 
         (Object.keys(obj).length === 0
         ? Promise.resolve()
@@ -60,7 +60,7 @@ function update(event) {
             getById(id)
             .then(e =>
                 (reminder 
-                ? ScheduleReminder.create({...reminder, entity_id: e.entity_id, link_id: id})
+                ? ScheduleReminder.create({...reminder, location, entity_id: e.entity_id, link_id: id})
                 : Promise.resolve())
                 .then(() => e)
             )

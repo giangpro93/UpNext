@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import useForm from '../../hooks/useForm';
 import { DialogForm } from '../common/DialogForm';
 import { Input } from '../common/Input';
-import { dateInputFormat } from './dateFormat';
+import { dateInputFormat, toUTC, format } from './dates';
 const api = require('../../api-client/api');
 
 const eventDefaultVals = {
@@ -25,7 +25,7 @@ const taskDefaultVals = {
     assigned: new Date(),
     due: new Date(),
     remind: false,
-    reminder: new Date()
+    reminder: dateInputFormat(new Date())
 }
 
 const reminderDefaultVals = {
@@ -46,6 +46,8 @@ export default function ScheduleItemForm(props) {
         : type === 'task' ? taskDefaultVals
         : reminderDefaultVals;
 
+    const initFillVals = {...defaultVals, ...initVals};
+
     const {
         vals, 
         setVals, 
@@ -53,7 +55,7 @@ export default function ScheduleItemForm(props) {
         setErrs, 
         onChange,
         reset
-    } = useForm(initVals ? initVals : defaultVals, validate, true);
+    } = useForm(initFillVals, validate, true);
 
     const currentUser = useSelector(state => state.users.currentUser);
 
@@ -80,6 +82,7 @@ export default function ScheduleItemForm(props) {
     function onConfirm() {
         if(validate()) {
 
+            // select appropriate function
             let call;
             if( type === 'event' && mode === 'create') call = api.schedule.createEvent;
             else if(type === 'event' && mode === 'update') call = api.schedule.updateEvent;
@@ -88,7 +91,16 @@ export default function ScheduleItemForm(props) {
             else if(type === 'reminder' && mode === 'create') call = api.schedule.createReminder;
             else if(type === 'reminder' && mode === 'update') call = api.schedule.updateReminder;
 
-            call({...vals, entity_id: currentUser.id})
+            // convert datetime fields to UTC
+            let newvals = { ...vals};
+            if(newvals.start) newvals.start = format(toUTC(newvals.start));
+            if(newvals.end) newvals.end = format(toUTC(newvals.end));
+            if(newvals.assigned) newvals.assigned = format(toUTC(newvals.assigned));
+            if(newvals.due) newvals.due = format(toUTC(newvals.due));
+            if(newvals.time) newvals.time = format(toUTC(newvals.time));
+            if(newvals.reminder) newvals.reminder = format(toUTC(newvals.reminder));
+
+            call({...newvals, entity_id: currentUser.id})
             .then(res => {
                 onSubmit();
                 onClose();
@@ -122,12 +134,17 @@ export default function ScheduleItemForm(props) {
                     error={errs.title}
                 />
                 <Input.TextInput
+                    label='Location'
+                    name='location'
+                    value={vals.location}
+                    onChange={onChange}
+                />
+                <Input.TextInput
                     label='Description'
                     name='description'
                     value={vals.description}
                     onChange={onChange}
                     multiline
-                    error={errs.description}
                 />
                 {
                     type === 'event' &&
@@ -198,9 +215,9 @@ export default function ScheduleItemForm(props) {
                     <Input.DateTimeInput
                         name='reminder'
                         label='Reminder'
-                        value={dateInputFormat(vals.reminder)}
+                        value={dateInputFormat(vals.reminder) || dateInputFormat(new Date())}
                         onChange={onChange}
-                        disabled={ !vals.remind }
+                        disabled={!vals.remind}
                         errs={errs.reminder}
                     />
                 }

@@ -20,18 +20,18 @@ function tasksInfo() {
 }
 
 function create(task) {
-    const { entity_id, title, description, assigned, due, reminder } = task;
+    const { entity_id, title, location, description, assigned, due, reminder } = task;
     let obj = {};
     if(assigned) obj.assigned = assigned;
     if(due) obj.due = due;
-    return ScheduleItem.create({ entity_id, title, description, type: 'task' })
+    return ScheduleItem.create({ entity_id, title, location, description, type: 'task' })
     .then(item => 
         db('ScheduleTask')
         .insert({ id: item.id, ...obj })
         .then(() => getById(item.id))
         .then(task => 
             (reminder 
-            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, description: `Reminder: ${title}`, link_id: task.id})
+            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, location, description: `Reminder: ${title}`, link_id: task.id})
             : Promise.resolve())
             .then(() => task)
         )
@@ -47,11 +47,11 @@ function getById(id) {
 }
 
 function update(task) {
-    const { id, title, description, assigned, due, reminder } = task;
+    const { id, title, location, description, assigned, due, reminder } = task;
     let obj = {};
     if(assigned) obj.assigned = assigned;
     if(due) obj.due = due;
-    return ScheduleItem.update({id, title, description})
+    return ScheduleItem.update({id, title, location, description})
     .then(() => 
         (Object.keys(obj).length === 0
         ? Promise.resolve()
@@ -62,7 +62,7 @@ function update(task) {
             getById(id)
             .then(t =>
                 (reminder 
-                ? ScheduleReminder.create({...reminder, entity_id: t.entity_id, link_id: id})
+                ? ScheduleReminder.create({...reminder, location, entity_id: t.entity_id, link_id: id})
                 : Promise.resolve())
                 .then(() => t)
             )
