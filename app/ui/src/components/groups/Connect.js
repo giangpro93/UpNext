@@ -60,24 +60,6 @@ export default function Groups(props) {
 		e.target.style.opacity = '1';
 	}
 
-
-
-	{/*
-	function goToGroupPage(name,id,desc,email,admin){
-		history.push({
-		   pathname: '/groupPage',
-		   state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email, is_admin: admin }
-		});
-  }
-
-{/*  var testing = api.groups.search("Nol");
-	testing.then((resp) => {
-		console.log(resp);
-	}) */}
-
-
-
-
 	useEffect(() => {
 		var promise = api.groups.search(searchTerm)
 		promise.then((groups) => {
@@ -95,13 +77,6 @@ export default function Groups(props) {
 		});
 	}, [searchTerm]);
 
-{/*
-const reqObj = {user_id: 1, group_id: 11}
-var groupPromise = api.memberships.get(reqObj)
-groupPromise.then((group) => {
-console.log(group)
-})
-*/}
 function goToGroup(name,groupId,desc,email){
 	var goToPromise = api.memberships.getGroupsOfUser(id)
 	goToPromise.then((group) => {
