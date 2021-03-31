@@ -25,5 +25,10 @@
     },
     "comments": {
         "inspiration": "https://github.com/jerryryle/react-express-docker-skeleton.git"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.11.3",
+        "axios": "^0.21.1",
+        "dompurify": "^2.2.7"
     }
 }
