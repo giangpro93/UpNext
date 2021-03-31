@@ -73,6 +73,7 @@ export default function GroupPage(props) {
 	const [eventStart, setEventStart] = useState('');
 	const [eventEnd, setEventEnd] = useState('');
 	const [eventDescription, setEventDescription] = useState('');
+	const [loadCreatePost, setLoadCreatePost] = useState(false);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -82,6 +83,8 @@ export default function GroupPage(props) {
 	const currentUser = useSelector(state => state.users.currentUser);
 	const groupId = location.state.groupID;
 	const isAdmin = location.state.is_admin;
+	var is_member = location.state.isMember;
+	var prevPage  = location.state.page;
 	if(isAdmin === 1){
 		owner = true;
 	}
@@ -89,7 +92,6 @@ export default function GroupPage(props) {
 		owner = false;
 	}
 	var userId = currentUser['id'];
-console.log(groupId);
 	function changeBackground(e) {
            e.target.style.opacity = '0.5';
 	}
@@ -98,8 +100,15 @@ console.log(groupId);
 	}
 	const history = useHistory();
 	function goBack(name,id){
+		var push = ''
+		if(prevPage === "connect"){
+			push = '/connect'
+		}
+		else{
+			push = '/groups'
+		}
 		history.push({
-			 pathname: '/groups',
+			 pathname: push,
 		});
 	}
 
@@ -107,24 +116,18 @@ console.log(groupId);
 
 				{/*the block of code below is the broken stuff.*/}
 
-	function fetchGroupData(){
-					return Promise.all([
-						api.schedule.getEntityScheduleById(groupId)
-					]).then((groupSchedule) => {
-					return({groupSchedule})
-					})
-	}
-
-			const groupPromise = fetchGroupData();
 
 			useEffect(() => {
+				var groupPromise = api.schedule.getEntityScheduleById(groupId);
 					groupPromise.then(data => {
-						setGroupEvents(data.groupSchedule[0]);
+						setGroupEvents(data);
+						setLoadCreatePost(false);
 					});
-				}, [groupPromise]);
+				}, [loadCreatePost]);
 
 
 			function leaveGroup(){
+				if(is_member){
 				var reqObj = { user_id: userId, group_id: groupId};
 				console.log(reqObj.user_id)
 				console.log(reqObj.group_id)
@@ -135,12 +138,21 @@ console.log(groupId);
 
 				})
 			}
+			else{
+				var addData = {user_id: userId, group_id: groupId, is_admin: 0}
+				var newGroupPromise = api.memberships.create(addData);
+				newGroupPromise.then((resp) => {
+					console.log(resp);
+				})
+			}
+			}
 			function createPost(title,location,start,end,desc){
 				var requestVar = {entity_id: groupId, title: title, location: location, description: desc,start:start,end:end}
 			var reqEvent =	api.schedule.createEvent(requestVar);
 			reqEvent.then((resp) => {
 				console.log(resp);
 				setEventWindow(false);
+				setLoadCreatePost(true);
 			})
 			}
 
@@ -162,7 +174,7 @@ console.log(groupId);
 			        </IconButton>
 				</Tooltip>
 				<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
-								Leave
+							{is_member ? 'Leave' : 'Join'}
 				</Button>
 			       </div>
 				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">

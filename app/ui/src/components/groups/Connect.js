@@ -51,7 +51,14 @@ export default function Groups(props) {
 	var id = currentUser['id'];
 	const [groupTiles, setGroupTiles] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
+	const [isMember, setIsMember] = useState(false);
+	function changeBackground(e) {
+		 e.target.style.opacity = '0.5';
+	}
 
+	function changeBack(e){
+		e.target.style.opacity = '1';
+	}
 
 
 
@@ -88,6 +95,35 @@ export default function Groups(props) {
 		});
 	}, [searchTerm]);
 
+{/*
+const reqObj = {user_id: 1, group_id: 11}
+var groupPromise = api.memberships.get(reqObj)
+groupPromise.then((group) => {
+console.log(group)
+})
+*/}
+function goToGroup(name,groupId,desc,email){
+	var goToPromise = api.memberships.getGroupsOfUser(id)
+	goToPromise.then((group) => {
+		for(var i =0; i<group.length; i++){
+			if(group[i].id === groupId){
+				setIsMember(true)
+				goToGroupPage(group[i].name,group[i].id,group[i].description,group[i].email,group[i].is_admin,isMember)
+			}
+			else{
+				setIsMember(false)
+				goToGroupPage(name,groupId,desc,email,0,false)
+			}
+
+		}
+	})
+}
+function goToGroupPage(name,id,desc,email,admin,is_member){
+	history.push({
+		 pathname: '/groupPage',
+		 state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email, is_admin: admin, isMember: is_member, page: "connect" }
+	});
+}
 
 	return (
 	<div>
@@ -105,7 +141,7 @@ export default function Groups(props) {
 		{
 
 groupTiles.map(group => (
-	<Paper key={group.id} className={classes.groupPaper}>
+	<Paper key={group.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack} onClick={() => goToGroup(group.name,group.id,group.description,group.email)}>
 		<div className={classes.groupNames}>{group.name}</div>
 	</Paper>
 ))

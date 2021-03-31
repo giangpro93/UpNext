@@ -96,7 +96,7 @@ export default function Groups(props) {
 	function goToGroupPage(name,id,desc,email,admin){
 		history.push({
 		   pathname: '/groupPage',
-		   state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email, is_admin: admin }
+		   state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email, is_admin: admin, isMember: true, page: "group"}
 		});
   }
 	function createGroup(name,desc,email){
