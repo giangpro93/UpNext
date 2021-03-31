@@ -108,13 +108,12 @@ function goToGroup(name,groupId,desc,email){
 		for(var i =0; i<group.length; i++){
 			if(group[i].id === groupId){
 				setIsMember(true)
-				goToGroupPage(group[i].name,group[i].id,group[i].description,group[i].email,group[i].is_admin,isMember)
-			}
-			else{
-				setIsMember(false)
-				goToGroupPage(name,groupId,desc,email,0,false)
+				goToGroupPage(group[i].name,group[i].id,group[i].description,group[i].email,group[i].is_admin,true)
 			}
 
+		}
+		if(isMember !== true){
+			goToGroupPage(name,groupId,desc,email,0,false)
 		}
 	})
 }

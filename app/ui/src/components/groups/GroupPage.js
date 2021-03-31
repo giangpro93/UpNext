@@ -74,6 +74,7 @@ export default function GroupPage(props) {
 	const [eventEnd, setEventEnd] = useState('');
 	const [eventDescription, setEventDescription] = useState('');
 	const [loadCreatePost, setLoadCreatePost] = useState(false);
+	const [joinedGroup, setJoinedGroup] = useState(location.state.isMember);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -123,11 +124,11 @@ export default function GroupPage(props) {
 						setGroupEvents(data);
 						setLoadCreatePost(false);
 					});
-				}, [loadCreatePost]);
+				}, [loadCreatePost, joinedGroup]);
 
 
 			function leaveGroup(){
-				if(is_member){
+				if(joinedGroup){
 				var reqObj = { user_id: userId, group_id: groupId};
 				console.log(reqObj.user_id)
 				console.log(reqObj.group_id)
@@ -144,6 +145,7 @@ export default function GroupPage(props) {
 				newGroupPromise.then((resp) => {
 					console.log(resp);
 				})
+				setJoinedGroup(true)
 			}
 			}
 			function createPost(title,location,start,end,desc){
@@ -174,7 +176,7 @@ export default function GroupPage(props) {
 			        </IconButton>
 				</Tooltip>
 				<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
-							{is_member ? 'Leave' : 'Join'}
+							{joinedGroup ? 'Leave' : 'Join'}
 				</Button>
 			       </div>
 				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">
