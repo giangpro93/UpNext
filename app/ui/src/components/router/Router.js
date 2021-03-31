@@ -8,6 +8,7 @@ import Groups from '../groups/Groups'
 import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
 import Login from '../login/Login'
+import Connect from '../groups/Connect'
 // import Profile from '../profile/Profile'
 // const useStyles = makeStyles(theme => ({
 //     content: theme.mixins.toolbar
@@ -46,7 +47,7 @@ function LoggedIn() {
                         <GroupPage />
                     </Route>
                     <Route exact path="/connect">
-                        Connect
+                        <Connect />
                     </Route>
                     <Route exact path="/create">
                         Create
@@ -59,7 +60,3 @@ function LoggedIn() {
         </>
     )
 }
-
-
-
-

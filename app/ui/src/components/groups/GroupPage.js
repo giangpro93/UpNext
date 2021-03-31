@@ -129,7 +129,7 @@ export default function GroupPage(props) {
 
 			function leaveGroup(){
 				if(joinedGroup){
-				var reqObj = { user_id: userId, group_id: groupId};
+				var reqObj = { user_id: 1, group_id: 11};
 				console.log(reqObj.user_id)
 				console.log(reqObj.group_id)
 				const promise = api.memberships.deleteMembership(reqObj);
