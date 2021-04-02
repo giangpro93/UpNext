@@ -68,6 +68,8 @@ export default function GroupPage(props) {
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [groupEvents,setGroupEvents] = useState([]);
+	const [groupReminders,setGroupReminders] = useState([]);
+	const [groupTasks, setGroupTasks] = useState([]);
 	const [eventName,setEventName] = useState('');
 	const [eventLocation, setEventLocation] = useState('');
 	const [eventStart, setEventStart] = useState('');
@@ -115,13 +117,56 @@ export default function GroupPage(props) {
 
 
 
-				{/*the block of code below is the broken stuff.*/}
 
 
 			useEffect(() => {
+				var events = []
+				var reminders = []
+				var tasks = []
 				var groupPromise = api.schedule.getEntityScheduleById(groupId);
 					groupPromise.then(data => {
-						setGroupEvents(data);
+						for(var post = 0; post<data.length; post++){
+							if(data[post].type === 'event'){
+								data[post].start = "Date: " + data[post].start.substring(0,10);
+								events.push(data[post]);
+							}
+							if(data[post].type === 'reminder'){
+								data[post].time = "Date: " + data[post].time.substring(0,10);
+								reminders.push(data[post]);
+							}
+							if(data[post].type === 'task'){
+								data[post].due = "Date: " + data[post].due.substring(0,10);
+								tasks.push(data[post]);
+							}
+						}
+						events.sort(function(a, b){
+							if(a.start.substring(12,16) < b.start.substring(12,16)){
+								return -1;
+							}
+							else{
+								return 1;
+							}
+						})
+						reminders.sort(function(a, b){
+							if(a.time.substring(12,16) < b.time.substring(12,16)){
+								return -1;
+							}
+							else{
+								return 1;
+							}
+						})
+						tasks.sort(function(a, b){
+							if(a.due.substring(12,16) < b.due.substring(12,16)){
+								return -1;
+							}
+							else{
+								return 1;
+							}
+						})
+
+						setGroupEvents(events);
+						setGroupTasks(tasks);
+						setGroupReminders(reminders);
 						setLoadCreatePost(false);
 					});
 				}, [loadCreatePost, joinedGroup]);
@@ -192,6 +237,7 @@ export default function GroupPage(props) {
 			                                          </Button>
 			                                        </DialogActions>
 			                                      </Dialog>
+			<h2> Events </h2>
 			<div className={classes.eventBoard}>
 				{groupEvents.map(event => (
 
@@ -215,6 +261,60 @@ export default function GroupPage(props) {
 					{event.description}
 				</Typography>
 			      </CardContent>
+				</Card>
+				))}
+				</div>
+				<h2> Reminders </h2>
+				<div className={classes.eventBoard}>
+				{groupReminders.map(event => (
+
+				<Card key={event.id} className={classes.card}>
+						<CardHeader
+							avatar={
+										<Avatar className={classes.avatar}>
+										H
+										</Avatar>
+									}
+							title={event.title}
+							subheader={event.time}
+						/>
+
+						<CardContent>
+							<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+								{event.location}
+
+							</Typography>
+				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
+					{event.description}
+				</Typography>
+						</CardContent>
+				</Card>
+				))}
+				</div>
+				<h2> Tasks </h2>
+				<div className={classes.eventBoard}>
+				{groupTasks.map(event => (
+
+				<Card key={event.id} className={classes.card}>
+						<CardHeader
+							avatar={
+										<Avatar className={classes.avatar}>
+										H
+										</Avatar>
+									}
+							title={event.title}
+							subheader={event.due}
+						/>
+
+						<CardContent>
+							<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+								{event.location}
+
+							</Typography>
+				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
+					{event.description}
+				</Typography>
+						</CardContent>
 				</Card>
 				))}
 			</div>
