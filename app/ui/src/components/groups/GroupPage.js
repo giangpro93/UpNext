@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 				flexDirection: 'row',
 				justifyContent: 'flex-end',
 				marginTop: 16,
+				marginBottom: 16,
 		},
 		leaveGroupButton: {
 			marginLeft: 16,
@@ -371,7 +372,7 @@ export default function GroupPage(props) {
 				    	   label="Event End"
 				           type="datetime-local"
 									 onChange={(e) => setEventEnd(e.target.value)}
-				    	   defaultValue="2021-01-24T10:30"
+				    	   defaultValue="2021-04-24T10:30"
 				    	   InputLabelProps={{
 					          shrink: true,
 						        }}
