@@ -15,21 +15,7 @@ const useStyles = makeStyles((theme) => ({
 		  		bottomMargin: 16,
 
 		    },
-	nothingPaper:{
-	 						textAlign: 'center',
-		          marginTop: 8,
-		          marginLeft: 4,
-				      marginBottom: 16,
-		          position: 'relative',
-		          minWidth: 200,
-		          minHeight: 200,
-				      outline: 'none',
-		          width: 'max-content',
-		          color: 'white',
-		          height: '40%',
-		      	  backgroundColor: '#303030',
-
-	},
+	
 	  groupPaper: {
 		      		textAlign: 'center',
 		      		marginTop: 8,
@@ -96,7 +82,7 @@ export default function Groups(props) {
 	function goToGroupPage(name,id,desc,email,admin){
 		history.push({
 		   pathname: '/groupPage',
-		   state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email, is_admin: admin }
+		   state: { groupName: name, groupID: id, groupDesc: desc, groupEmail: email, is_admin: admin, isMember: true, page: "group"}
 		});
   }
 	function createGroup(name,desc,email){
