@@ -268,7 +268,7 @@ export default function GroupPage(props) {
 				<h2> Reminders </h2>
 				<div className={classes.eventBoard}>
 				{groupReminders.map(event => (
-
+					
 				<Card key={event.id} className={classes.card}>
 						<CardHeader
 							avatar={

@@ -8,7 +8,7 @@ import Groups from '../groups/Groups'
 import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
 import Login from '../login/Login'
-import Connect from '../groups/Connect'
+import Connect from '../connect/Connect'
 // import Profile from '../profile/Profile'
 // const useStyles = makeStyles(theme => ({
 //     content: theme.mixins.toolbar
