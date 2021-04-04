@@ -25,7 +25,7 @@ function create(membershipInfo) {
 
 function deleteMembership(membershipInfo) {
     return logAPICall(membershipInfo, () =>
-        axiosInstance.delete('/memberships/', membershipInfo)
+        axiosInstance.delete('/memberships/', {data: membershipInfo})
     );
 }
 
