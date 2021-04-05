@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MessageSearchBar from './SearchBar';
+import MessageDashBoard from './MessageDashboard'
 
 export default function MessagePage() {
 
@@ -8,8 +9,8 @@ export default function MessagePage() {
       <h3>
         This is my messages.
       </h3>
-      <MessageSearchBar />
+      <MessageDashBoard />
     </div>
-  )
+  );
     
 }
