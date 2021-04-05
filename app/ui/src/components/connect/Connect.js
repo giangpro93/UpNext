@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
 		      display: 'flex',
 		  		justifyContent: 'flex-start',
 		  		flexWrap: 'wrap',
-		  		bottomMargin: 16,
+		  		bottomMargin: 32,
+					flexDirection: 'column',
 
 		    },
 	  groupPaper: {
@@ -20,12 +21,12 @@ const useStyles = makeStyles((theme) => ({
 		      		marginTop: 8,
 		      		marginRight: 16,
 		      		position: 'relative',
-		      		minWidth: 200,
-		      		minHeight: 200,
+		      		minWidth: 800,
+		      		minHeight: 50,
 		      		width: 'max-content',
-		     			color: 'white',
+		     			color: 'black',
 		      		height: '40%',
-		  				backgroundColor: "#3CB371",
+		  				backgroundColor: "white",
 		  				'&:hover': {
 							background:'#3CB371',
 			},
@@ -43,13 +44,14 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function Groups(props) {
+export default function Connect(props) {
 	const location = useLocation();
 	const history = useHistory();
 	const classes = useStyles();
 	const currentUser = useSelector(state => state.users.currentUser);
 	var id = currentUser['id'];
 	const [groupTiles, setGroupTiles] = useState([]);
+	const [userTiles, setUserTiles] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
 	const [isMember, setIsMember] = useState(false);
 	function changeBackground(e) {
@@ -61,16 +63,30 @@ export default function Groups(props) {
 	}
 
 	useEffect(() => {
-		var promise = api.groups.search(searchTerm)
-		promise.then((groups) => {
+		var groupSearchPromise = api.groups.search(searchTerm)
+		groupSearchPromise.then((groups) => {
 
 			if(groups !== "" && groups !== null){
 				setGroupTiles(groups)
 			}
 			else{
-				var firstPromise = api.groups.getAll()
-				firstPromise.then((group) => {
+				var allGroupPromise = api.groups.getAll()
+				allGroupPromise.then((group) => {
 					setGroupTiles(group)
+				});
+			}
+
+		});
+		var userSearchPromise = api.users.search(searchTerm)
+		userSearchPromise.then((users) => {
+
+			if(users !== "" && users !== null){
+				setUserTiles(users)
+			}
+			else{
+				var allUserPromise = api.users.getAll()
+				allUserPromise.then((userss) => {
+					setUserTiles(userss)
 				});
 			}
 
@@ -112,14 +128,22 @@ function goToGroupPage(name,id,desc,email,admin,is_member){
 	 	 type="text"
 	 	 fullWidth
 	  />
+		Groups:
 		{
-
 groupTiles.map(group => (
 	<Paper key={group.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack} onClick={() => goToGroup(group.name,group.id,group.description,group.email)}>
 		<div className={classes.groupNames}>{group.name}</div>
 	</Paper>
 ))
    }
+	 Users:
+	 {
+userTiles.map(user => (
+ <Paper key={user.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack}>
+	 <div className={classes.groupNames}>{user.name}</div>
+ </Paper>
+))
+	 }
 	 </div>
 	 </div>
 
