@@ -6,7 +6,8 @@ import InfoIcon from '@material-ui/icons/Info';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Tooltip, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Tooltip,Accordion,AccordionSummary,AccordionDetails, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
 import { useSelector } from 'react-redux'
 var owner = false;
 const api = require('../../api-client/api.js');
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 				display: 'flex',
 				flexDirection: 'row',
 				flexWrap: 'wrap',
+				flexGrow: 1,
 		},
 
 		paper: {
@@ -68,6 +70,12 @@ const useStyles = makeStyles((theme) => ({
 			marginTop: 8,
 			marginBottom: 8,
 		},
+		userDisplay: {
+			display: 'flex',
+			flexDirection: 'column',
+			flexWrap: 'wrap',
+			flexGrow: 1,
+		},
 }));
 
 export default function GroupPage(props) {
@@ -85,6 +93,7 @@ export default function GroupPage(props) {
 	const [loadCreatePost, setLoadCreatePost] = useState(false);
 	const [groupUsers, setGroupUsers] = useState([]);
 	const [joinedGroup, setJoinedGroup] = useState(location.state.isMember);
+	const [makeAdmin, setMakeAdmin] = useState(false);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -96,6 +105,7 @@ export default function GroupPage(props) {
 	const isAdmin = location.state.is_admin;
 	var is_member = location.state.isMember;
 	var prevPage  = location.state.page;
+
 	if(isAdmin === 1){
 		owner = true;
 	}
@@ -174,13 +184,14 @@ export default function GroupPage(props) {
 						var userPromise = api.memberships.getUsersOfGroup(groupId)
 						userPromise.then((users) => {
 							console.log(users)
+							setGroupUsers(users)
 						})
 						setGroupEvents(events);
 						setGroupTasks(tasks);
 						setGroupReminders(reminders);
 						setLoadCreatePost(false);
 					});
-				}, [loadCreatePost, joinedGroup]);
+				}, [loadCreatePost, joinedGroup,makeAdmin]);
 
 
 			function leaveGroup(){
@@ -211,6 +222,14 @@ export default function GroupPage(props) {
 				setLoadCreatePost(true);
 			})
 			}
+			function makeAdminFunc(id){
+				var reqAdmin = {user_id: id, group_id: groupId}
+				var reqAdminEvent = api.memberships.makeAdmin(reqAdmin)
+				reqAdminEvent.then((resp) => {
+					  console.log(resp)
+						setMakeAdmin(true)
+				})
+			}
 
 
 
@@ -239,7 +258,30 @@ export default function GroupPage(props) {
 			                                          <DialogContentText>
 																									{description}
 			                                          </DialogContentText>
-
+																								<Accordion className={classes.userDisplay}>
+	<AccordionSummary
+		expandIcon={<ExpandMoreIcon />}
+		aria-controls="panel1a-content"
+		id="panel1a-header"
+	>
+		<Typography className={classes.heading}>Users</Typography>
+	</AccordionSummary>
+	<AccordionDetails className={classes.userDisplay}>
+	{groupUsers.map(user => (
+	<div className={classes.root}>
+	<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+		{user.name}
+		{(user.is_admin === 1) ? '(Admin)' : ''}
+	</Typography>
+	{(owner === true && user.is_admin === 0) ? (
+<Button color="primary" onClick={() => { makeAdminFunc(user.id); }}>
+	Make Admin
+</Button>
+) : null}
+</div>
+	))}
+	</AccordionDetails>
+</Accordion>
 			                                        </DialogContent>
 								<DialogActions>
 			                                          <Button onClick={() => { setInfoWindow(false); }} color="primary">
@@ -328,7 +370,7 @@ export default function GroupPage(props) {
 				</Card>
 				))}
 			</div>
-			{owner === true ? (
+			{isAdmin === true ? (
 				         <div className={classes.createPostButton}>
 				         	<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                	Create Event
