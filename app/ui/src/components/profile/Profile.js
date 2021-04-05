@@ -9,6 +9,7 @@ const email = 'user@user.com';
 
 export default function Profile() {
     
+    //to get user info
     const currentUser = useSelector(state => state.users.currentUser);
     var userId = currentUser['id'];
 
