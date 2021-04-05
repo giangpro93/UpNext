@@ -7,10 +7,11 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import GroupIcon from '@material-ui/icons/Group';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import MessageIcon from '@material-ui/icons/Message';
 
 const useStyles = makeStyles(theme => ({
     drawerPaper: { width: 'inherit' },
-    link: { 
+    link: {
         textDecoration: 'none',
         color: theme.palette.text.primary
     }
@@ -35,6 +36,7 @@ export default function Sidebar(props) {
                 <SidebarItem onClose={onClose} to="/groups" text='Groups' icon={<GroupIcon />} />
                 <SidebarItem onClose={onClose} to="/connect" text='Connect' icon={<GroupAddIcon />} />
                 <SidebarItem onClose={onClose} to="/create" text='Create' icon={<AddCircleIcon />} />
+                <SidebarItem onClose={onClose} to="/messages" text='Messages' icon={<MessageIcon />} />
             </List>
         </Drawer>
     </div>
