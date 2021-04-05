@@ -1,16 +1,23 @@
 import React, { Component } from 'react'
 import {useState} from 'react'
 import '../App.css'
+import { useSelector } from 'react-redux'
 
-const user = 'John Doe';
-const email = 'johndoe@themostjoe.org';
+const api = require('../../api-client/api.js');
+const user = 'User';
+const email = 'user@user.com';
+
 export default function Profile() {
 
+    //to get user info
+    const currentUser = useSelector(state => state.users.currentUser);
+    var userId = currentUser['id'];
+
+    //upload icon
     const [icon] = useState('https://cdn1.iconfinder.com/data/icons/rounded-black-basic-ui/139/Photo_Add-RoundedBlack-512.png')
-    //state={
-    //    profileImg: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png' //default pic
-    //}
+    //blank profile pic
     const [profileImg, setProfileImg] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png')
+    //bio message
     const [message, setMessage] =
          useState('This is a default bio. Click on Edit Bio to change it. The text will wrap around like this automatically. All you have to do is enter your description. Thanks!')
     
@@ -18,19 +25,19 @@ export default function Profile() {
 
     }
 
+    //image preview
     const imageHandler = (e) => {
         const reader = new FileReader();
         reader.onload = () => {
             if(reader.readyState === 2)
             {
-                //this.setState({profileImg: reader.result})
-                setProfileImg({profileImg: reader.result})
+                setProfileImg(reader.result)
             }
         }
         reader.readAsDataURL(e.target.files[0])
     }
 
-    //const {profileImg} = this.state
+    //render
     return (
         <div>
             <div className="page">
