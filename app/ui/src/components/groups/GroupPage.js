@@ -94,6 +94,7 @@ export default function GroupPage(props) {
 	const [groupUsers, setGroupUsers] = useState([]);
 	const [joinedGroup, setJoinedGroup] = useState(location.state.isMember);
 	const [makeAdmin, setMakeAdmin] = useState(false);
+	const [delEvent,setDelEvent] = useState(false);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -191,7 +192,7 @@ export default function GroupPage(props) {
 						setGroupReminders(reminders);
 						setLoadCreatePost(false);
 					});
-				}, [loadCreatePost, joinedGroup,makeAdmin]);
+				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent]);
 
 
 			function leaveGroup(){
@@ -228,6 +229,13 @@ export default function GroupPage(props) {
 				reqAdminEvent.then((resp) => {
 					  console.log(resp)
 						setMakeAdmin(true)
+				})
+			}
+			function deleteEventFunc(id){
+				var delEvent = api.schedule.deleteScheduleItemById(id)
+				delEvent.then((resp) => {
+					  console.log(resp)
+						setDelEvent(true)
 				})
 			}
 
@@ -297,7 +305,7 @@ export default function GroupPage(props) {
 			      <CardHeader
 			        avatar={
 					          <Avatar className={classes.avatar}>
-										H
+										E
 					          </Avatar>
 					        }
 			        title={event.title}
@@ -312,6 +320,11 @@ export default function GroupPage(props) {
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
 					{event.description}
 				</Typography>
+				{owner === true ? (
+				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
+					Delete
+				</Button>
+				) : null}
 			      </CardContent>
 				</Card>
 				))}
@@ -324,7 +337,7 @@ export default function GroupPage(props) {
 						<CardHeader
 							avatar={
 										<Avatar className={classes.avatar}>
-										H
+										R
 										</Avatar>
 									}
 							title={event.title}
@@ -339,6 +352,11 @@ export default function GroupPage(props) {
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
 					{event.description}
 				</Typography>
+				{owner === true ? (
+				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
+					Delete
+				</Button>
+				) : null}
 						</CardContent>
 				</Card>
 				))}
@@ -351,7 +369,7 @@ export default function GroupPage(props) {
 						<CardHeader
 							avatar={
 										<Avatar className={classes.avatar}>
-										H
+										T
 										</Avatar>
 									}
 							title={event.title}
@@ -366,11 +384,16 @@ export default function GroupPage(props) {
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
 					{event.description}
 				</Typography>
+				{owner === true ? (
+				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
+					Delete
+				</Button>
+				) : null}
 						</CardContent>
 				</Card>
 				))}
 			</div>
-			{isAdmin === true ? (
+			{owner === true ? (
 				         <div className={classes.createPostButton}>
 				         	<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                	Create Event
