@@ -62,6 +62,12 @@ const useStyles = makeStyles((theme) => ({
 		leaveGroupButton: {
 			marginLeft: 16,
 		},
+		userPaper: {
+			width: 200,
+			height: 50,
+			marginTop: 8,
+			marginBottom: 8,
+		},
 }));
 
 export default function GroupPage(props) {
@@ -77,6 +83,7 @@ export default function GroupPage(props) {
 	const [eventEnd, setEventEnd] = useState('');
 	const [eventDescription, setEventDescription] = useState('');
 	const [loadCreatePost, setLoadCreatePost] = useState(false);
+	const [groupUsers, setGroupUsers] = useState([]);
 	const [joinedGroup, setJoinedGroup] = useState(location.state.isMember);
   var description = location.state.groupDesc;
 	if(description == null){
@@ -164,7 +171,10 @@ export default function GroupPage(props) {
 								return 1;
 							}
 						})
-
+						var userPromise = api.memberships.getUsersOfGroup(groupId)
+						userPromise.then((users) => {
+							console.log(users)
+						})
 						setGroupEvents(events);
 						setGroupTasks(tasks);
 						setGroupReminders(reminders);
@@ -175,14 +185,12 @@ export default function GroupPage(props) {
 
 			function leaveGroup(){
 				if(joinedGroup){
-				var reqObj = { user_id: 1, group_id: 11};
+				var reqObj = { user_id: userId, group_id: groupId};
 				console.log(reqObj.user_id)
 				console.log(reqObj.group_id)
 				const promise = api.memberships.deleteMembership(reqObj);
 				promise.then((resp) => {
-					console.log(typeof resp);
-					console.log(resp);
-
+					setJoinedGroup(false)
 				})
 			}
 			else{
@@ -231,6 +239,7 @@ export default function GroupPage(props) {
 			                                          <DialogContentText>
 																									{description}
 			                                          </DialogContentText>
+
 			                                        </DialogContent>
 								<DialogActions>
 			                                          <Button onClick={() => { setInfoWindow(false); }} color="primary">
@@ -268,7 +277,7 @@ export default function GroupPage(props) {
 				<h2> Reminders </h2>
 				<div className={classes.eventBoard}>
 				{groupReminders.map(event => (
-					
+
 				<Card key={event.id} className={classes.card}>
 						<CardHeader
 							avatar={
