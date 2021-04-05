@@ -76,6 +76,12 @@ const useStyles = makeStyles((theme) => ({
 			flexWrap: 'wrap',
 			flexGrow: 1,
 		},
+		remindPage: {
+			display: 'flex',
+			justifySelf: 'flex-end',
+			width: 80,
+			height: 600,
+		},
 }));
 
 export default function GroupPage(props) {
@@ -270,7 +276,7 @@ export default function GroupPage(props) {
 	<AccordionSummary
 		expandIcon={<ExpandMoreIcon />}
 		aria-controls="panel1a-content"
-		id="panel1a-header"
+
 	>
 		<Typography className={classes.heading}>Users</Typography>
 	</AccordionSummary>

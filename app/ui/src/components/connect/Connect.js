@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {useState} from 'react';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { makeStyles, Paper, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
+import { makeStyles, Paper, Button,TextField} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 const api = require('../../api-client/api.js');
@@ -17,28 +17,22 @@ const useStyles = makeStyles((theme) => ({
 
 		    },
 	  groupPaper: {
-		      		textAlign: 'center',
 		      		marginTop: 8,
+							marginBottom: 8,
 		      		marginRight: 16,
 		      		position: 'relative',
 		      		minWidth: 800,
 		      		minHeight: 50,
+							display: 'flex',
 		      		width: 'max-content',
+							alignItems: 'center',
 		     			color: 'black',
-		      		height: '40%',
 		  				backgroundColor: "white",
-		  				'&:hover': {
-							background:'#3CB371',
-			},
 		  				cursor: 'pointer',
 
 		    },
 	groupNames: {
-						position: 'absolute',
-		  			top: '50%',
-		  			left: '50%',
-		  			transform: 'translate(-50%, -50%)',
-		  			background: 'transparent',
+						marginLeft: 8,
 	},
 
 
@@ -63,6 +57,7 @@ export default function Connect(props) {
 	}
 
 	useEffect(() => {
+		{/*Group Searching. returns all groups if no search term given*/}
 		var groupSearchPromise = api.groups.search(searchTerm)
 		groupSearchPromise.then((groups) => {
 
@@ -77,6 +72,7 @@ export default function Connect(props) {
 			}
 
 		});
+ {/*users searching. returns all users if no search term given*/}
 		var userSearchPromise = api.users.search(searchTerm)
 		userSearchPromise.then((users) => {
 
@@ -101,13 +97,13 @@ function goToGroup(name,groupId,desc,email){
 				setIsMember(true)
 				goToGroupPage(group[i].name,group[i].id,group[i].description,group[i].email,group[i].is_admin,true)
 			}
-
 		}
 		if(isMember !== true){
 			goToGroupPage(name,groupId,desc,email,0,false)
 		}
 	})
 }
+
 function goToGroupPage(name,id,desc,email,admin,is_member){
 	history.push({
 		 pathname: '/groupPage',
@@ -117,7 +113,6 @@ function goToGroupPage(name,id,desc,email,admin,is_member){
 
 	return (
 	<div>
-
 	  <div className={classes.root}>
 		<TextField
 	 	 autoFocus
@@ -146,9 +141,5 @@ userTiles.map(user => (
 	 }
 	 </div>
 	 </div>
-
-
-
 	);
-
 }
