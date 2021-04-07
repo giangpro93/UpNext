@@ -15,9 +15,9 @@ module.exports = {
 };
 
 function create(user) {
-    const { name, email, password } = user;
+    const { name, email, description, password } = user;
     // generate password hash
-    return Entity.create({name, email, type: 'user'})
+    return Entity.create({name, email, description, type: 'user'})
         .then(() => hashPassword(password))
     // insert user into db
         .then(password_hash =>

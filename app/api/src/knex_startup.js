@@ -1,12 +1,17 @@
 const db = require('./knex_db');
-const { seed } = require('./db/seeds/initial');
+const initial = require('./db/seeds/01_initial');
+const demo_data = require('./db/seeds/02_demo_data.js');
+
+const seeds = () => demo_data.seed(db);
+    // initial.seed(db)
+    // .then(() => demo_data.seed(db));
 
 module.exports = { setup, setupWithRetries };
 
 function setup() {
     return db.migrate.down()
     .then(() => db.migrate.latest())
-    .then(() => seed(db));
+    .then(() => seeds());
 }
 
 function delay(ms) {
