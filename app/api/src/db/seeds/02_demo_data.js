@@ -42,14 +42,14 @@ exports.seed = function(knex) {
                 .then(orgs => {
                     const users = [...profs, ...students];
                     const groups = [...classes, ...orgs];
-                    const enities = [...users, ...groups];
+                    const entities = [...users, ...groups];
                     const now = new Date();
 
-                    const getEntity = entities => name => 
-                        entities.filter(e => e.name === name)[0];
+                    const getEntityByName = (name, es=entities) => 
+                        es.filter(e => e.name === name)[0];
 
-                    const getUser = getEntity(users);
-                    const getGroup = getEntity(groups);
+                    const getEntityById = (id, es=entities) =>
+                        es.filter(e => e.id === id)[0];
 
                     const createMemberships = () => {
                         // create admin (professor) of each class
@@ -178,6 +178,317 @@ exports.seed = function(knex) {
                         
                     };
 
+                    const createPosts = memberships => {
+                        let posts = [];
+                        // create global user & group posts
+                        entities.forEach(e => {
+                            posts.push({
+                                creator_id: e.id,
+                                content: `This is the first global post from ${e.name}`,
+                                created_at: addHours(now, -1 * random())
+                            });
+                        });
+
+                        // create user forum posts based on memberships
+                        memberships.forEach(m => {
+                            posts.push({
+                                creator_id: m.user_id,
+                                content: `This is a forum post from ${getEntityById(m.user_id).name}`,
+                                context_id: m.group_id,
+                                created_at: addHours(now, -1 * random())
+                            });
+                        });
+
+                        // create group forum posts in their own context
+                        groups.forEach(g => {
+                            posts.push({
+                                creator_id: g.id,
+                                content: `This is a forum post from ${getEntityById(g.id).name}`,
+                                context_id: g.id,
+                                created_at: addHours(now, -1 * random())
+                            });
+                        });
+
+                        return promiseMapList(posts, Models.Post.create);
+                    }
+
+                    const createEvents = () => {
+                        let events = [];
+                        // create personal events for each user
+                        users.forEach(u => {
+                            let r = random();
+                            let start = addHours(now, 24 + 3 * (random() - 0.5));
+                            let end = addHours(start, 1 + (random() - 0.5));
+
+                            events.push({
+                                entity_id: u.id,
+                                title: r < 0.33 ? 'Dentist' : r < 0.67 ? 'Doctor\'s' : 'Chiropractor\'s' + ' Appointment',
+                                description: 'This is a personal appointment.',
+                                location: 'Clinton Parkway and Wakarusa',
+                                start,
+                                end,
+                                reminder: addHours(start, -1)
+                            });
+
+                            r = random();
+                            start = addHours(now, 72 + 3 * (random() - 0.5));
+                            end = addHours(start, 4 + (random() - 0.5));
+
+                            events.push({
+                                entity_id: u.id,
+                                title: r < 0.33 ? 'Family Gathering' : r < 0.67 ? 'Friend\'s Birthday Party' : 'Golf Tee Time',
+                                location: r < 0.33 ? 'Uncle Tim\'s house' : r < 0.67 ? 'Friend\'s Apartment' : 'Eagle Bend Golf Course',
+                                description: 'This is a personal event.',
+                                start,
+                                end,
+                                reminder: addHours(start, -1)
+                            });
+
+                            start = addHours(now, (24 * 7) + 3 * (random() - 0.5));
+                            end = addHours(start, 3);
+
+                            events.push({
+                                entity_id: u.id,
+                                title: 'Hosting Party',
+                                location: 'My house',
+                                description: 'This is a personal event. I will be hosting a party for friends.',
+                                start,
+                                end,
+                                reminder: addHours(start, -24)
+                            });
+
+                            start = addHours(now, 84 + 3 * (random() - 0.5));
+                            end = addHours(start, 0.5);
+
+                            events.push({
+                                entity_id: u.id,
+                                title: 'Advising Appointment',
+                                location: 'Eaton Hall',
+                                description: 'I must meet with my advisor to get my enrollment hold lifted.',
+                                start,
+                                end,
+                                reminder: addHours(start, -24)
+                            });
+                        });
+
+
+                        // create class events (exams, review sessions, class times, etc)
+                        classes.forEach((c, i) => {
+                            let start = addHours(now, (24 * (i + 1)) + 2 * (i + (random() / 2)));
+                            let end = addHours(start, 1);
+
+                            events.push({
+                                entity_id: c.id,
+                                title: 'Exam 1 Review Session',
+                                location: 'Strong Hall',
+                                description: 'We will be solving practice problems relevant to Exam 1.',
+                                start,
+                                end,
+                                reminder: addHours(start, -2)
+                            });
+
+                            events.push({
+                                entity_id: c.id,
+                                title: 'Exam 1',
+                                location: 'Budig Hall',
+                                description: 'This exam covers all content from chapters 1-3 in the textbook.',
+                                start: addHours(start, 24),
+                                end: addHours(end, 25),
+                                reminder: addHours(start, -2)
+                            });
+
+                            events.push({
+                                entity_id: c.id,
+                                title: 'Quiz 2 Review Session',
+                                location: 'Wescoe Hall',
+                                description: 'We will be solving practice problems relevant to Quiz 2.',
+                                start: addHours(start, 24 * 7),
+                                end: addHours(end, 24 * 7),
+                                reminder: addHours(start, -2)
+                            });
+
+                            events.push({
+                                entity_id: c.id,
+                                title: 'Quiz 2',
+                                location: 'Budig Hall',
+                                description: 'This quiz covers content from chapters 4-5 in the textbook.',
+                                start: addHours(start, 24 * 8),
+                                end: addHours(end, (24 * 8)),
+                                reminder: addHours(start, -2)
+                            });
+
+                        });
+
+                        // create org events (meetings, events)
+                        orgs.forEach((org, i) => {
+                            let start = addHours(now, (24 * i) + 2 * (i + (random() / 2)));
+                            let end = addHours(start, 1);
+
+                            events.push({
+                                entity_id: org.id,
+                                title: 'Weekly Meeting',
+                                location: 'Capitol Federal Hall',
+                                description: 'We will be discussing recruitment and fundraising.',
+                                start,
+                                end,
+                                reminder: addHours(start, -2)
+                            });
+
+                            events.push({
+                                entity_id: org.id,
+                                title: 'Officer Meeting',
+                                location: 'Zoom Meeting (Virtual)',
+                                description: 'We will plan fundraising event.',
+                                start: addHours(start, 24),
+                                end: addHours(end, 24),
+                                reminder: addHours(start, -2)
+                            });
+
+                            events.push({
+                                entity_id: org.id,
+                                title: 'Fundraising Event',
+                                location: 'Speedy Carwash',
+                                description: 'Fundraiser at the local carwash.',
+                                start: addHours(start, 24 * 6),
+                                end: addHours(end, 24 * 6 + 2),
+                                reminder: addHours(start, -2)
+                            });
+
+                            events.push({
+                                entity_id: org.id,
+                                title: 'Post-Fundraiser Meal',
+                                location: 'The Big Biscuit',
+                                description: 'Meal to celebrate the completion of the fundraiser',
+                                start: addHours(start, 24 * 8),
+                                end: addHours(end, (24 * 8))
+                            });
+                        });
+
+                        promiseMapList(events, Models.ScheduleEvent.create);
+                    }
+
+                    const createTasks = () => {
+                        let tasks = [];
+                        // create personal tasks for each user
+                        users.forEach(u => {
+                            let r = random();
+                            let assigned = addHours(now, 2);
+                            let due = addHours(assigned, 24 * 7);
+
+                            tasks.push({
+                                entity_id: u.id,
+                                title: r < 0.33 ? 'Learn React' : r < 0.67 ? 'Learn Angular' : 'Learn Vue',
+                                description: 'Learn a frontend web framework to be able to build an interactive website',
+                                location: 'Home',
+                                assigned,
+                                due
+                            });
+
+                            r = random();
+                            assigned = addHours(due, 24);
+                            due = addHours(assigned, 24 * 14);
+
+                            tasks.push({
+                                entity_id: u.id,
+                                title: 'Build Personal Website',
+                                location: 'Home',
+                                description: 'Build my personal website',
+                                assigned,
+                                due
+                            });
+
+                            due = new Date('2021-05-17T00:00:00');
+
+                            tasks.push({
+                                entity_id: u.id,
+                                title: 'File Taxes',
+                                location: 'Online - TurboTax',
+                                description: 'Must pay my taxes before the deadline',
+                                assigned: now,
+                                due,
+                                reminder: addHours(due, -24)
+                            });
+
+                        });
+
+
+                        // create class tasks (exams, review sessions, class times, etc)
+                        classes.forEach((c, i) => {
+                            let assigned = addHours(now, 1 + i * 3);
+                            let due = addHours(assigned, 24 * 7);
+
+                            tasks.push({
+                                entity_id: c.id,
+                                title: 'Homework 3',
+                                location: 'Eaton Hall',
+                                description: 'Covers material from chapter 3 in the textbook',
+                                assigned,
+                                due,
+                                reminder: addHours(due, -2)
+                            });
+
+                            tasks.push({
+                                entity_id: c.id,
+                                title: 'Take Home Quiz 2',
+                                location: 'Online',
+                                description: 'Covers chapter 2 in the textbook',
+                                assigned: addHours(assigned, 24),
+                                due: addHours(assigned, 48),
+                                reminder: addHours(assigned, 23)
+                            });
+
+                            tasks.push({
+                                entity_id: c.id,
+                                title: 'Chapter 4 Reading',
+                                location: 'Home',
+                                description: 'Read chapter 4 prior to next week\'s lecture.',
+                                assigned: addHours(assigned, 24 * 3),
+                                due: addHours(due, 24 * 7)
+                            });
+
+                        });
+
+                        // create org tasks (meetings, tasks)
+                        orgs.forEach((org, i) => {
+                            let assigned = addHours(now, 26 * i + 0.5);
+                            let due = addHours(assigned, 24 * 7);
+
+                            tasks.push({
+                                entity_id: org.id,
+                                title: 'Find Fundraiser Donors',
+                                location: 'Online, door-to-door',
+                                description: 'Find people willing to donate to our organization',
+                                assigned,
+                                due
+                            });
+                        });
+
+                        promiseMapList(tasks, Models.ScheduleTask.create);
+                    }
+
+                    const createReminders = () => {
+                        let reminders = [];
+                        users.forEach(u => {
+                            reminders.push({
+                                entity_id: u.id,
+                                title: 'Take out the trash',
+                                location: 'Home',
+                                description: 'Trash is picked up today.',
+                                time: addHours(now, 48)
+                            });
+
+                            reminders.push({
+                                entity_id: u.id,
+                                title: 'Feed the neighbor\'s dogs',
+                                location: 'Neighbor\'s house',
+                                description: 'The neighbors are going out of town for the day.',
+                                time: addHours(now, 96)
+                            });
+                        })
+
+                        return promiseMapList(reminders, Models.ScheduleReminder.create);
+                    }
+
                     // memberships
                     return createMemberships()
                     // friend requests
@@ -186,15 +497,14 @@ exports.seed = function(knex) {
                         .then(requests => requests.filter(req => req.is_accepted))
                         // messages
                         .then(friendships => createMessages(friendships, memberships))
-                        // user posts
-
-                        // group posts
-
+                        // posts
+                        .then(() => createPosts(memberships))
                         // schedule events
-
+                        .then(createEvents)
                         // schedule tasks
-
+                        .then(createTasks)
                         // schedule reminders
+                        .then(createReminders)
                     );
                 })
             )

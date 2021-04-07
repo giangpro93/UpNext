@@ -29,12 +29,12 @@ function create(event) {
         db('ScheduleEvent')
         .insert({ id: item.id, ...obj})
         .then(() => getById(item.id))
-        .then(event => 
-            (reminder 
-            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, location, description: `Reminder: ${title}`, link_id: event.id})
-            : Promise.resolve())
-            .then(() => event)
-        )
+        .then(e => {
+            let p = Promise.resolve();
+            if(reminder)
+                p = ScheduleReminder.create({ entity_id, time: reminder, title: `Reminder: ${title}`, location, description: `Reminder: ${title}`, link_id: e.id})
+            return p.then(() => e);
+        })
     );
 }
 
@@ -58,12 +58,14 @@ function update(event) {
             .update(obj))
         .then(() =>
             getById(id)
-            .then(e =>
-                (reminder 
-                ? ScheduleReminder.create({...reminder, location, entity_id: e.entity_id, link_id: id})
-                : Promise.resolve())
-                .then(() => e)
-            )
+            .then(e => {
+                let p = Promise.resolve();
+                if(reminder)
+                    p = ScheduleReminder.getByLinkId(e.id)
+                    .then(r => ScheduleReminder.update({ entity_id: e.entity_id, time: reminder, title: `Reminder: ${e.title}`, location: e.location, description: `Reminder: ${e.title}`, link_id: e.id}))
+                    .catch(() => ScheduleReminder.create({ entity_id: e.entity_id, time: reminder, title: `Reminder: ${e.title}`, location: e.location, description: `Reminder: ${e.title}`, link_id: e.id}))
+                return p.then(() => e);
+            })
         )
     );
 }
