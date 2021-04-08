@@ -87,7 +87,7 @@ export default function Schedule(props) {
                 events.push({
                     title: `Assigned: ${item.title}`,
                     start: new Date(dateStore(item.assigned)),
-                    end: addHours(new Date(dateStore(item.assigned)), 1),
+                    end: new Date(dateStore(item.assigned)),
                     allDay: false,
                     resource: item
                 });
@@ -96,7 +96,7 @@ export default function Schedule(props) {
                 events.push({
                     title: `Due: ${item.title}`,
                     start: new Date(dateStore(item.due)),
-                    end: addHours(new Date(dateStore(item.due)), 1),
+                    end: new Date(dateStore(item.due)),
                     allDay: false,
                     resource: item
                 });
@@ -105,7 +105,7 @@ export default function Schedule(props) {
                 events.push({
                     title: item.title,
                     start: new Date(dateStore(item.time)),
-                    end: addHours(new Date(dateStore(item.time)), 1),
+                    end: new Date(dateStore(item.time)),
                     allDay: false,
                     resource: item
                 });

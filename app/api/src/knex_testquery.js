@@ -1,6 +1,5 @@
 const db = require('./knex_db');
-const ScheduleEvent = require('./api/models/ScheduleEvent');
-const User = require('./api/models/User');
+const Models = require('./db/Models');
 
 const term = 'user';
 const id = 1;
@@ -27,8 +26,18 @@ const reminders_attrs = ['ScheduleItem.*', 'ScheduleReminder.time', 'ScheduleRem
 const tasks_attrs = ['ScheduleItem.*', 'ScheduleTask.assigned', 'ScheduleTask.due', 'Entity.name'];
 const events_attrs = ['ScheduleItem.*', 'ScheduleEvent.start', 'ScheduleEvent.end', 'Entity.name'];
 
-const query = 
-User.search({term});
+const userNames = ['User User', 'John Lee', 'Stacy Stevenson', 'Michael Johnson', 'Lauren Smith', 'Tom Davidson', 'Abby Jones'];
 
-console.log(query.toSQL().toNative());
-query.then(console.log).catch(console.log)
+const removeSpaces = str => str.split(' ').join('');
+
+const userFromName = name => ({
+    name,
+    email: removeSpaces(name) + '@ku.edu',
+    description: `Hi, my name is ${name}. I am a student at KU.`,
+    password: 'password'
+});
+
+
+Promise.all(userNames.map(name => Models.User.create(userFromName(name))))
+.then(console.log)
+.catch(console.log);

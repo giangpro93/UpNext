@@ -37,7 +37,7 @@ function get(membershipInfo) {
 
 function makeAdmin(membershipInfo) {
     return logAPICall(membershipInfo, () =>
-        axiosInstance.put('/membership/makeadmin/', membershipInfo)
+        axiosInstance.put('/memberships/makeadmin/', membershipInfo)
     );
 }
 

@@ -6,7 +6,8 @@ import InfoIcon from '@material-ui/icons/Info';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Tooltip, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Tooltip,Accordion,AccordionSummary,AccordionDetails, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
 import { useSelector } from 'react-redux'
 var owner = false;
 const api = require('../../api-client/api.js');
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 				display: 'flex',
 				flexDirection: 'row',
 				flexWrap: 'wrap',
+				flexGrow: 1,
 		},
 
 		paper: {
@@ -57,9 +59,28 @@ const useStyles = makeStyles((theme) => ({
 				flexDirection: 'row',
 				justifyContent: 'flex-end',
 				marginTop: 16,
+				marginBottom: 16,
 		},
 		leaveGroupButton: {
 			marginLeft: 16,
+		},
+		userPaper: {
+			width: 200,
+			height: 50,
+			marginTop: 8,
+			marginBottom: 8,
+		},
+		userDisplay: {
+			display: 'flex',
+			flexDirection: 'column',
+			flexWrap: 'wrap',
+			flexGrow: 1,
+		},
+		remindPage: {
+			display: 'flex',
+			justifySelf: 'flex-end',
+			width: 80,
+			height: 600,
 		},
 }));
 
@@ -68,11 +89,18 @@ export default function GroupPage(props) {
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [groupEvents,setGroupEvents] = useState([]);
+	const [groupReminders,setGroupReminders] = useState([]);
+	const [groupTasks, setGroupTasks] = useState([]);
 	const [eventName,setEventName] = useState('');
 	const [eventLocation, setEventLocation] = useState('');
 	const [eventStart, setEventStart] = useState('');
 	const [eventEnd, setEventEnd] = useState('');
 	const [eventDescription, setEventDescription] = useState('');
+	const [loadCreatePost, setLoadCreatePost] = useState(false);
+	const [groupUsers, setGroupUsers] = useState([]);
+	const [joinedGroup, setJoinedGroup] = useState(location.state.isMember);
+	const [makeAdmin, setMakeAdmin] = useState(false);
+	const [delEvent,setDelEvent] = useState(false);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -82,6 +110,9 @@ export default function GroupPage(props) {
 	const currentUser = useSelector(state => state.users.currentUser);
 	const groupId = location.state.groupID;
 	const isAdmin = location.state.is_admin;
+	var is_member = location.state.isMember;
+	var prevPage  = location.state.page;
+
 	if(isAdmin === 1){
 		owner = true;
 	}
@@ -89,7 +120,6 @@ export default function GroupPage(props) {
 		owner = false;
 	}
 	var userId = currentUser['id'];
-console.log(groupId);
 	function changeBackground(e) {
            e.target.style.opacity = '0.5';
 	}
@@ -98,42 +128,97 @@ console.log(groupId);
 	}
 	const history = useHistory();
 	function goBack(name,id){
+		var push = ''
+		if(prevPage === "connect"){
+			push = '/connect'
+		}
+		else{
+			push = '/groups'
+		}
 		history.push({
-			 pathname: '/groups',
+			 pathname: push,
 		});
 	}
 
 
 
-				{/*the block of code below is the broken stuff.*/}
 
-	function fetchGroupData(){
-					return Promise.all([
-						api.schedule.getEntityScheduleById(groupId)
-					]).then((groupSchedule) => {
-					return({groupSchedule})
-					})
-	}
-
-			const groupPromise = fetchGroupData();
 
 			useEffect(() => {
+				var events = []
+				var reminders = []
+				var tasks = []
+				var groupPromise = api.schedule.getEntityScheduleById(groupId);
 					groupPromise.then(data => {
-						setGroupEvents(data.groupSchedule[0]);
+						for(var post = 0; post<data.length; post++){
+							if(data[post].type === 'event'){
+								data[post].start = "Date: " + data[post].start.substring(0,10);
+								events.push(data[post]);
+							}
+							if(data[post].type === 'reminder'){
+								data[post].time = "Date: " + data[post].time.substring(0,10);
+								reminders.push(data[post]);
+							}
+							if(data[post].type === 'task'){
+								data[post].due = "Date: " + data[post].due.substring(0,10);
+								tasks.push(data[post]);
+							}
+						}
+						events.sort(function(a, b){
+							if(a.start.substring(12,16) < b.start.substring(12,16)){
+								return -1;
+							}
+							else{
+								return 1;
+							}
+						})
+						reminders.sort(function(a, b){
+							if(a.time.substring(12,16) < b.time.substring(12,16)){
+								return -1;
+							}
+							else{
+								return 1;
+							}
+						})
+						tasks.sort(function(a, b){
+							if(a.due.substring(12,16) < b.due.substring(12,16)){
+								return -1;
+							}
+							else{
+								return 1;
+							}
+						})
+						var userPromise = api.memberships.getUsersOfGroup(groupId)
+						userPromise.then((users) => {
+							console.log(users)
+							setGroupUsers(users)
+						})
+						setGroupEvents(events);
+						setGroupTasks(tasks);
+						setGroupReminders(reminders);
+						setLoadCreatePost(false);
 					});
-				}, [groupPromise]);
+				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent]);
 
 
 			function leaveGroup(){
+				if(joinedGroup){
 				var reqObj = { user_id: userId, group_id: groupId};
 				console.log(reqObj.user_id)
 				console.log(reqObj.group_id)
 				const promise = api.memberships.deleteMembership(reqObj);
 				promise.then((resp) => {
-					console.log(typeof resp);
-					console.log(resp);
-
+					setJoinedGroup(false)
 				})
+			}
+			else{
+				var addData = {user_id: userId, group_id: groupId, is_admin: 0}
+				var newGroupPromise = api.memberships.create(addData);
+				newGroupPromise.then((resp) => {
+					console.log(resp);
+				})
+				setJoinedGroup(true)
+			}
 			}
 			function createPost(title,location,start,end,desc){
 				var requestVar = {entity_id: groupId, title: title, location: location, description: desc,start:start,end:end}
@@ -141,7 +226,23 @@ console.log(groupId);
 			reqEvent.then((resp) => {
 				console.log(resp);
 				setEventWindow(false);
+				setLoadCreatePost(true);
 			})
+			}
+			function makeAdminFunc(id){
+				var reqAdmin = {user_id: id, group_id: groupId}
+				var reqAdminEvent = api.memberships.makeAdmin(reqAdmin)
+				reqAdminEvent.then((resp) => {
+					  console.log(resp)
+						setMakeAdmin(true)
+				})
+			}
+			function deleteEventFunc(id){
+				var delEvent = api.schedule.deleteScheduleItemById(id)
+				delEvent.then((resp) => {
+					  console.log(resp)
+						setDelEvent(true)
+				})
 			}
 
 
@@ -162,7 +263,7 @@ console.log(groupId);
 			        </IconButton>
 				</Tooltip>
 				<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
-								Leave
+							{joinedGroup ? 'Leave' : 'Join'}
 				</Button>
 			       </div>
 				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">
@@ -171,6 +272,30 @@ console.log(groupId);
 			                                          <DialogContentText>
 																									{description}
 			                                          </DialogContentText>
+																								<Accordion className={classes.userDisplay}>
+	<AccordionSummary
+		expandIcon={<ExpandMoreIcon />}
+		aria-controls="panel1a-content"
+
+	>
+		<Typography className={classes.heading}>Users</Typography>
+	</AccordionSummary>
+	<AccordionDetails className={classes.userDisplay}>
+	{groupUsers.map(user => (
+	<div className={classes.root}>
+	<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+		{user.name}
+		{(user.is_admin === 1) ? '(Admin)' : ''}
+	</Typography>
+	{(owner === true && user.is_admin === 0) ? (
+<Button color="primary" onClick={() => { makeAdminFunc(user.id); }}>
+	Make Admin
+</Button>
+) : null}
+</div>
+	))}
+	</AccordionDetails>
+</Accordion>
 			                                        </DialogContent>
 								<DialogActions>
 			                                          <Button onClick={() => { setInfoWindow(false); }} color="primary">
@@ -178,6 +303,7 @@ console.log(groupId);
 			                                          </Button>
 			                                        </DialogActions>
 			                                      </Dialog>
+			<h2> Events </h2>
 			<div className={classes.eventBoard}>
 				{groupEvents.map(event => (
 
@@ -185,7 +311,7 @@ console.log(groupId);
 			      <CardHeader
 			        avatar={
 					          <Avatar className={classes.avatar}>
-										H
+										E
 					          </Avatar>
 					        }
 			        title={event.title}
@@ -200,7 +326,76 @@ console.log(groupId);
 				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
 					{event.description}
 				</Typography>
+				{owner === true ? (
+				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
+					Delete
+				</Button>
+				) : null}
 			      </CardContent>
+				</Card>
+				))}
+				</div>
+				<h2> Reminders </h2>
+				<div className={classes.eventBoard}>
+				{groupReminders.map(event => (
+
+				<Card key={event.id} className={classes.card}>
+						<CardHeader
+							avatar={
+										<Avatar className={classes.avatar}>
+										R
+										</Avatar>
+									}
+							title={event.title}
+							subheader={event.time}
+						/>
+
+						<CardContent>
+							<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+								{event.location}
+
+							</Typography>
+				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
+					{event.description}
+				</Typography>
+				{owner === true ? (
+				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
+					Delete
+				</Button>
+				) : null}
+						</CardContent>
+				</Card>
+				))}
+				</div>
+				<h2> Tasks </h2>
+				<div className={classes.eventBoard}>
+				{groupTasks.map(event => (
+
+				<Card key={event.id} className={classes.card}>
+						<CardHeader
+							avatar={
+										<Avatar className={classes.avatar}>
+										T
+										</Avatar>
+									}
+							title={event.title}
+							subheader={event.due}
+						/>
+
+						<CardContent>
+							<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+								{event.location}
+
+							</Typography>
+				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
+					{event.description}
+				</Typography>
+				{owner === true ? (
+				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
+					Delete
+				</Button>
+				) : null}
+						</CardContent>
 				</Card>
 				))}
 			</div>
@@ -257,7 +452,7 @@ console.log(groupId);
 				    	   label="Event End"
 				           type="datetime-local"
 									 onChange={(e) => setEventEnd(e.target.value)}
-				    	   defaultValue="2021-01-24T10:30"
+				    	   defaultValue="2021-04-24T10:30"
 				    	   InputLabelProps={{
 					          shrink: true,
 						        }}

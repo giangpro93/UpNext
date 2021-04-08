@@ -29,21 +29,19 @@ function create(task) {
         db('ScheduleTask')
         .insert({ id: item.id, ...obj })
         .then(() => getById(item.id))
-        .then(task => 
-            (reminder 
-            ? ScheduleReminder.create({ entity_id, time: reminder.time, title: `Reminder: ${title}`, location, description: `Reminder: ${title}`, link_id: task.id})
-            : Promise.resolve())
-            .then(() => task)
-        )
+        .then(t => {
+            let p = Promise.resolve();
+            if(reminder) 
+                p = ScheduleReminder.create({ entity_id: t.entity_id, time: reminder, title: `Reminder: ${t.title}`, location: t.location, description: `Reminder: ${t.title}`, link_id: t.id})
+            return p.then(() => t);
+        })
     );
 }
 
 function getById(id) {
-    return db
-    .first()
-    .from('ScheduleTask')
-    .leftJoin('ScheduleItem', 'ScheduleTask.id', 'ScheduleItem.id')
-    .where('ScheduleTask.id', id);
+    return tasksInfo()
+    .where('ScheduleTask.id', id)
+    .then(tasks => tasks[0]);
 }
 
 function update(task) {
@@ -60,12 +58,15 @@ function update(task) {
             .update(obj))
         .then(() => 
             getById(id)
-            .then(t =>
-                (reminder 
-                ? ScheduleReminder.create({...reminder, location, entity_id: t.entity_id, link_id: id})
-                : Promise.resolve())
-                .then(() => t)
-            )
+            .then(t => {
+                let p = Promise.resolve();
+                if(reminder)
+                    p = ScheduleReminder.getByLinkId(e.id)
+                        .then(r => ScheduleReminder.update({ entity_id: t.entity_id, time: reminder, title: `Reminder: ${t.title}`, location: t.location, description: `Reminder: ${t.title}`, link_id: t.id}))
+                        .catch(() => ScheduleReminder.create({ entity_id: t.entity_id, time: reminder, title: `Reminder: ${t.title}`, location: t.location, description: `Reminder: ${t.title}`, link_id: t.id}))
+            
+                return p.then(() => t)
+            })
         )
     );
 }

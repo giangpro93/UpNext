@@ -16,9 +16,9 @@ module.exports = {
 };
 
 function create(request) {
-    const { requester_id, requested_id } = request;
+    const { requester_id, requested_id, is_accepted } = request;
     return db('FriendRequest')
-    .insert({...request, is_accepted: false})
+    .insert(request)
     .then(() => get(request));
 }
 

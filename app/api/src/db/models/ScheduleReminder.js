@@ -5,6 +5,7 @@ module.exports = {
     remindersInfo,
     create,
     getById,
+    getByLinkId,
     update,
     deleteById
 };
@@ -21,19 +22,25 @@ function remindersInfo() {
 
 function create(reminder) {
     const { entity_id, title, location, description, time, link_id } = reminder;
-    let obj = {};
-    if(time) obj.time = time;
-    return ScheduleItem.create({ entity_id, title, location, description, type: 'reminder' })
-    .then(item => 
-        db('ScheduleReminder')
-        .insert({ id: item.id, ...obj, link_id })
-        .then(() => getById(item.id))
-    );
+    return time
+        ? ScheduleItem.create({ entity_id, title, location, description, type: 'reminder' })
+        .then(item => 
+            db('ScheduleReminder')
+            .insert({ id: item.id, time, link_id })
+            .then(() => getById(item.id))
+        )
+        : Promise.reject('Could not create reminder. No time provided');
 }
 
 function getById(id) {
     return remindersInfo()
     .where('ScheduleReminder.id', id)
+    .then(reminders => reminders[0]);
+}
+
+function getByLinkId(id) {
+    return remindersInfo()
+    .where('ScheduleReminder.link_id', id)
     .then(reminders => reminders[0]);
 }
 

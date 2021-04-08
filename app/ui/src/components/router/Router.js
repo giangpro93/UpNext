@@ -9,6 +9,10 @@ import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
 import Login from '../login/Login'
 import Profile from '../profile/Profile'
+import Connect from '../connect/Connect'
+import Dashboard from '../dashboard/Dashboard'
+import MessagePage from '../messages/MessagePage';
+// import Profile from '../profile/Profile'
 // const useStyles = makeStyles(theme => ({
 //     content: theme.mixins.toolbar
 // }))
@@ -33,11 +37,10 @@ function LoggedIn() {
             <Container>
                 <Switch>
                     <Route exact path="/">
-                        Dashboard
+                        <Dashboard />
                     </Route>
                     <Route exact path="/schedule">
                         <Schedule />
-                        {/* <Schedule /> */}
                     </Route>
                     <Route exact path="/groups">
                         <Groups />
@@ -46,10 +49,14 @@ function LoggedIn() {
                         <GroupPage />
                     </Route>
                     <Route exact path="/connect">
-                        Connect
+                        <Connect />
                     </Route>
                     <Route exact path="/create">
                         Create
+                    </Route>
+                    <Route exact path="/messages">
+                        Messages
+                        <MessagePage />
                     </Route>
                     <Route exact path="/profile">
                         <Profile />
@@ -59,7 +66,3 @@ function LoggedIn() {
         </>
     )
 }
-
-
-
-
