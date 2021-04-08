@@ -1,9 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import useForm from '../../hooks/useForm';
+import useAsync from '../../hooks/useAsync';
 import { DialogForm } from '../common/DialogForm';
 import { Input } from '../common/Input';
 import { dateInputFormat, toUTC, format } from './dates';
+import { MenuItem } from '@material-ui/core';
 const api = require('../../api-client/api');
 
 const eventDefaultVals = {
@@ -39,12 +41,20 @@ const reminderDefaultVals = {
 export default function ScheduleItemForm(props) {
 
     // isCreate : if true, then creation form. Otherwise, update form.
-    const { type, mode, initVals, open, onClose, onSubmit, onError } = props;
+    const { type, mode, initVals, allowSelectEntity, open, onClose, onSubmit, onError } = props;
+
+    const currentUser = useSelector(state => state.users.currentUser);
+
+    const editableEntitySchedules = useAsync(() => 
+        api.memberships.getGroupsOfUser(currentUser.id)
+        .then(groups => groups.filter(g => g.is_admin))
+        .then(gs => [currentUser, ...gs])
+    );
 
     const defaultVals = 
-        type === 'event' ? eventDefaultVals
+        {...(type === 'event' ? eventDefaultVals
         : type === 'task' ? taskDefaultVals
-        : reminderDefaultVals;
+        : reminderDefaultVals), entity_id: currentUser.id};
 
     const initFillVals = {...defaultVals, ...initVals};
 
@@ -56,8 +66,6 @@ export default function ScheduleItemForm(props) {
         onChange,
         reset
     } = useForm(initFillVals, validate, true);
-
-    const currentUser = useSelector(state => state.users.currentUser);
 
     function validate(fields = vals) {
         let es = {...errs};
@@ -81,7 +89,6 @@ export default function ScheduleItemForm(props) {
 
     function onConfirm() {
         if(validate()) {
-
             // select appropriate function
             let call;
             if( type === 'event' && mode === 'create') call = api.schedule.createEvent;
@@ -100,7 +107,7 @@ export default function ScheduleItemForm(props) {
             if(newvals.time) newvals.time = format(toUTC(newvals.time));
             if(newvals.reminder) newvals.reminder = format(toUTC(newvals.reminder));
 
-            call({...newvals, entity_id: currentUser.id})
+            call(newvals)
             .then(res => {
                 onSubmit();
                 onClose();
@@ -125,6 +132,28 @@ export default function ScheduleItemForm(props) {
                 confirmLabel={label}
                 onConfirm={onConfirm}
             >
+                {(allowSelectEntity && 
+                !editableEntitySchedules.loading && 
+                !editableEntitySchedules.error && 
+                editableEntitySchedules.data.length > 1) &&
+                <Input.DropdownInput
+                    label='Calendar'
+                    name='entity_id'
+                    value={vals.entity_id}
+                    onChange={onChange}
+                    required
+                >
+                    {editableEntitySchedules.data.map(e => 
+                        <MenuItem 
+                            key={e.id} 
+                            value={e.id}
+                        >
+                        {e.name}
+                        </MenuItem>
+                    )}
+                </Input.DropdownInput>
+                }   
+
                 <Input.TextInput
                     label='Title'
                     name='title'

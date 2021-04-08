@@ -212,6 +212,7 @@ export default function Schedule(props) {
             type={createWindow}
             mode='create'
             open={Boolean(createWindow)}
+            allowSelectEntity={true}
             onClose={() => setCreateWindow(null)}
             onSubmit={onSuccess}
             onError={onError}
