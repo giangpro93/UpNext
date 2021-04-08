@@ -13,16 +13,7 @@ export default function Profile() {
     const currentUser = useSelector(state => state.users.currentUser);
     var userId = currentUser['id'];
 
-<<<<<<< HEAD
     //upload icon
-||||||| merged common ancestors
-=======
-    //to get user info
-    const currentUser = useSelector(state => state.users.currentUser);
-    var userId = currentUser['id'];
-
-    //upload icon
->>>>>>> 67d8abdcb6906b5883b600be13d3bf92632fff84
     const [icon] = useState('https://cdn1.iconfinder.com/data/icons/rounded-black-basic-ui/139/Photo_Add-RoundedBlack-512.png')
     //blank profile pic
     const [profileImg, setProfileImg] = useState('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png')
