@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import {useState} from 'react'
 import '../App.css'
 import { useSelector } from 'react-redux'
+import { Edit } from './Edit'
 
 const api = require('../../api-client/api.js');
 const user = 'User';
 const email = 'user@user.com';
+
 
 export default function Profile() {
     
@@ -62,8 +64,7 @@ export default function Profile() {
                         Bio:
                     </h3>
                     <p>
-                        {message}<br /><br />
-                        <button onClick={e => setMessage(e.target.value)}>Edit Bio</button>
+                        <Edit />
                     </p>
                 </div>
             </div>
