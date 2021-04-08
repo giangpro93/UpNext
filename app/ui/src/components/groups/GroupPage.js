@@ -199,12 +199,13 @@ export default function GroupPage(props) {
 			}
 			}
 			function createPost(){
-				console.log(eventType)
+				console.log("Start: " + eventStart)
+				console.log("End: " + eventEnd)
 				if(eventType === "Event"){
 					var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start:eventStart,end:eventEnd}
 				var reqEvent =	api.schedule.createEvent(requestVar);
-				console.log("here")
 				reqEvent.then((resp) => {
+					console.log(resp)
 					setEventWindow(false);
 					setLoadCreatePost(true);
 				})
@@ -272,7 +273,7 @@ export default function GroupPage(props) {
 				         		<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                		Create Event
 				         		</Button>
-										<CreatePost makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation} evntType={eventType} setEvntType={setEventType}/>
+										<CreatePost evntEnd={eventEnd}evntStart={eventStart} makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation} evntType={eventType} setEvntType={setEventType}/>
 				         </div>
 		   ) : null}
 

@@ -45,12 +45,13 @@ export default function CreatePost(props) {
 			 label="Start"
 				 type="datetime-local"
 			 onChange={(e) => props.setEvntStart(e.target.value)}
-			 defaultValue="2021-01-24T10:30"
+			 defaultValue="2021-04-24T10:30"
 			 InputLabelProps={{
 					shrink: true,
 					}}
 	fullWidth
 	/>
+	{props.evntType === "Task" ? (
 	<TextField
 	autoFocus
 		 id="datetime-local"
@@ -59,12 +60,30 @@ export default function CreatePost(props) {
 			 label="End"
 				 type="datetime-local"
 				 onChange={(e) => props.setEvntEnd(e.target.value)}
-			 defaultValue="2021-04-24T10:30"
+			 defaultValue="2021-04-24T11:30"
 			 InputLabelProps={{
 					shrink: true,
 					}}
 	fullWidth
 	/>
+	) :
+	<TextField
+	autoFocus
+		 id="datetime-local"
+		 key = "five"
+	 margin="dense"
+			 label="End"
+				 type="time"
+				 onChange={(e) => props.setEvntEnd(e.target.value)}
+			 defaultValue="11:30"
+			 InputLabelProps={{
+					shrink: true,
+					}}
+	fullWidth
+	/>
+
+
+	}
 	<FormControl component="fieldset">
   <FormLabel component="legend">Type</FormLabel>
   <RadioGroup aria-label="Type" name="Type1" value={props.evntType} onChange={handleChange} >
@@ -89,7 +108,7 @@ export default function CreatePost(props) {
 				<Button onClick={() => { props.setEvntWindow(false); }} color="primary">
 					Cancel
 				</Button>
-				<Button onClick={() => { props.makePost(); }} color="primary">
+				<Button onClick={() => { props.makePost(); console.log(props.evntEnd) }} color="primary">
 					Post
 				</Button>
 			</DialogActions>

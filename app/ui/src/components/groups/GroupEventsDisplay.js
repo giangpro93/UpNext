@@ -47,7 +47,7 @@ const classes = useStyles()
 
 					<CardContent>
 						<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-							{event.location}
+							{"Location: " + event.location}
 
 						</Typography>
 			<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
