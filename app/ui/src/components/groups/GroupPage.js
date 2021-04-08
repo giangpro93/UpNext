@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import CreatePost from './CreatePost'
 import TopMenu from './TopMenu'
 import UserDisplay from './UserDisplay'
-import GroupDescription from './GroupDescription'
+
 import GroupEventsDisplay from './GroupEventsDisplay'
 import GroupTasksDisplay from './GroupTasksDisplay'
 var owner = false;
@@ -62,12 +62,22 @@ TabPanel.propTypes = {
 };
 export default function GroupPage(props) {
 	const location = useLocation();
+	var groupEmail = location.state.groupEmail;
+	const name = location.state.groupName;
+	const currentUser = useSelector(state => state.users.currentUser);
+	const groupId = location.state.groupID;
+	const isAdmin = location.state.is_admin;
+	var is_member = location.state.isMember;
+	var description = location.state.groupDesc;
+	var prevPage  = location.state.page;
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [groupEvents,setGroupEvents] = useState([]);
 	const [groupTasks, setGroupTasks] = useState([]);
 	const [eventType, setEventType] = useState('Event');
 	const [eventName,setEventName] = useState('');
+	const [groupName,setGroupName] = useState(name)
+	const [groupDesc,setGroupDesc] = useState(description)
 	const [eventLocation, setEventLocation] = useState('');
 	const [eventStart, setEventStart] = useState('');
 	const [eventEnd, setEventEnd] = useState('');
@@ -79,17 +89,12 @@ export default function GroupPage(props) {
 	const [delEvent,setDelEvent] = useState(false);
 	const [userWindow, setUserWindow] = useState(false);
 	const [value, setValue] = useState(0);
-  var description = location.state.groupDesc;
+	const [post, setPost] = useState([]);
+
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
 	}
-	var groupEmail = location.state.groupEmail;
-	const name = location.state.groupName;
-	const currentUser = useSelector(state => state.users.currentUser);
-	const groupId = location.state.groupID;
-	const isAdmin = location.state.is_admin;
-	var is_member = location.state.isMember;
-	var prevPage  = location.state.page;
+
 
 	if(isAdmin === 1){
 		owner = true;
@@ -158,6 +163,12 @@ export default function GroupPage(props) {
 						setLoadCreatePost(false);
 						setMakeAdmin(false);
 						setDelEvent(false);
+						var getGroupInfo = api.groups.getById(groupId)
+						getGroupInfo.then((group) => {
+							console.log(group)
+							setGroupName(group.name)
+							setGroupDesc(group.description)
+						})
 					});
 				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent]);
 
@@ -183,9 +194,11 @@ export default function GroupPage(props) {
 			}
 			}
 			function createPost(){
+				console.log(eventType)
 				if(eventType === "Event"){
 					var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start:eventStart,end:eventEnd}
 				var reqEvent =	api.schedule.createEvent(requestVar);
+				console.log("here")
 				reqEvent.then((resp) => {
 					setEventWindow(false);
 					setLoadCreatePost(true);
@@ -229,20 +242,22 @@ export default function GroupPage(props) {
 													 Back
 										 </Button>
 			         </div>
-							 <TopMenu groupName={name} setInformationWindow={setInfoWindow} setUserDisplay={setUserWindow} users={groupUsers} leave={leaveGroup} joined={joinedGroup}/>
+							 <TopMenu groupName={groupName} setInformationWindow={setInfoWindow} setUserDisplay={setUserWindow} users={groupUsers} leave={leaveGroup} joined={joinedGroup} isOwner={owner} groupID={groupId} namee={groupName} email={groupEmail} desc={groupDesc} />
 							 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
 				 		 			<Tab label={groupEvents.length + " Events"} {...a11yProps(0)}/>
 				 					<Tab label={groupTasks.length + " Tasks"} {...a11yProps(1)}/>
 			 				 </Tabs>
 							 <UserDisplay users={groupUsers} window={userWindow} openWindow={setUserWindow} isOwner={owner} makeAdmin={makeAdminFunc}/>
-							 <GroupDescription window={infoWindow} setWindow={setInfoWindow} groupName={name} groupDesc={description}/>
+
 
 
 							<TabPanel value={value} index={0}>
-			         <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc}/>
+			         <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc} />
+
 			       </TabPanel>
 			       <TabPanel value={value} index={1}>
-			       <GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc}/>
+			       <GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc} />
+
 			       </TabPanel>
 
 

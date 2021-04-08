@@ -123,13 +123,12 @@ export default function Groups(props) {
 	return (
 	<div>
 	<div>
-		<h3>my groups </h3>
-
 		<div className={classes.createGroupButton}>
 		 <Button variant="outlined" color="primary" onClick={() => { setCreateGroupWindow(true); }}>
 						 Create Group
 		 </Button>
 		</div>
+		<h3>my groups </h3>
 		</div>
 	  <div className={classes.root}>
 
