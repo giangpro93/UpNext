@@ -66,7 +66,7 @@ export default function GroupPage(props) {
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [groupEvents,setGroupEvents] = useState([]);
 	const [groupTasks, setGroupTasks] = useState([]);
-
+	const [eventType, setEventType] = useState('Event');
 	const [eventName,setEventName] = useState('');
 	const [eventLocation, setEventLocation] = useState('');
 	const [eventStart, setEventStart] = useState('');
@@ -183,13 +183,22 @@ export default function GroupPage(props) {
 			}
 			}
 			function createPost(){
-				var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start:eventStart,end:eventEnd}
-			var reqEvent =	api.schedule.createEvent(requestVar);
-			reqEvent.then((resp) => {
-				console.log(resp);
-				setEventWindow(false);
-				setLoadCreatePost(true);
-			})
+				if(eventType === "Event"){
+					var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start:eventStart,end:eventEnd}
+				var reqEvent =	api.schedule.createEvent(requestVar);
+				reqEvent.then((resp) => {
+					setEventWindow(false);
+					setLoadCreatePost(true);
+				})
+				}
+				else{
+					var request = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,assigned: eventStart, due: eventEnd}
+					var reqEventt = api.schedule.createTask(request)
+					reqEventt.then((resp) => {
+						setEventWindow(false);
+						setLoadCreatePost(true);
+					})
+				}
 			}
 			function makeAdminFunc(id){
 				var reqAdmin = {user_id: id, group_id: groupId}
@@ -243,7 +252,7 @@ export default function GroupPage(props) {
 				         		<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                		Create Event
 				         		</Button>
-										<CreatePost makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation}/>
+										<CreatePost makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation} evntType={eventType} setEvntType={setEventType}/>
 				         </div>
 		   ) : null}
 

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
+import { Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField,FormControl,FormLabel,RadioGroup,FormControlLabel,Radio} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 
 
-export default function CreatePost(props) {
 
+export default function CreatePost(props) {
+	const handleChange = (event) => {
+		 props.setEvntType(event.target.value)
+	 };
 
 	return(
 	<div>
@@ -39,7 +42,7 @@ export default function CreatePost(props) {
 		 id="datetime-local"
 		 key = "three"
 	 margin="dense"
-			 label="Event Start"
+			 label="Start"
 				 type="datetime-local"
 			 onChange={(e) => props.setEvntStart(e.target.value)}
 			 defaultValue="2021-01-24T10:30"
@@ -53,7 +56,7 @@ export default function CreatePost(props) {
 		 id="datetime-local"
 		 key = "five"
 	 margin="dense"
-			 label="Event End"
+			 label="End"
 				 type="datetime-local"
 				 onChange={(e) => props.setEvntEnd(e.target.value)}
 			 defaultValue="2021-04-24T10:30"
@@ -62,6 +65,13 @@ export default function CreatePost(props) {
 					}}
 	fullWidth
 	/>
+	<FormControl component="fieldset">
+  <FormLabel component="legend">Type</FormLabel>
+  <RadioGroup aria-label="Type" name="Type1" value={props.evntType} onChange={handleChange} >
+    <FormControlLabel value="Event" control={<Radio />} label="Event" />
+    <FormControlLabel value="Task" control={<Radio />} label="Task" />
+  </RadioGroup>
+</FormControl>
 <TextField
 				id="filled-multiline-static"
 				label="Event Description"
