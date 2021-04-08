@@ -2,7 +2,10 @@ import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import EntityTile from './EntityTile';
 import { Input } from '../common/Input';
+import Snackbar from '../common/Snackbar';
+import ConfirmDialog from '../common/ConfirmDialog';
 import api from '../../api-client/api';
+import useAsync from '../../hooks/useAsync';
 
 export default function UserTile(props) {
     const { user, paperStyle, ...other } = props;
@@ -12,8 +15,10 @@ export default function UserTile(props) {
     // Possible states: null, 'noRelation', 'areFriends', 'pendingMe', 'pendingThem'
     const [friendshipState, setFriendshipState] = useState(null);
 
-    // Possible states: true (on success), false (on failure)
-    const actionState = useState(null);
+    const [deleteWindow, setDeleteWindow] = useState(false);
+
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         if(currentUser.id === user.id) { 
@@ -39,7 +44,7 @@ export default function UserTile(props) {
                 }
             })
         }
-    }, [actionState]);
+    }, [success]);
 
     function onClick() {
 
@@ -72,30 +77,51 @@ export default function UserTile(props) {
             func2 = () => api.friends.deleteFriend({id1: currentUser.id, id2: user.id});
         }
 
-        const onClick1 = () => {
-
-        }
-
-        // requires verification
-        const onClick2 = () => {
-
-        }
-
         return (
             <>
                 {label && 
                 <Input.ButtonInput
                     label={label}
-                    onClick={onClick1}
+                    onClick={() => 
+                        func()
+                        .then(res => {
+                            if(res) setSuccess(true);
+                            else setError(true);
+                        })
+                        .catch(() => { setError(true); })
+                    }
                     color='primary'
                 />
                 }
                 {label2 &&
+                <>
                 <Input.ButtonInput
                     label={label2}
-                    onClick={onClick2}
+                    onClick={() => { setDeleteWindow(true);}}
                     color='secondary'
                 />
+                <ConfirmDialog
+                    title="Are you sure you want to perform this action?"
+                    open={deleteWindow}
+                    onClose={() => { setDeleteWindow(false) }}
+                    onConfirm={() =>
+                        func2()
+                        .then(res => {
+                            if(res) setSuccess(true);
+                            else setError(true);
+                        })
+                        .catch(() => { setError(true); })}
+                />
+                <Snackbar
+                    open={error || success}
+                    onClose={() => {
+                        setError(false);
+                        setSuccess(false);
+                    }}
+                    severity={error ? 'error' : 'success'}
+                    message={error ? 'Error completing transaction' : 'Success'}
+                />
+                </>
                 }
             </>
         )
@@ -103,6 +129,7 @@ export default function UserTile(props) {
 
 
     return (
+        <>
         <EntityTile
             entity={user}
             paperStyle={paperStyle}
@@ -110,5 +137,6 @@ export default function UserTile(props) {
         >
             {makeButtons()}
         </EntityTile>
+        </>
     )
 }
