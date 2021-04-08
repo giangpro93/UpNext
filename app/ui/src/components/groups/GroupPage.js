@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Tooltip,Accordion,AccordionSummary,AccordionDetails, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
 import { useSelector } from 'react-redux'
+import CreatePost from './CreatePost'
 var owner = false;
 const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
@@ -17,6 +18,13 @@ const useStyles = makeStyles((theme) => ({
 				flexDirection: 'row',
 				flexWrap: 'wrap',
 				flexGrow: 1,
+		},
+		topMenu: {
+			display: 'flex',
+			flexDirection: 'row',
+			flexWrap: 'wrap',
+			flexGrow: 1,
+			justifyContent: 'flex-end',
 		},
 
 		paper: {
@@ -76,12 +84,7 @@ const useStyles = makeStyles((theme) => ({
 			flexWrap: 'wrap',
 			flexGrow: 1,
 		},
-		remindPage: {
-			display: 'flex',
-			justifySelf: 'flex-end',
-			width: 80,
-			height: 600,
-		},
+
 }));
 
 export default function GroupPage(props) {
@@ -101,6 +104,7 @@ export default function GroupPage(props) {
 	const [joinedGroup, setJoinedGroup] = useState(location.state.isMember);
 	const [makeAdmin, setMakeAdmin] = useState(false);
 	const [delEvent,setDelEvent] = useState(false);
+	const [userWindow, setUserWindow] = useState(false);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -197,6 +201,7 @@ export default function GroupPage(props) {
 						setGroupTasks(tasks);
 						setGroupReminders(reminders);
 						setLoadCreatePost(false);
+						setMakeAdmin(false);
 					});
 				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent]);
 
@@ -220,8 +225,8 @@ export default function GroupPage(props) {
 				setJoinedGroup(true)
 			}
 			}
-			function createPost(title,location,start,end,desc){
-				var requestVar = {entity_id: groupId, title: title, location: location, description: desc,start:start,end:end}
+			function createPost(){
+				var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start:eventStart,end:eventEnd}
 			var reqEvent =	api.schedule.createEvent(requestVar);
 			reqEvent.then((resp) => {
 				console.log(resp);
@@ -251,53 +256,64 @@ export default function GroupPage(props) {
 	        return (
 			        <div>
 			          <div>
-			            <Paper onClick={() => { goBack();}}onMouseOver={changeBackground} onMouseOut={changeBack} className={classes.paper}>
-			               <div className={classes.groupNames}> Back </div>
-			            </Paper>
+
+										 <Button variant="outlined" color="primary" onClick={() => { goBack();}} style={{marginTop: 8}}>
+													 Back
+										 </Button>
 			         </div>
+			<div className={classes.root}>
 				<div className={classes.root}>
 				  <h1>{name}</h1>
-				<Tooltip title="group description" placement="bottom">
-				<IconButton onClick={() => { setInfoWindow(true); }}>
-			          <InfoIcon />
-			        </IconButton>
-				</Tooltip>
+					<Tooltip title="Group Description" placement="top">
+					<IconButton size="small" onClick={() => { setInfoWindow(true); }}>
+									<InfoIcon />
+								</IconButton>
+					</Tooltip>
+					<h4 style={{marginLeft: 8,  cursor:'pointer',marginTop: 16}} onClick={() => { setUserWindow(true); }}>
+					{groupUsers.length} Members
+					</h4>
+				</div>
+<div className={classes.topMenu}>
 				<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
 							{joinedGroup ? 'Leave' : 'Join'}
 				</Button>
-			       </div>
+</div>
+</div>
+
+						 <Dialog open={userWindow} onClose={() => { setUserWindow(false); }} aria-labelledby="form-dialog-title">
+						 																			<DialogTitle >Members</DialogTitle>
+						 																			<DialogContent>
+						 																				<DialogContentText>
+																										{groupUsers.map(user => (
+																										<div className={classes.root}>
+																										<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
+																											{user.name}
+																											{(user.is_admin === 1) ? '(Admin)' : ''}
+																										</Typography>
+																										{(owner === true && user.is_admin === 0) ? (
+																									<Button color="primary" onClick={() => { makeAdminFunc(user.id); }}>
+																										Make Admin
+																									</Button>
+																									) : null}
+																									</div>
+																										))}
+						 																				</DialogContentText>
+																										</DialogContent>
+										 																<DialogActions>
+																										 <Button onClick={() => { setUserWindow(false); }} color="primary">
+																											 Close
+																										 </Button>
+																									 </DialogActions>
+																								 </Dialog>
+
 				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">
 			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>
 			                                        <DialogContent>
 			                                          <DialogContentText>
 																									{description}
-			                                          </DialogContentText>
-																								<Accordion className={classes.userDisplay}>
-	<AccordionSummary
-		expandIcon={<ExpandMoreIcon />}
-		aria-controls="panel1a-content"
-
-	>
-		<Typography className={classes.heading}>Users</Typography>
-	</AccordionSummary>
-	<AccordionDetails className={classes.userDisplay}>
-	{groupUsers.map(user => (
-	<div className={classes.root}>
-	<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-		{user.name}
-		{(user.is_admin === 1) ? '(Admin)' : ''}
-	</Typography>
-	{(owner === true && user.is_admin === 0) ? (
-<Button color="primary" onClick={() => { makeAdminFunc(user.id); }}>
-	Make Admin
-</Button>
-) : null}
-</div>
-	))}
-	</AccordionDetails>
-</Accordion>
-			                                        </DialogContent>
-								<DialogActions>
+																									</DialogContentText>
+																									</DialogContent>
+																							<DialogActions>
 			                                          <Button onClick={() => { setInfoWindow(false); }} color="primary">
 			                                            Close
 			                                          </Button>
@@ -332,38 +348,6 @@ export default function GroupPage(props) {
 				</Button>
 				) : null}
 			      </CardContent>
-				</Card>
-				))}
-				</div>
-				<h2> Reminders </h2>
-				<div className={classes.eventBoard}>
-				{groupReminders.map(event => (
-
-				<Card key={event.id} className={classes.card}>
-						<CardHeader
-							avatar={
-										<Avatar className={classes.avatar}>
-										R
-										</Avatar>
-									}
-							title={event.title}
-							subheader={event.time}
-						/>
-
-						<CardContent>
-							<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-								{event.location}
-
-							</Typography>
-				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
-					{event.description}
-				</Typography>
-				{owner === true ? (
-				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
-					Delete
-				</Button>
-				) : null}
-						</CardContent>
 				</Card>
 				))}
 				</div>
@@ -403,83 +387,8 @@ export default function GroupPage(props) {
 				         <div className={classes.createPostButton}>
 				         	<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                	Create Event
-				                </Button>
-						<Dialog open={eventWindow} onClose={() => { setEventWindow(false); }} aria-labelledby="form-dialog-title">
-				        <DialogTitle id="form-dialog-title">Create Event</DialogTitle>
-				        <DialogContent>
-				          <DialogContentText>
-
-				          </DialogContentText>
-				          <TextField
-				            autoFocus
-				            margin="dense"
-										key = "one"
-				            id="eventName"
-				            label="Event Name"
-				            type="email"
-										onChange={(e) => setEventName(e.target.value)}
-				            fullWidth
-				          />
-					  <TextField
-				            autoFocus
-				            margin="dense"
-										key = "two"
-				            id="eventName"
-				            label="Event Location"
-				            type="email"
-										onChange={(e) => setEventLocation(e.target.value)}
-				            fullWidth
-				                                          />
-					  <TextField
-					  autoFocus
-				   	   id="datetime-local"
-							 key = "three"
-					   margin="dense"
-				    	   label="Event Start"
-				           type="datetime-local"
-									 onChange={(e) => setEventStart(e.target.value)}
-				    	   defaultValue="2021-01-24T10:30"
-				    	   InputLabelProps={{
-					          shrink: true,
-						        }}
-					  fullWidth
-				 	  />
-						<TextField
-					  autoFocus
-				   	   id="datetime-local"
-							 key = "five"
-					   margin="dense"
-				    	   label="Event End"
-				           type="datetime-local"
-									 onChange={(e) => setEventEnd(e.target.value)}
-				    	   defaultValue="2021-04-24T10:30"
-				    	   InputLabelProps={{
-					          shrink: true,
-						        }}
-					  fullWidth
-				 	  />
-					<TextField
-				          id="filled-multiline-static"
-				          label="Event Description"
-				          multiline
-									key = "four"
-				          rows={4}
-									onChange={(e) => setEventDescription(e.target.value)}
-					  margin = "dense"
-				          variant="filled"
-					  fullWidth
-					  autoFocus
-				        />
-				        </DialogContent>
-				        <DialogActions>
-				          <Button onClick={() => { setEventWindow(false); }} color="primary">
-				            Cancel
-				          </Button>
-				          <Button onClick={() => { createPost(eventName,eventLocation,eventStart,eventEnd,eventDescription); }} color="primary">
-				            Post
-				          </Button>
-				        </DialogActions>
-				      </Dialog>
+				         </Button>
+												<CreatePost makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation}/>
 				        </div>
 				                                  ) : null}
 
