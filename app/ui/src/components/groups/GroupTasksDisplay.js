@@ -41,7 +41,7 @@ const classes = useStyles()
 								</Avatar>
 							}
 					title={event.title}
-					subheader={event.due}
+					subheader=<div><div> {event.assigned} </div> {event.due}</div>
 				/>
 
 				<CardContent>

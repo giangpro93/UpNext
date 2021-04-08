@@ -127,18 +127,23 @@ export default function GroupPage(props) {
 				var tasks = []
 				var groupPromise = api.schedule.getEntityScheduleById(groupId);
 					groupPromise.then(data => {
+						console.log(data)
 						for(var post = 0; post<data.length; post++){
 							if(data[post].type === 'event'){
+								console.log(data[post].start)
+								data[post].end =  "Time: " + data[post].start.substring(11,16) + " - " + data[post].end.substring(11,16)
 								data[post].start = "Date: " + data[post].start.substring(0,10);
+								console.log(data[post].start)
 								events.push(data[post]);
 							}
 							if(data[post].type === 'task'){
-								data[post].due = "Date: " + data[post].due.substring(0,10);
+								data[post].assigned = "Assigned: " + data[post].assigned.substring(0,10) + " | " + data[post].assigned.substring(11,16);
+								data[post].due = "Due: " + data[post].due.substring(0,10) + " | " + data[post].due.substring(11,16);
 								tasks.push(data[post]);
 							}
 						}
 						events.sort(function(a, b){
-							if(a.start.substring(12,16) < b.start.substring(12,16)){
+							if(a.start.substring(12,16) + a.start.substring(22,28) < b.start.substring(12,16) + b.start.substring(22,28)){
 								return -1;
 							}
 							else{
@@ -146,7 +151,7 @@ export default function GroupPage(props) {
 							}
 						})
 						tasks.sort(function(a, b){
-							if(a.due.substring(12,16) < b.due.substring(12,16)){
+							if(a.due.substring(16,20) < b.due.substring(16,20)){
 								return -1;
 							}
 							else{
