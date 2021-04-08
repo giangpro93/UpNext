@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
-import {useState} from 'react';
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { makeStyles, Paper, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
+import { Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
-import { useSelector } from 'react-redux'
-const api = require('../../api-client/api.js');
 
 
 export default function CreatePost(props) {
-	const location = useLocation();
-	const history = useHistory();
+
 
 	return(
 	<div>

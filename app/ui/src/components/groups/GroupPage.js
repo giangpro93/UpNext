@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import InfoIcon from '@material-ui/icons/Info';
 import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Tooltip,Accordion,AccordionSummary,AccordionDetails, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle, Typography,CardMedia,CardContent, TextField, Card, CardHeader, Avatar,IconButton} from '@material-ui/core';
+import {Tabs,Tab,Button} from '@material-ui/core';
 import { useSelector } from 'react-redux'
 import CreatePost from './CreatePost'
+import TopMenu from './TopMenu'
+import UserDisplay from './UserDisplay'
+import GroupDescription from './GroupDescription'
+import GroupEventsDisplay from './GroupEventsDisplay'
+import GroupTasksDisplay from './GroupTasksDisplay'
 var owner = false;
 const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
@@ -19,49 +21,6 @@ const useStyles = makeStyles((theme) => ({
 				flexWrap: 'wrap',
 				flexGrow: 1,
 		},
-		topMenu: {
-			display: 'flex',
-			flexDirection: 'row',
-			flexWrap: 'wrap',
-			flexGrow: 1,
-			justifyContent: 'flex-end',
-		},
-
-		paper: {
-			 textAlign: 'center',
-			 marginTop: 8,
-			 position: 'relative',
-			 minWidth: 50,
-			 minHeight: 50,
-			 width: 'max-content',
-			 color: 'white',
-			 height: '40%',
-			 backgroundColor: '#3CB371',
-		},
-	  groupNames: {
-			 position: 'absolute',
-			 top: '50%',
-			 left: '50%',
-			 transform: 'translate(-50%, -50%)',
-			 backgroundColor: 'transparent',
-		},
-		card: {
-			 width: 345,
-			 marginBottom: 16,
-			 marginRight: 16,
-			 marginLeft: 16,
-			 marginTop: 16,
-		},
-		avatar: {
-			 backgroundColor: 'red',
-		},
-		eventBoard: {
-			 display: 'flex',
-			 color: 'black',
-			 position: 'relative',
-			 flexDirection: 'row',
-		   flexWrap: 'wrap',
-		},
 		createPostButton: {
 				display: 'flex',
 				flexDirection: 'row',
@@ -69,22 +28,6 @@ const useStyles = makeStyles((theme) => ({
 				marginTop: 16,
 				marginBottom: 16,
 		},
-		leaveGroupButton: {
-			marginLeft: 16,
-		},
-		userPaper: {
-			width: 200,
-			height: 50,
-			marginTop: 8,
-			marginBottom: 8,
-		},
-		userDisplay: {
-			display: 'flex',
-			flexDirection: 'column',
-			flexWrap: 'wrap',
-			flexGrow: 1,
-		},
-
 }));
 
 export default function GroupPage(props) {
@@ -92,8 +35,8 @@ export default function GroupPage(props) {
 	const [eventWindow, setEventWindow] = useState(false);
 	const [infoWindow, setInfoWindow] = useState(false);
 	const [groupEvents,setGroupEvents] = useState([]);
-	const [groupReminders,setGroupReminders] = useState([]);
 	const [groupTasks, setGroupTasks] = useState([]);
+
 	const [eventName,setEventName] = useState('');
 	const [eventLocation, setEventLocation] = useState('');
 	const [eventStart, setEventStart] = useState('');
@@ -124,12 +67,6 @@ export default function GroupPage(props) {
 		owner = false;
 	}
 	var userId = currentUser['id'];
-	function changeBackground(e) {
-           e.target.style.opacity = '0.5';
-	}
-	function changeBack(e){
-          e.target.style.opacity = '1';
-	}
 	const history = useHistory();
 	function goBack(name,id){
 		var push = ''
@@ -159,10 +96,6 @@ export default function GroupPage(props) {
 								data[post].start = "Date: " + data[post].start.substring(0,10);
 								events.push(data[post]);
 							}
-							if(data[post].type === 'reminder'){
-								data[post].time = "Date: " + data[post].time.substring(0,10);
-								reminders.push(data[post]);
-							}
 							if(data[post].type === 'task'){
 								data[post].due = "Date: " + data[post].due.substring(0,10);
 								tasks.push(data[post]);
@@ -170,14 +103,6 @@ export default function GroupPage(props) {
 						}
 						events.sort(function(a, b){
 							if(a.start.substring(12,16) < b.start.substring(12,16)){
-								return -1;
-							}
-							else{
-								return 1;
-							}
-						})
-						reminders.sort(function(a, b){
-							if(a.time.substring(12,16) < b.time.substring(12,16)){
 								return -1;
 							}
 							else{
@@ -199,9 +124,9 @@ export default function GroupPage(props) {
 						})
 						setGroupEvents(events);
 						setGroupTasks(tasks);
-						setGroupReminders(reminders);
 						setLoadCreatePost(false);
 						setMakeAdmin(false);
+						setDelEvent(false);
 					});
 				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent]);
 
@@ -213,6 +138,7 @@ export default function GroupPage(props) {
 				console.log(reqObj.group_id)
 				const promise = api.memberships.deleteMembership(reqObj);
 				promise.then((resp) => {
+					owner=false
 					setJoinedGroup(false)
 				})
 			}
@@ -256,141 +182,28 @@ export default function GroupPage(props) {
 	        return (
 			        <div>
 			          <div>
-
 										 <Button variant="outlined" color="primary" onClick={() => { goBack();}} style={{marginTop: 8}}>
 													 Back
 										 </Button>
 			         </div>
-			<div className={classes.root}>
-				<div className={classes.root}>
-				  <h1>{name}</h1>
-					<Tooltip title="Group Description" placement="top">
-					<IconButton size="small" onClick={() => { setInfoWindow(true); }}>
-									<InfoIcon />
-								</IconButton>
-					</Tooltip>
-					<h4 style={{marginLeft: 8,  cursor:'pointer',marginTop: 16}} onClick={() => { setUserWindow(true); }}>
-					{groupUsers.length} Members
-					</h4>
-				</div>
-<div className={classes.topMenu}>
-				<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { leaveGroup();}}>
-							{joinedGroup ? 'Leave' : 'Join'}
-				</Button>
-</div>
-</div>
+							 <TopMenu groupName={name} setInformationWindow={setInfoWindow} setUserDisplay={setUserWindow} users={groupUsers} leave={leaveGroup} joined={joinedGroup}/>
+							 <UserDisplay users={groupUsers} window={userWindow} openWindow={setUserWindow} isOwner={owner} makeAdmin={makeAdminFunc}/>
+							 <GroupDescription window={infoWindow} setWindow={setInfoWindow} groupName={name} groupDesc={description}/>
 
-						 <Dialog open={userWindow} onClose={() => { setUserWindow(false); }} aria-labelledby="form-dialog-title">
-						 																			<DialogTitle >Members</DialogTitle>
-						 																			<DialogContent>
-						 																				<DialogContentText>
-																										{groupUsers.map(user => (
-																										<div className={classes.root}>
-																										<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-																											{user.name}
-																											{(user.is_admin === 1) ? '(Admin)' : ''}
-																										</Typography>
-																										{(owner === true && user.is_admin === 0) ? (
-																									<Button color="primary" onClick={() => { makeAdminFunc(user.id); }}>
-																										Make Admin
-																									</Button>
-																									) : null}
-																									</div>
-																										))}
-						 																				</DialogContentText>
-																										</DialogContent>
-										 																<DialogActions>
-																										 <Button onClick={() => { setUserWindow(false); }} color="primary">
-																											 Close
-																										 </Button>
-																									 </DialogActions>
-																								 </Dialog>
 
-				<Dialog open={infoWindow} onClose={() => { setInfoWindow(false); }} aria-labelledby="form-dialog-title">
-			                                        <DialogTitle id="form-dialog-title">{name}</DialogTitle>
-			                                        <DialogContent>
-			                                          <DialogContentText>
-																									{description}
-																									</DialogContentText>
-																									</DialogContent>
-																							<DialogActions>
-			                                          <Button onClick={() => { setInfoWindow(false); }} color="primary">
-			                                            Close
-			                                          </Button>
-			                                        </DialogActions>
-			                                      </Dialog>
-			<h2> Events </h2>
-			<div className={classes.eventBoard}>
-				{groupEvents.map(event => (
-
-				<Card key={event.id} className={classes.card}>
-			      <CardHeader
-			        avatar={
-					          <Avatar className={classes.avatar}>
-										E
-					          </Avatar>
-					        }
-			        title={event.title}
-			        subheader={event.start}
-			      />
-
-			      <CardContent>
-			        <Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-								{event.location}
-
-			        </Typography>
-				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
-					{event.description}
-				</Typography>
-				{owner === true ? (
-				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
-					Delete
-				</Button>
-				) : null}
-			      </CardContent>
-				</Card>
-				))}
-				</div>
+			  <h2> Events </h2>
+			  <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc}/>
 				<h2> Tasks </h2>
-				<div className={classes.eventBoard}>
-				{groupTasks.map(event => (
+				<GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc}/>
 
-				<Card key={event.id} className={classes.card}>
-						<CardHeader
-							avatar={
-										<Avatar className={classes.avatar}>
-										T
-										</Avatar>
-									}
-							title={event.title}
-							subheader={event.due}
-						/>
-
-						<CardContent>
-							<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-								{event.location}
-
-							</Typography>
-				<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
-					{event.description}
-				</Typography>
-				{owner === true ? (
-				<Button onClick={() => { deleteEventFunc(event.id); }} color="primary">
-					Delete
-				</Button>
-				) : null}
-						</CardContent>
-				</Card>
-				))}
-			</div>
 			{owner === true ? (
 				         <div className={classes.createPostButton}>
-				         	<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
-				                	Create Event
-				         </Button>
-												<CreatePost makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation}/>
-				        </div>
-				                                  ) : null}
+				         		<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
+				                		Create Event
+				         		</Button>
+										<CreatePost makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation}/>
+				         </div>
+		   ) : null}
 
 				</div>
 		      );
