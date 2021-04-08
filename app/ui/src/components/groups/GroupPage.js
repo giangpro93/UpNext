@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
+import PropTypes from 'prop-types';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {Tabs,Tab,Button} from '@material-ui/core';
+import {Tabs,Tab,Button,Typography,Box} from '@material-ui/core';
 import { useSelector } from 'react-redux'
 import CreatePost from './CreatePost'
 import TopMenu from './TopMenu'
@@ -29,7 +30,36 @@ const useStyles = makeStyles((theme) => ({
 				marginBottom: 16,
 		},
 }));
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
 export default function GroupPage(props) {
 	const location = useLocation();
 	const [eventWindow, setEventWindow] = useState(false);
@@ -48,6 +78,7 @@ export default function GroupPage(props) {
 	const [makeAdmin, setMakeAdmin] = useState(false);
 	const [delEvent,setDelEvent] = useState(false);
 	const [userWindow, setUserWindow] = useState(false);
+	const [value, setValue] = useState(0);
   var description = location.state.groupDesc;
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
@@ -175,6 +206,9 @@ export default function GroupPage(props) {
 						setDelEvent(true)
 				})
 			}
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
 
 
@@ -187,14 +221,22 @@ export default function GroupPage(props) {
 										 </Button>
 			         </div>
 							 <TopMenu groupName={name} setInformationWindow={setInfoWindow} setUserDisplay={setUserWindow} users={groupUsers} leave={leaveGroup} joined={joinedGroup}/>
+							 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+				 		 			<Tab label={groupEvents.length + " Events"} {...a11yProps(0)}/>
+				 					<Tab label={groupTasks.length + " Tasks"} {...a11yProps(1)}/>
+			 				 </Tabs>
 							 <UserDisplay users={groupUsers} window={userWindow} openWindow={setUserWindow} isOwner={owner} makeAdmin={makeAdminFunc}/>
 							 <GroupDescription window={infoWindow} setWindow={setInfoWindow} groupName={name} groupDesc={description}/>
 
 
-			  <h2> Events </h2>
-			  <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc}/>
-				<h2> Tasks </h2>
-				<GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc}/>
+							<TabPanel value={value} index={0}>
+			         <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc}/>
+			       </TabPanel>
+			       <TabPanel value={value} index={1}>
+			       <GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc}/>
+			       </TabPanel>
+
+
 
 			{owner === true ? (
 				         <div className={classes.createPostButton}>
