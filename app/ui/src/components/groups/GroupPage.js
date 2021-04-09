@@ -79,8 +79,8 @@ export default function GroupPage(props) {
 	const [groupName,setGroupName] = useState(name)
 	const [groupDesc,setGroupDesc] = useState(description)
 	const [eventLocation, setEventLocation] = useState('');
-	const [eventStart, setEventStart] = useState('');
-	const [eventEnd, setEventEnd] = useState('');
+	const [eventStart, setEventStart] = useState('2021-04-24T10:30');
+	const [eventEnd, setEventEnd] = useState('2021-04-24T11:30');
 	const [eventDescription, setEventDescription] = useState('');
 	const [loadCreatePost, setLoadCreatePost] = useState(false);
 	const [groupUsers, setGroupUsers] = useState([]);
@@ -214,6 +214,7 @@ export default function GroupPage(props) {
 					var request = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,assigned: eventStart, due: eventEnd}
 					var reqEventt = api.schedule.createTask(request)
 					reqEventt.then((resp) => {
+						console.log(resp)
 						setEventWindow(false);
 						setLoadCreatePost(true);
 					})

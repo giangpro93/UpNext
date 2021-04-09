@@ -74,7 +74,7 @@ export default function CreatePost(props) {
 	 margin="dense"
 			 label="End"
 				 type="time"
-				 onChange={(e) => props.setEvntEnd(e.target.value)}
+				 onChange={(e) => props.setEvntEnd(props.evntStart.substring(0,11) + e.target.value)}
 			 defaultValue="11:30"
 			 InputLabelProps={{
 					shrink: true,
@@ -108,7 +108,7 @@ export default function CreatePost(props) {
 				<Button onClick={() => { props.setEvntWindow(false); }} color="primary">
 					Cancel
 				</Button>
-				<Button onClick={() => { props.makePost(); console.log(props.evntEnd) }} color="primary">
+				<Button onClick={() => { props.makePost(); }} color="primary">
 					Post
 				</Button>
 			</DialogActions>
