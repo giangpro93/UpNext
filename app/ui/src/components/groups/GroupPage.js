@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import CreatePost from './CreatePost'
 import TopMenu from './TopMenu'
 import UserDisplay from './UserDisplay'
-
+import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
 import GroupEventsDisplay from './GroupEventsDisplay'
 import GroupTasksDisplay from './GroupTasksDisplay'
 var owner = false;
@@ -127,23 +127,17 @@ export default function GroupPage(props) {
 				var tasks = []
 				var groupPromise = api.schedule.getEntityScheduleById(groupId);
 					groupPromise.then(data => {
-						console.log(data)
+
 						for(var post = 0; post<data.length; post++){
 							if(data[post].type === 'event'){
-								console.log(data[post].start)
-								data[post].end =  "Time: " + data[post].start.substring(11,16) + " - " + data[post].end.substring(11,16)
-								data[post].start = "Date: " + data[post].start.substring(0,10);
-								console.log(data[post].start)
 								events.push(data[post]);
 							}
 							if(data[post].type === 'task'){
-								data[post].assigned = "Assigned: " + data[post].assigned.substring(0,10) + " | " + data[post].assigned.substring(11,16);
-								data[post].due = "Due: " + data[post].due.substring(0,10) + " | " + data[post].due.substring(11,16);
 								tasks.push(data[post]);
 							}
 						}
 						events.sort(function(a, b){
-							if(a.start.substring(12,16) + a.start.substring(22,28) < b.start.substring(12,16) + b.start.substring(22,28)){
+							if(a.start < b.start){
 								return -1;
 							}
 							else{
@@ -151,7 +145,7 @@ export default function GroupPage(props) {
 							}
 						})
 						tasks.sort(function(a, b){
-							if(a.due.substring(16,20) < b.due.substring(16,20)){
+							if(a.assigned < b.assigned){
 								return -1;
 							}
 							else{
@@ -160,7 +154,7 @@ export default function GroupPage(props) {
 						})
 						var userPromise = api.memberships.getUsersOfGroup(groupId)
 						userPromise.then((users) => {
-							console.log(users)
+
 							setGroupUsers(users)
 						})
 						setGroupEvents(events);
@@ -170,7 +164,7 @@ export default function GroupPage(props) {
 						setDelEvent(false);
 						var getGroupInfo = api.groups.getById(groupId)
 						getGroupInfo.then((group) => {
-							console.log(group)
+
 							setGroupName(group.name)
 							setGroupDesc(group.description)
 						})
@@ -181,8 +175,7 @@ export default function GroupPage(props) {
 			function leaveGroup(){
 				if(joinedGroup){
 				var reqObj = { user_id: userId, group_id: groupId};
-				console.log(reqObj.user_id)
-				console.log(reqObj.group_id)
+
 				const promise = api.memberships.deleteMembership(reqObj);
 				promise.then((resp) => {
 					owner=false
@@ -193,28 +186,27 @@ export default function GroupPage(props) {
 				var addData = {user_id: userId, group_id: groupId, is_admin: 0}
 				var newGroupPromise = api.memberships.create(addData);
 				newGroupPromise.then((resp) => {
-					console.log(resp);
+
 				})
 				setJoinedGroup(true)
 			}
 			}
 			function createPost(){
-				console.log("Start: " + eventStart)
-				console.log("End: " + eventEnd)
+
 				if(eventType === "Event"){
-					var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start:eventStart,end:eventEnd}
+					var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start: format(toUTC(dateInputFormat(new Date(eventStart)))),end: format(toUTC(dateInputFormat(new Date(eventEnd))))}
 				var reqEvent =	api.schedule.createEvent(requestVar);
 				reqEvent.then((resp) => {
-					console.log(resp)
+
 					setEventWindow(false);
 					setLoadCreatePost(true);
 				})
 				}
 				else{
-					var request = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,assigned: eventStart, due: eventEnd}
+					var request = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,assigned: format(toUTC(dateInputFormat(new Date(eventStart)))), due: format(toUTC(dateInputFormat(new Date(eventEnd))))}
 					var reqEventt = api.schedule.createTask(request)
 					reqEventt.then((resp) => {
-						console.log(resp)
+
 						setEventWindow(false);
 						setLoadCreatePost(true);
 					})
@@ -224,14 +216,14 @@ export default function GroupPage(props) {
 				var reqAdmin = {user_id: id, group_id: groupId}
 				var reqAdminEvent = api.memberships.makeAdmin(reqAdmin)
 				reqAdminEvent.then((resp) => {
-					  console.log(resp)
+
 						setMakeAdmin(true)
 				})
 			}
 			function deleteEventFunc(id){
 				var delEvent = api.schedule.deleteScheduleItemById(id)
 				delEvent.then((resp) => {
-					  console.log(resp)
+
 						setDelEvent(true)
 				})
 			}
@@ -259,11 +251,11 @@ export default function GroupPage(props) {
 
 
 							<TabPanel value={value} index={0}>
-			         <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc} />
+			         <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost} />
 
 			       </TabPanel>
 			       <TabPanel value={value} index={1}>
-			       <GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc} />
+			       <GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost}/>
 
 			       </TabPanel>
 

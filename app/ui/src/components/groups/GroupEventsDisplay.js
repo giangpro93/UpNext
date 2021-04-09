@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { useLocation } from "react-router-dom";
 import { makeStyles,Typography, Button,Card,CardContent,CardHeader,Avatar} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
-
+import GroupEventsEdit from './GroupEventsEdit'
+import {useState} from 'react';
+import { useEffect } from "react";
+import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
 const useStyles = makeStyles((theme) => ({
 	  root: {
 				display: 'flex',
@@ -29,11 +32,12 @@ const useStyles = makeStyles((theme) => ({
 		},
 }));
 export default function GroupEventsDisplay(props) {
+	const[editWindow,setEditWindow] = useState(false)
 const classes = useStyles()
 	return(
 		<div className={classes.eventBoard}>
 			{props.events.map(event => (
-
+				<div>
 			<Card key={event.id} className={classes.card}>
 					<CardHeader
 						avatar={
@@ -42,7 +46,7 @@ const classes = useStyles()
 									</Avatar>
 								}
 						title={event.title}
-						subheader= <div><div> {event.start} </div> {event.end}</div>
+						subheader= <div><div> {"Start: " + dateStrFormat(event.start)} </div> {"End: " + dateStrFormat(event.end)}</div>
 					/>
 
 					<CardContent>
@@ -54,12 +58,20 @@ const classes = useStyles()
 				{event.description}
 			</Typography>
 			{props.groupOwner === true ? (
+				<div>
 			<Button onClick={() => { props.deleteEvent(event.id); }} color="primary">
 				Delete
 			</Button>
+
+			<Button onClick={() => {setEditWindow(true);}} color="primary" >
+				Edit
+			</Button>
+			</div>
 			) : null}
 					</CardContent>
 			</Card>
+			<GroupEventsEdit setWindow={setEditWindow} window={editWindow} name={event.title} loc={event.location} start={event.start} end={event.end} desc={event.description} pushEdit={props.editLoad} postId={event.id}/>
+			</div>
 			))}
 			</div>
 	);

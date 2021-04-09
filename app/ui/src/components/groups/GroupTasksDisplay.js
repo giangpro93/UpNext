@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { makeStyles,Typography, Button,Tooltip,Card,CardContent,CardHeader,Avatar} from '@material-ui/core/';
+import { makeStyles,Typography,TextField, Button,Tooltip,Card,CardContent,CardHeader,Avatar,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
-
+import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
+import {useState} from 'react';
+import { useEffect } from "react";
+import GroupTasksEdit from './GroupTasksEdit'
 const useStyles = makeStyles((theme) => ({
 	  root: {
 				display: 'flex',
@@ -28,11 +31,14 @@ const useStyles = makeStyles((theme) => ({
 		},
 }));
 export default function GroupTasksDisplay(props) {
-const classes = useStyles()
+	const[editWindow,setEditWindow] = useState(false)
+	const[post,setPost] = useState([]);
+ const classes = useStyles()
+
 	return(
 		<div className={classes.eventBoard}>
 		{props.tasks.map(event => (
-
+			<div>
 		<Card key={event.id} className={classes.card}>
 				<CardHeader
 					avatar={
@@ -41,7 +47,7 @@ const classes = useStyles()
 								</Avatar>
 							}
 					title={event.title}
-					subheader=<div><div> {event.assigned} </div> {event.due}</div>
+					subheader=<div><div> {"Assigned: " + dateStrFormat(event.assigned)} </div> {"Due: " + dateStrFormat(event.due)}</div>
 				/>
 
 				<CardContent>
@@ -53,14 +59,24 @@ const classes = useStyles()
 			{event.description}
 		</Typography>
 		{props.groupOwner === true ? (
+			<div>
 		<Button onClick={() => { props.deleteEvent(event.id); }} color="primary">
 			Delete
 		</Button>
+
+		<Button onClick={() => {setEditWindow(true);}} color="primary" >
+			Edit
+		</Button>
+		</div>
 		) : null}
 				</CardContent>
 		</Card>
+			<GroupTasksEdit setWindow={setEditWindow} window={editWindow} name={event.title} loc={event.location} start={event.assigned} end={event.due} desc={event.description} pushEdit={props.editLoad} postId={event.id}/>
+			</div>
 		))}
-	</div>
+		</div>
+
+
 	);
 
 }

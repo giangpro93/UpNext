@@ -33,11 +33,11 @@ export default function TopMenu(props) {
 	const [editGroup,setEditGroup] = useState(false)
 	const [informationWindow,setInformationWindow] = useState(false)
 	function editGroupFunc(name,email,desc){
-		console.log(name)
+
 		var updateData={id: props.groupID, name: groupName , email: groupEmail, description: groupDesc}
 		var updateReq = api.groups.update(updateData)
 		updateReq.then((group) => {
-			console.log(group)
+
 			setEditGroupWindow(false)
 		})
 	}

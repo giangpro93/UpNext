@@ -77,28 +77,20 @@ export default function Groups(props) {
   }
 	function createGroup(name,desc,email){
 		setCreateGroupWindow(false);
-		console.log(name);
-		console.log(desc);
-		console.log(email);
 		var reqData = {name: name,email: email, description: desc};
-		console.log(reqData);
 		var responsePromise = api.groups.create(reqData);
 		responsePromise.then((resp) => {
-			console.log(resp);
 			addToNewGroup(resp);
 		})
 	}
-{/*  var testing = api.groups.search("Nol");
-	testing.then((resp) => {
-		console.log(resp);
-	}) */}
+
 
 	function addToNewGroup(group){
-		console.log(group);
+
 		var addData = {user_id: id, group_id: group.id, is_admin: 1}
 		var newGroupPromise = api.memberships.create(addData);
 		newGroupPromise.then((resp) => {
-			console.log(resp);
+
 			setLoadNewGroup(true);
 		})
 	}
@@ -107,7 +99,7 @@ export default function Groups(props) {
 	useEffect(() => {
 		var groupPromise = api.memberships.getGroupsOfUser(id)
 		groupPromise.then(data => {
-			console.log(data)
+
 			setGroupTiles(data);
 
 		});
