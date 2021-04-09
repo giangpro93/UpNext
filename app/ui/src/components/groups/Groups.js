@@ -15,10 +15,10 @@ const useStyles = makeStyles((theme) => ({
 		  		bottomMargin: 16,
 
 		    },
-	
+
 	  groupPaper: {
 		      		textAlign: 'center',
-		      		marginTop: 8,
+		      		marginTop: 16,
 		      		marginRight: 16,
 		      		position: 'relative',
 		      		minWidth: 200,
