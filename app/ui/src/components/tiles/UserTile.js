@@ -1,5 +1,6 @@
-import React, {useState, useEffect, useMemo} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation, useHistory } from 'react-router-dom';
 import EntityTile from './EntityTile';
 import { Input } from '../common/Input';
 import Snackbar from '../common/Snackbar';
@@ -9,7 +10,8 @@ import { Typography } from '@material-ui/core';
 
 export default function UserTile(props) {
     const { user, paperStyle, ...other } = props;
-
+    const location = useLocation();
+    const history = useHistory();
     const currentUser = useSelector(state => state.users.currentUser);
 
     // Possible states: null, 'noRelation', 'areFriends', 'pendingMe', 'pendingThem'
@@ -47,7 +49,15 @@ export default function UserTile(props) {
     }, [success]);
 
     function onClick() {
-
+        api.users.getById(user.id)
+        .then(res => {
+            if(Boolean(res)) {
+                history.push({
+                    pathname: '/profile',
+                    state: { user_id: user.id, page: location }
+                });
+            }
+        })
     }
 
     const makeButtons = () => {
