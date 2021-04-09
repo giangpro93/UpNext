@@ -13,14 +13,30 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 export default function UserDisplay(props) {
-const classes = useStyles()
-
+const classes = useStyles();
+var users = [];
+var admins = [];
+for(var i=0; i<props.users.length; i++){
+	if(props.users[i].is_admin === 1){
+		admins.push(props.users[i]);
+	}
+	else{
+		users.push(props.users[i]);
+	}
+}
 	return(
 																	<Dialog maxWidth={'lg'}  open={props.window} onClose={() => { props.openWindow(false); }} aria-labelledby="form-dialog-title">
 																			<DialogTitle >Members</DialogTitle>
 																			<DialogContent>
 																				<DialogContentText>
-																				{props.users.map(user => (
+																				Admins:
+																				{admins.map(user => (
+																				<div className={classes.root}>
+																				<UserTile key={user.id} user={user} />
+																			</div>
+																				))}
+																				Members:
+																				{users.map(user => (
 																				<div className={classes.root}>
 																				<UserTile key={user.id} user={user} />
 																				{(props.isOwner === true && user.is_admin === 0) ? (
