@@ -5,7 +5,6 @@ import { Input } from '../common/Input';
 import Snackbar from '../common/Snackbar';
 import ConfirmDialog from '../common/ConfirmDialog';
 import api from '../../api-client/api';
-import useAsync from '../../hooks/useAsync';
 import { Typography } from '@material-ui/core';
 
 export default function UserTile(props) {

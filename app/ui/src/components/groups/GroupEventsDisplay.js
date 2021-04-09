@@ -52,7 +52,7 @@ const classes = useStyles()
 									</Avatar>
 								}
 						title={event.title}
-						subheader= <div><div> {"Start: " + dateStrFormat(event.start)} </div> {"End: " + dateStrFormat(event.end)}</div>
+						subheader= {<div><div> {"Start: " + dateStrFormat(event.start)} </div> {"End: " + dateStrFormat(event.end)}</div>}
 					/>
 
 					<CardContent>

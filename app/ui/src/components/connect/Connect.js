@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { makeStyles, Paper, Button,TextField} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import EntityTile from '../tiles/EntityTile';
+import GroupTile from '../tiles/GroupTile';
 import UserTile from '../tiles/UserTile';
 const api = require('../../api-client/api.js');
 
@@ -128,22 +128,17 @@ function goToGroupPage(name,id,desc,email,admin,is_member){
 		Groups:
 		{
 groupTiles.map(group => (
-	<Paper key={group.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack} onClick={() => goToGroup(group.name,group.id,group.description,group.email)}>
-		<div className={classes.groupNames}>{group.name}</div>
-	</Paper>
+	// <Paper key={group.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack} onClick={() => goToGroup(group.name,group.id,group.description,group.email)}>
+	// 	<div className={classes.groupNames}>{group.name}</div>
+	// </Paper>
+	<GroupTile key={group.id} group={group} />
 ))
    }
 	 Users:
 	 {
-userTiles.map(user => (
-//  <Paper key={user.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack}>
-// 	 <div className={classes.groupNames}>{user.name}</div>
-//  </Paper>
-	// <EntityTile key={user.id} entity={user}>
-	// 	<Button variant="contained" color="primary">Test</Button>
-	// </EntityTile>
-	<UserTile key={user.id} user={user} />
-))
+		userTiles.map(user => (
+			<UserTile key={user.id} user={user} />
+		))
 	 }
 	 </div>
 	 </div>
