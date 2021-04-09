@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { useEffect } from "react";
+import Snackbar from '../common/Snackbar';
 import { useLocation } from "react-router-dom";
 import {Tabs,Tab,Button,Typography,Box} from '@material-ui/core';
 import { useSelector } from 'react-redux'
@@ -90,7 +91,8 @@ export default function GroupPage(props) {
 	const [userWindow, setUserWindow] = useState(false);
 	const [value, setValue] = useState(0);
 	const [post, setPost] = useState([]);
-
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 	if(description == null){
 		description = "this is where a description would be if it had one :(";
 	}
@@ -178,16 +180,29 @@ export default function GroupPage(props) {
 
 				const promise = api.memberships.deleteMembership(reqObj);
 				promise.then((resp) => {
+					if(resp){
+						setSuccess(true);
+					}
+					else{
+						setError(true);
+					}
 					owner=false
 					setJoinedGroup(false)
 				})
+				.catch(() => { setError(true); })
 			}
 			else{
 				var addData = {user_id: userId, group_id: groupId, is_admin: 0}
 				var newGroupPromise = api.memberships.create(addData);
 				newGroupPromise.then((resp) => {
-
+					if(resp){
+						setSuccess(true);
+					}
+					else{
+						setError(true);
+					}
 				})
+				.catch(() => { setError(true); })
 				setJoinedGroup(true)
 			}
 			}
@@ -197,35 +212,59 @@ export default function GroupPage(props) {
 					var requestVar = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,start: format(toUTC(dateInputFormat(new Date(eventStart)))),end: format(toUTC(dateInputFormat(new Date(eventEnd))))}
 				var reqEvent =	api.schedule.createEvent(requestVar);
 				reqEvent.then((resp) => {
-
+					if(resp){
+						setSuccess(true);
+					}
+					else{
+						setError(true);
+					}
 					setEventWindow(false);
 					setLoadCreatePost(true);
 				})
+				.catch(() => { setError(true); })
 				}
 				else{
 					var request = {entity_id: groupId, title: eventName, location: eventLocation, description: eventDescription,assigned: format(toUTC(dateInputFormat(new Date(eventStart)))), due: format(toUTC(dateInputFormat(new Date(eventEnd))))}
 					var reqEventt = api.schedule.createTask(request)
 					reqEventt.then((resp) => {
-
+						if(resp){
+							setSuccess(true);
+						}
+						else{
+							setError(true);
+						}
 						setEventWindow(false);
 						setLoadCreatePost(true);
 					})
+					.catch(() => { setError(true); })
 				}
 			}
 			function makeAdminFunc(id){
 				var reqAdmin = {user_id: id, group_id: groupId}
 				var reqAdminEvent = api.memberships.makeAdmin(reqAdmin)
 				reqAdminEvent.then((resp) => {
-
+					if(resp){
+						setSuccess(true);
+					}
+					else{
+						setError(true);
+					}
 						setMakeAdmin(true)
 				})
+				.catch(() => { setError(true); })
 			}
 			function deleteEventFunc(id){
 				var delEvent = api.schedule.deleteScheduleItemById(id)
 				delEvent.then((resp) => {
-
+					if(resp){
+						setSuccess(true);
+					}
+					else{
+						setError(true);
+					}
 						setDelEvent(true)
 				})
+				.catch(() => { setError(true); })
 			}
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -269,7 +308,15 @@ export default function GroupPage(props) {
 										<CreatePost evntEnd={eventEnd}evntStart={eventStart} makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation} evntType={eventType} setEvntType={setEventType}/>
 				         </div>
 		   ) : null}
-
+			 <Snackbar
+					 open={error || success}
+					 onClose={() => {
+							 setError(false);
+							 setSuccess(false);
+					 }}
+					 severity={error ? 'error' : 'success'}
+					 message={error ? 'Error completing transaction' : 'Success'}
+			 />
 				</div>
 		      );
 

@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom';
 import InfoIcon from '@material-ui/icons/Info';
 import { useState } from 'react'
 import GroupDescription from './GroupDescription'
+import Snackbar from '../common/Snackbar';
 import { useEffect } from "react";
 const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
@@ -31,15 +32,23 @@ export default function TopMenu(props) {
 	const [groupDesc, setGroupDesc] = useState(props.desc)
 	const [editGroupWindow, setEditGroupWindow] = useState(false);
 	const [editGroup,setEditGroup] = useState(false)
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 	const [informationWindow,setInformationWindow] = useState(false)
 	function editGroupFunc(name,email,desc){
 
 		var updateData={id: props.groupID, name: groupName , email: groupEmail, description: groupDesc}
 		var updateReq = api.groups.update(updateData)
 		updateReq.then((group) => {
-
+			if(group){
+				setSuccess(true);
+			}
+			else{
+				setError(true);
+			}
 			setEditGroupWindow(false)
 		})
+		.catch(() => { setError(true); })
 	}
 const classes = useStyles()
 useEffect(() => {
@@ -120,6 +129,15 @@ useEffect(() => {
 					</Button>
 				</DialogActions>
 			</Dialog>
+			<Snackbar
+					open={error || success}
+					onClose={() => {
+							setError(false);
+							setSuccess(false);
+					}}
+					severity={error ? 'error' : 'success'}
+					message={error ? 'Error completing transaction' : 'Success'}
+			/>
 		</div>
 	);
 

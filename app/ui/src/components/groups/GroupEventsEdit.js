@@ -3,6 +3,7 @@ import {Typography,TextField, Button,Tooltip,Card,CardContent,CardHeader,Avatar,
 import {useHistory} from 'react-router-dom';
 import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
 import {useState} from 'react';
+import Snackbar from '../common/Snackbar';
 import { useEffect } from "react";
 const api = require('../../api-client/api.js');
 export default function GroupEventsEdit(props) {
@@ -11,6 +12,8 @@ export default function GroupEventsEdit(props) {
 	const[postStart,setPostStart] = useState(props.start)
 	const[postEnd,setPostEnd] = useState(props.end)
 	const[postDesc,setPostDesc] = useState(props.desc)
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 function editPost(){
 	var name = postName
 	var location = postLocation
@@ -38,6 +41,12 @@ function editPost(){
   var updateData = {id: props.postId, title: name, location: location, description: desc, start: format(toUTC(dateInputFormat(new Date(start)))), end: format(toUTC(dateInputFormat(new Date(end))))}
 	var updateReq = api.schedule.updateEvent(updateData)
 	updateReq.then((post) => {
+		if(post){
+			setSuccess(true);
+		}
+		else{
+			setError(true);
+		}
 		console.log(post)
 		props.pushEdit(true);
 		props.setWindow(false);
@@ -47,6 +56,7 @@ function editPost(){
 		setPostEnd('')
 		setPostDesc('')
 	})
+	.catch(() => { setError(true); })
 }
 	return(
 		<div>
@@ -128,6 +138,16 @@ function editPost(){
 					</Button>
 				</DialogActions>
 			</Dialog>
+			
+			<Snackbar
+					open={error || success}
+					onClose={() => {
+							setError(false);
+							setSuccess(false);
+					}}
+					severity={error ? 'error' : 'success'}
+					message={error ? 'Error completing transaction' : 'Success'}
+			/>
 		</div>
 	);
 

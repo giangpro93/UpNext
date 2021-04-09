@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { makeStyles, Paper, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
+import Snackbar from '../common/Snackbar';
 const api = require('../../api-client/api.js');
 
 const useStyles = makeStyles((theme) => ({
@@ -60,7 +61,8 @@ export default function Groups(props) {
 	var id = currentUser['id'];
 	const [groupTiles, setGroupTiles] = useState([]);
 	const [createGroupWindow, setCreateGroupWindow] = useState(false);
-
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 
   function changeBackground(e) {
 	   e.target.style.opacity = '0.5';
@@ -90,9 +92,15 @@ export default function Groups(props) {
 		var addData = {user_id: id, group_id: group.id, is_admin: 1}
 		var newGroupPromise = api.memberships.create(addData);
 		newGroupPromise.then((resp) => {
-
+			if(resp){
+				setSuccess(true);
+			}
+			else{
+				setError(true);
+			}
 			setLoadNewGroup(true);
 		})
+		.catch(() => { setError(true); })
 	}
 
 {/* useEffect is where the groupTiles array is actually populated. useEffect will re-render the components that have just come in.*/}
@@ -175,6 +183,16 @@ groupTiles.map(group => (
 				 </Button>
 			 </DialogActions>
 		 </Dialog>
+
+		 <Snackbar
+				 open={error || success}
+				 onClose={() => {
+						 setError(false);
+						 setSuccess(false);
+				 }}
+				 severity={error ? 'error' : 'success'}
+				 message={error ? 'Error completing transaction' : 'Success'}
+		 />
 	</div>
 
 	);
