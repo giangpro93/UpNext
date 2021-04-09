@@ -109,7 +109,7 @@ export default function Groups(props) {
 	<div>
 	<div>
 		<div className={classes.createGroupButton}>
-		 <Button variant="outlined" color="primary" onClick={() => { setCreateGroupWindow(true); }}>
+		 <Button variant="outlined" color="primary" onClick={() => { setCreateGroupWindow(true); }} style={{marginTop: 8}}>
 						 Create Group
 		 </Button>
 		</div>

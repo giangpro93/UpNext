@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { useLocation } from "react-router-dom";
 import { makeStyles,Typography, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
-
+import UserTile from '../tiles/UserTile';
 const useStyles = makeStyles((theme) => ({
 	  root: {
 				display: 'flex',
@@ -16,16 +16,13 @@ export default function UserDisplay(props) {
 const classes = useStyles()
 
 	return(
-																	<Dialog open={props.window} onClose={() => { props.openWindow(false); }} aria-labelledby="form-dialog-title">
+																	<Dialog maxWidth={'lg'}  open={props.window} onClose={() => { props.openWindow(false); }} aria-labelledby="form-dialog-title">
 																			<DialogTitle >Members</DialogTitle>
 																			<DialogContent>
 																				<DialogContentText>
 																				{props.users.map(user => (
 																				<div className={classes.root}>
-																				<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-																					{user.name}
-																					{(user.is_admin === 1) ? '(Admin)' : ''}
-																				</Typography>
+																				<UserTile key={user.id} user={user} />
 																				{(props.isOwner === true && user.is_admin === 0) ? (
 																			<Button color="primary" onClick={() => { props.makeAdmin(user.id); }}>
 																				Make Admin
