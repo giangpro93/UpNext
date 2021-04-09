@@ -42,7 +42,7 @@ const classes = useStyles()
 									</Avatar>
 								}
 						title={event.title}
-						subheader= <div><div> {event.start} </div> {event.end}</div>
+						subheader= {<div><div>{event.start}</div>{event.end}</div>}
 					/>
 
 					<CardContent>

@@ -65,8 +65,7 @@ function getUserMembershipGroups(user_id) {
     return db
     .select('Entity.*', 'Membership.is_admin')
     .from('Membership')
-    .leftJoin('Group', 'Membership.group_id', 'Group.id')
-    .leftJoin('Entity', 'Group.id', 'Entity.id')
+    .leftJoin('Entity', 'Membership.group_id', 'Entity.id')
     .where('Membership.user_id', user_id);
 }
 

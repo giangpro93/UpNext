@@ -30,8 +30,9 @@ function deleteMembership(membershipInfo) {
 }
 
 function get(membershipInfo) {
+    const { user_id, group_id } = membershipInfo;
     return logAPICall(membershipInfo, () =>
-        axiosInstance.get('/memberships/get/', {data: membershipInfo})
+        axiosInstance.get(`/memberships/${user_id}/${group_id}`)
     );
 }
 
