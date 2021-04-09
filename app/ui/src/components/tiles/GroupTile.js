@@ -52,14 +52,14 @@ export default function GroupTile(props) {
                 {membershipState === false &&
                 <Input.ButtonInput
                     label='Join Group'
-                    onClick={() => 
+                    onClick={e => {
                         api.memberships.create({user_id: currentUser.id, group_id: group.id, is_admin: false})
                         .then(res => {
                             if(res) setSuccess(true);
                             else setError(true);
                         })
                         .catch(() => { setError(true); })
-                    }
+                    }}
                     color='primary'
                 />
                 }
@@ -67,20 +67,23 @@ export default function GroupTile(props) {
                 <>
                 <Input.ButtonInput
                     label='Leave Group'
-                    onClick={() => { setDeleteWindow(true);}}
+                    onClick={e => {
+                        setDeleteWindow(true);
+                    }}
                     color='secondary'
                 />
                 <ConfirmDialog
                     title="Are you sure you want to leave this group?"
                     open={deleteWindow}
-                    onClose={() => { setDeleteWindow(false) }}
-                    onConfirm={() =>
+                    onClose={() => { setDeleteWindow(false);}}
+                    onConfirm={() => {
                         api.memberships.deleteMembership({user_id: currentUser.id, group_id: group.id})
                         .then(res => {
                             if(res) setSuccess(true);
                             else setError(true);
                         })
-                        .catch(() => { setError(true); })}
+                        .catch(() => { setError(true); })
+                    }}
                 />
                 </>
                 }   

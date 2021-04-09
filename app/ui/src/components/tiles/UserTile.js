@@ -94,14 +94,14 @@ export default function UserTile(props) {
                 ? <Typography display='inline' variant='subtitle2'>Request Pending...</Typography>
                 : <Input.ButtonInput
                     label={label}
-                    onClick={() => 
+                    onClick={e => {
                         func()
                         .then(res => {
                             if(res) setSuccess(true);
                             else setError(true);
                         })
                         .catch(() => { setError(true); })
-                    }
+                    }}
                     color='primary'
                 />
                 : null
@@ -110,20 +110,23 @@ export default function UserTile(props) {
                 <>
                 <Input.ButtonInput
                     label={label2}
-                    onClick={() => { setDeleteWindow(true);}}
+                    onClick={e => {
+                        setDeleteWindow(true);
+                    }}
                     color='secondary'
                 />
                 <ConfirmDialog
                     title="Are you sure you want to perform this action?"
                     open={deleteWindow}
                     onClose={() => { setDeleteWindow(false) }}
-                    onConfirm={() =>
+                    onConfirm={() => {
                         func2()
                         .then(res => {
                             if(res) setSuccess(true);
                             else setError(true);
                         })
-                        .catch(() => { setError(true); })}
+                        .catch(() => { setError(true); })
+                    }}
                 />
                 </>
                 }   

@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Paper, Typography } from '@material-ui/core/';
+import { Grid, makeStyles, Paper, Typography } from '@material-ui/core/';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,12 +27,14 @@ export default function Tile(props) {
     const classes = useStyles();
     return (
         <Paper
-            onClick={onClick}
             className={classes.root} 
             style={paperStyle}
             {...other}
         >
-            <div style={{ position: 'absolute', left: '5px' }}>
+            <div
+                onClick={onClick}
+                style={{ position: 'absolute', width: '75%', left: '5px' }}
+            >
                 <Typography variant='subtitle1'>{label}</Typography>
                 {caption && <Typography variant='caption'>{caption}</Typography>}
                 {body && <Typography variant='body'>{body}</Typography>}
