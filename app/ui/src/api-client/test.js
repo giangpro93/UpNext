@@ -1,8 +1,7 @@
 const api = require('./api');
-const { axiosInstance } = require('./api-client');
 
-const reqObj = {user_id: 1, group_id: 11};
+const reqObj = {requester_id: 13, requested_id: 14};
 
-api.memberships.makeAdmin(reqObj)
+api.friends.get(reqObj)
 .then(console.log)
 .catch(console.log)

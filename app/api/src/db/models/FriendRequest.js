@@ -90,12 +90,19 @@ function getUserFriends(user_id) {
 }
 
 function deleteFriendRequest(request) {
-    const { requester_id, requested_id } = request;
-    return get(request)
-    .then(req => 
+    const { id1, id2 } = request;
+    return get({ requester_id: id1, requested_id: id2 })
+    .then(req => req ? req : get({ requester_id: id2, requested_id: id1 }))
+    .then(req =>
         db('FriendRequest')
-        .where('requester_id', requester_id)
-        .andWhere('requested_id', requested_id)
+        .where(q => 
+            q.where('requester_id', id1)
+            .andWhere('requested_id', id2)
+        )
+        .orWhere(q => 
+            q.where('requester_id', id2)
+            .andWhere('requested_id', id1)
+        )
         .del()
         .then(() => req)
     );

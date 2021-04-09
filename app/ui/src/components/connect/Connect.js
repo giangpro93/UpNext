@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { makeStyles, Paper, Button,TextField} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import EntityTile from '../tiles/EntityTile';
+import UserTile from '../tiles/UserTile';
 const api = require('../../api-client/api.js');
 
 const useStyles = makeStyles((theme) => ({
@@ -134,9 +136,13 @@ groupTiles.map(group => (
 	 Users:
 	 {
 userTiles.map(user => (
- <Paper key={user.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack}>
-	 <div className={classes.groupNames}>{user.name}</div>
- </Paper>
+//  <Paper key={user.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack}>
+// 	 <div className={classes.groupNames}>{user.name}</div>
+//  </Paper>
+	// <EntityTile key={user.id} entity={user}>
+	// 	<Button variant="contained" color="primary">Test</Button>
+	// </EntityTile>
+	<UserTile key={user.id} user={user} />
 ))
 	 }
 	 </div>

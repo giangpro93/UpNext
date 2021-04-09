@@ -3,7 +3,8 @@ import { DateTimeInput } from './DateTimeInput';
 import { RadioGroupInput } from './RadioGroupInput';
 import { SelectInput } from './SelectInput';
 import { TextInput } from './TextInput';
-import { ButtonInput } from './ButtonInput'
+import { ButtonInput } from './ButtonInput';
+import { DropdownInput } from './DropdownInput';
 
 export const Input = {
     CheckboxInput,
@@ -11,5 +12,6 @@ export const Input = {
     RadioGroupInput,
     SelectInput,
     TextInput, 
-    ButtonInput
+    ButtonInput,
+    DropdownInput
 }

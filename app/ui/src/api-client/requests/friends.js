@@ -24,13 +24,13 @@ function create(friendRequest) {
 
 function deleteFriend(friendRequest) {
     return logAPICall(friendRequest, () => 
-        axiosInstance.delete('/friends/', friendRequest)
+        axiosInstance.delete(`/friends/${friendRequest.id1}/${friendRequest.id2}`)
     );
 }
 
 function get(friendRequest) {
     return logAPICall(friendRequest, () => 
-        axiosInstance.get('/friends/get', {data: friendRequest})
+        axiosInstance.get(`/friends/${friendRequest.requester_id}/${friendRequest.requested_id}`)
     );
 }
 
