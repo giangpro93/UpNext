@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { useSelector } from 'react-redux';
 import EntityTile from './EntityTile';
 import { Input } from '../common/Input';
@@ -6,6 +6,7 @@ import Snackbar from '../common/Snackbar';
 import ConfirmDialog from '../common/ConfirmDialog';
 import api from '../../api-client/api';
 import useAsync from '../../hooks/useAsync';
+import { Typography } from '@material-ui/core';
 
 export default function UserTile(props) {
     const { user, paperStyle, ...other } = props;
@@ -34,7 +35,7 @@ export default function UserTile(props) {
                     api.friends.get({ requester_id: user.id, requested_id: currentUser.id })
                     .then(res2 => {
                         if(Boolean(res2)) {
-                            if(res.is_accepted) setFriendshipState('areFriends');
+                            if(res2.is_accepted) setFriendshipState('areFriends');
                             // currentUser has not accepted friend request from user
                             else setFriendshipState('pendingMe');
                         } else {
@@ -79,8 +80,10 @@ export default function UserTile(props) {
 
         return (
             <>
-                {label && 
-                <Input.ButtonInput
+                {label ?
+                label === 'Request Pending'
+                ? <Typography display='inline' variant='subtitle2'>Request Pending...</Typography>
+                : <Input.ButtonInput
                     label={label}
                     onClick={() => 
                         func()
@@ -92,6 +95,7 @@ export default function UserTile(props) {
                     }
                     color='primary'
                 />
+                : null
                 }
                 {label2 &&
                 <>
@@ -112,17 +116,8 @@ export default function UserTile(props) {
                         })
                         .catch(() => { setError(true); })}
                 />
-                <Snackbar
-                    open={error || success}
-                    onClose={() => {
-                        setError(false);
-                        setSuccess(false);
-                    }}
-                    severity={error ? 'error' : 'success'}
-                    message={error ? 'Error completing transaction' : 'Success'}
-                />
                 </>
-                }
+                }   
             </>
         )
     }
@@ -137,6 +132,15 @@ export default function UserTile(props) {
         >
             {makeButtons()}
         </EntityTile>
+        <Snackbar
+            open={error || success}
+            onClose={() => {
+                setError(false);
+                setSuccess(false);
+            }}
+            severity={error ? 'error' : 'success'}
+            message={error ? 'Error completing transaction' : 'Success'}
+        />
         </>
     )
 }
