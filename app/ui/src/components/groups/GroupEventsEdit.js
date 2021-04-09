@@ -6,18 +6,46 @@ import {useState} from 'react';
 import { useEffect } from "react";
 const api = require('../../api-client/api.js');
 export default function GroupEventsEdit(props) {
-	const[eventName,setEventName] = useState(props.name)
-	const[eventLocation,setEventLocation] = useState(props.loc)
-	const[eventStart,setEventStart] = useState(props.start)
-	const[eventEnd,setEventEnd] = useState(props.end)
-	const[eventDesc,setEventDesc] = useState(props.desc)
+	const[postName,setPostName] = useState(props.name)
+	const[postLocation,setPostLocation] = useState(props.loc)
+	const[postStart,setPostStart] = useState(props.start)
+	const[postEnd,setPostEnd] = useState(props.end)
+	const[postDesc,setPostDesc] = useState(props.desc)
 function editPost(){
-  var updateData = {id: props.postId, title:eventName, location: eventLocation, description: eventDesc, start: format(toUTC(dateInputFormat(new Date(eventStart)))), end: format(toUTC(dateInputFormat(new Date(eventEnd))))}
+	var name = postName
+	var location = postLocation
+	var start = postStart
+	var end = postEnd
+	var desc = postDesc
+	if(name.length === 0){
+		name = props.name
+	}
+	if(location.length === 0){
+		location = props.loc
+	}
+	if(start.length === 0){
+		start = props.start
+	}
+	if(end.length === 0){
+		end = props.end
+	}
+	if(desc.length === 0){
+		desc = props.desc
+		console.log("here: " + desc)
+	}
+
+
+  var updateData = {id: props.postId, title: name, location: location, description: desc, start: format(toUTC(dateInputFormat(new Date(start)))), end: format(toUTC(dateInputFormat(new Date(end))))}
 	var updateReq = api.schedule.updateEvent(updateData)
 	updateReq.then((post) => {
 		console.log(post)
 		props.pushEdit(true);
 		props.setWindow(false);
+		setPostName('')
+		setPostLocation('')
+		setPostStart('')
+		setPostEnd('')
+		setPostDesc('')
 	})
 }
 	return(
@@ -33,10 +61,10 @@ function editPost(){
 						margin="dense"
 						key = "one"
 						defaultValue={props.name}
-						id="eventName"
+						id="postName"
 						label="Event Name"
 						type="email"
-						onChange={(e) => setEventName(e.target.value)}
+						onChange={(e) => setPostName(e.target.value)}
 						fullWidth
 					/>
 		<TextField
@@ -44,10 +72,10 @@ function editPost(){
 						margin="dense"
 						key = "two"
 						defaultValue={props.loc}
-						id="eventName"
+						id="postName"
 						label="Event Location"
 						type="email"
-						onChange={(e) => setEventLocation(e.target.value)}
+						onChange={(e) => setPostLocation(e.target.value)}
 						fullWidth
 																					/>
 		<TextField
@@ -58,7 +86,7 @@ function editPost(){
 		 defaultValue={dateInputFormat(new Date(props.start))}
 				 label="Start"
 					 type="datetime-local"
-				 onChange={(e) => setEventStart(e.target.value)}
+				 onChange={(e) => setPostStart(e.target.value)}
 
 				 InputLabelProps={{
 						shrink: true,
@@ -73,7 +101,7 @@ function editPost(){
 				 label="End"
 				 defaultValue={dateInputFormat(new Date(props.end))}
 					 type="datetime-local"
-					 onChange={(e) => setEventEnd(e.target.value)}
+					 onChange={(e) => setPostEnd(e.target.value)}
 
 				 InputLabelProps={{
 						shrink: true,
@@ -87,7 +115,7 @@ function editPost(){
 					key = "four"
 					rows={4}
 					defaultValue={props.desc}
-				onChange={(e) => setEventDesc(e.target.value)}
+				onChange={(e) => setPostDesc(e.target.value)}
 				margin = "dense"
 					variant="filled"
 		fullWidth

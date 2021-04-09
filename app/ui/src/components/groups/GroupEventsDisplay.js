@@ -33,6 +33,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function GroupEventsDisplay(props) {
 	const[editWindow,setEditWindow] = useState(false)
+	const[eventName,setEventName] = useState('')
+	const[eventLocation,setEventLocation] = useState('')
+	const[eventStart,setEventStart] = useState('')
+	const[eventEnd,setEventEnd] = useState('')
+	const[eventDesc,setEventDesc] = useState('')
+	const[eventID,setEventID] = useState(0)
 const classes = useStyles()
 	return(
 		<div className={classes.eventBoard}>
@@ -63,16 +69,16 @@ const classes = useStyles()
 				Delete
 			</Button>
 
-			<Button onClick={() => {setEditWindow(true);}} color="primary" >
+			<Button onClick={() => { setEventName(event.title); setEventLocation(event.location); setEventStart(event.start); setEventEnd(event.end); setEventDesc(event.description); setEventID(event.id); setEditWindow(true);}} color="primary" >
 				Edit
 			</Button>
 			</div>
 			) : null}
 					</CardContent>
 			</Card>
-			<GroupEventsEdit setWindow={setEditWindow} window={editWindow} name={event.title} loc={event.location} start={event.start} end={event.end} desc={event.description} pushEdit={props.editLoad} postId={event.id}/>
 			</div>
 			))}
+			<GroupEventsEdit setWindow={setEditWindow} window={editWindow} name={eventName} loc={eventLocation} start={eventStart} end={eventEnd} desc={eventDesc} pushEdit={props.editLoad} postId={eventID}/>
 			</div>
 	);
 

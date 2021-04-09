@@ -32,9 +32,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function GroupTasksDisplay(props) {
 	const[editWindow,setEditWindow] = useState(false)
-	const[post,setPost] = useState([]);
+	const[eventName,setEventName] = useState('')
+	const[eventLocation,setEventLocation] = useState('')
+	const[eventStart,setEventStart] = useState('')
+	const[eventEnd,setEventEnd] = useState('')
+	const[eventDesc,setEventDesc] = useState('')
+	const[eventID,setEventID] = useState(0)
  const classes = useStyles()
-
 	return(
 		<div className={classes.eventBoard}>
 		{props.tasks.map(event => (
@@ -64,16 +68,16 @@ export default function GroupTasksDisplay(props) {
 			Delete
 		</Button>
 
-		<Button onClick={() => {setEditWindow(true);}} color="primary" >
+		<Button onClick={() => {setEventName(event.title); setEventLocation(event.location); setEventStart(event.assigned); setEventEnd(event.due); setEventDesc(event.description); setEventID(event.id); setEditWindow(true);}} color="primary" >
 			Edit
 		</Button>
 		</div>
 		) : null}
 				</CardContent>
 		</Card>
-			<GroupTasksEdit setWindow={setEditWindow} window={editWindow} name={event.title} loc={event.location} start={event.assigned} end={event.due} desc={event.description} pushEdit={props.editLoad} postId={event.id}/>
 			</div>
 		))}
+		<GroupTasksEdit setWindow={setEditWindow} window={editWindow} name={eventName} loc={eventLocation} start={eventStart} end={eventEnd} desc={eventDesc} pushEdit={props.editLoad} postId={eventID}/>
 		</div>
 
 
