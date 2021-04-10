@@ -19,17 +19,17 @@ export default function Login(props) {
           }
             <p style={{textAlign: 'center'}}>
             {loginOpen
-              ?  "Already registered?"
-              :  "Need to Register?"
+              ? "Need to Register?"
+              : "Already registered?"
             }
               {loginOpen
                 ? <Input.ButtonInput
-                    label='Log In'
-                    onClick={() => { setLoginOpen(true); }}
-                />
-                : <Input.ButtonInput
                     label='Sign Up'
                     onClick={() => { setLoginOpen(false); }}
+                />
+                : <Input.ButtonInput
+                    label='Log In'
+                    onClick={() => { setLoginOpen(true); }}
                 />
               }
             </p>
