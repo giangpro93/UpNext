@@ -26,7 +26,7 @@ export default function SignupForm(props) {
     const { vals, errs, setErrs, onChange } = useForm(initialSignup, validateSignup);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
-
+    
     function validateSignup(fields = vals) {
         let errs = {};
         const { firstName, lastName, email, password, confirmPassword } = vals;
@@ -59,9 +59,9 @@ export default function SignupForm(props) {
         if(validateSignup()) {
             // dispatch redux event to try to add the new user
             dispatch(signup(vals))
-            .then(res => { 
+            .then(res => {
                 if(usersState.currentUser) setSuccess(true);
-                else setError(true); 
+                else setError(true);
             })
             .catch(() => { setError(true); })
         }
