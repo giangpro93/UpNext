@@ -116,6 +116,11 @@ export default function ScheduleItemForm(props) {
         }
     }
 
+    function handleClose() {
+        setVals(defaultVals);
+        onClose();
+    }
+
     const label = (mode === 'create' ? 'Create ' : 'Update ') + 
         (type === 'event' ? 'Event'
             : type === 'task' ? 'Task'
@@ -125,10 +130,10 @@ export default function ScheduleItemForm(props) {
         <div>
             <DialogForm
                 open={open}
-                onClose={onClose}
+                onClose={handleClose}
                 title={label}
                 cancelLabel='Cancel'
-                onCancel={onClose}
+                onCancel={handleClose}
                 confirmLabel={label}
                 onConfirm={onConfirm}
             >
