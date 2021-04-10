@@ -67,7 +67,6 @@ export default function GroupPage(props) {
 	const name = location.state.groupName;
 	const currentUser = useSelector(state => state.users.currentUser);
 	const groupId = location.state.groupID;
-	const isAdmin = location.state.is_admin;
 	var is_member = location.state.isMember;
 	var description = location.state.groupDesc;
 	var prevPage  = location.state.page;
@@ -89,6 +88,7 @@ export default function GroupPage(props) {
 	const [makeAdmin, setMakeAdmin] = useState(false);
 	const [delEvent,setDelEvent] = useState(false);
 	const [userWindow, setUserWindow] = useState(false);
+	const [isAdmin,setIsAdmin] = useState(false);
 	const [value, setValue] = useState(0);
 	const [post, setPost] = useState([]);
 	const [success, setSuccess] = useState(false);
@@ -171,7 +171,14 @@ export default function GroupPage(props) {
 							setGroupDesc(group.description)
 						})
 					});
-				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent]);
+					var getMembershipInfo = {user_id: userId, group_id: groupId}
+					var getMembershipReq = api.memberships.get(getMembershipInfo)
+					getMembershipReq.then((group) => {
+						console.log(group)
+						if(group.is_admin === 1){ setIsAdmin(true);}
+						console.log(isAdmin)
+					});
+				}, [loadCreatePost, joinedGroup,makeAdmin,delEvent,isAdmin]);
 
 
 			function leaveGroup(){
@@ -186,7 +193,7 @@ export default function GroupPage(props) {
 					else{
 						setError(true);
 					}
-					owner=false
+					setIsAdmin(false)
 					setJoinedGroup(false)
 				})
 				.catch(() => { setError(true); })
@@ -280,27 +287,27 @@ export default function GroupPage(props) {
 													 Back
 										 </Button>
 			         </div>
-							 <TopMenu groupName={groupName} setInformationWindow={setInfoWindow} setUserDisplay={setUserWindow} users={groupUsers} leave={leaveGroup} joined={joinedGroup} isOwner={owner} groupID={groupId} namee={groupName} email={groupEmail} desc={groupDesc} />
+							 <TopMenu groupName={groupName} setInformationWindow={setInfoWindow} setUserDisplay={setUserWindow} users={groupUsers} leave={leaveGroup} joined={joinedGroup} isOwner={isAdmin} groupID={groupId} namee={groupName} email={groupEmail} desc={groupDesc} />
 							 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
 				 		 			<Tab label={groupEvents.length + " Events"} {...a11yProps(0)}/>
 				 					<Tab label={groupTasks.length + " Tasks"} {...a11yProps(1)}/>
 			 				 </Tabs>
-							 <UserDisplay users={groupUsers} window={userWindow} openWindow={setUserWindow} isOwner={owner} makeAdmin={makeAdminFunc}/>
+							 <UserDisplay users={groupUsers} window={userWindow} openWindow={setUserWindow} isOwner={isAdmin} makeAdmin={makeAdminFunc}/>
 
 
 
 							<TabPanel value={value} index={0}>
-			         <GroupEventsDisplay events={groupEvents} groupOwner={owner} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost} />
+			         <GroupEventsDisplay events={groupEvents} groupOwner={isAdmin} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost} />
 
 			       </TabPanel>
 			       <TabPanel value={value} index={1}>
-			       <GroupTasksDisplay tasks={groupTasks} groupOwner={owner} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost}/>
+			       <GroupTasksDisplay tasks={groupTasks} groupOwner={isAdmin} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost}/>
 
 			       </TabPanel>
 
 
 
-			{owner === true ? (
+			{isAdmin === true ? (
 				         <div className={classes.createPostButton}>
 				         		<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
 				                		Create Event
