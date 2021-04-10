@@ -5,6 +5,7 @@ import 'firebase/firestore'
 import 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { useSelector } from 'react-redux'
 //import { messages } from '../../api-client/api'
 
 firebase.initializeApp({
@@ -19,6 +20,7 @@ firebase.initializeApp({
 
 const auth = firebase.auth()
 const firestore = firebase.firestore()
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -39,14 +41,22 @@ function ChatRoom() {
     const [messages] = useCollectionData(query, {idField: 'id'})
     const [formValue, setFormValue] = useState('')
 
+    const currentUser = useSelector(state => state.users.currentUser);
+    const userId = currentUser.id
+    const userName = currentUser.name
+    const userEmail = currentUser.email
+
     const sendMessage = async(e) => {
         e.preventDefault()
-        const { uid } = auth.currentUser
+        //const { uid } = auth.currentUser
 
         await messagesRef.add({
             text: formValue,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            uid
+            senderID: userId,
+            senderName: userName,
+            senderEmail: userEmail
+            //uid
         })
 
         setFormValue('')
@@ -72,9 +82,9 @@ function ChatRoom() {
 function ChatMessage(props) {
     const { text, uid } = props.message
 
-    const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received'
+    //const messageClass = userId === auth.currentUser.uid ? 'sent' : 'received'
     return (
-        <div className={'message ${messageClass}'}>
+        <div>
             <p>{text}</p>
         </div>
     )
