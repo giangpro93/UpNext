@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { signup, login } from './actions'
+import { signup, update, login } from './actions'
 
 const initUser = {
     currentUser: null,
@@ -17,6 +17,12 @@ export const usersSlice = createSlice({
     extraReducers: {
         [signup.pending]: (state, action) => ({
             currentUser: null,
+            isPending: true,
+            isError: false,
+            error: ''
+        }),
+        [update.pending]: (state, action) => ({
+            ...state,
             isPending: true,
             isError: false,
             error: ''
@@ -39,6 +45,12 @@ export const usersSlice = createSlice({
             isError: true,
             error: action.error.message
         }),
+        [update.rejected]: (state, action) => ({
+            ...state,
+            isPending: false,
+            isError: true,
+            error: action.error.message
+        }),
         [login.rejected]: (state, action) => ({
             currentUser: null,
             isPending: false,
@@ -52,6 +64,12 @@ export const usersSlice = createSlice({
         //     error: action.error.message
         // }),
         [signup.fulfilled]: (state, action) => ({
+            currentUser: action.payload,
+            isPending: false,
+            isError: false,
+            error: ''
+        }),
+        [update.fulfilled]: (state, action) => ({
             currentUser: action.payload,
             isPending: false,
             isError: false,

@@ -8,6 +8,7 @@ import Groups from '../groups/Groups'
 import GroupPage from '../groups/GroupPage'
 import { useSelector } from 'react-redux';
 import Login from '../login/Login'
+import ProfilePage from '../profile-page/ProfilePage';
 import Profile from '../profile/Profile'
 import Connect from '../connect/Connect'
 import Dashboard from '../dashboard/Dashboard'
@@ -59,7 +60,8 @@ function LoggedIn() {
                         <MessagePage />
                     </Route>
                     <Route exact path="/profile">
-                        <Profile />
+                        {/* <Profile /> */}
+                        <ProfilePage />
                     </Route>
                 </Switch>
             </Container>
