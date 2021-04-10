@@ -55,7 +55,6 @@ function LoggedIn() {
                         Create
                     </Route>
                     <Route exact path="/messages">
-                        Messages
                         <MessagePage />
                     </Route>
                     <Route exact path="/profile">
