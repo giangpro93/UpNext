@@ -60,7 +60,7 @@ export default function SignupForm(props) {
             // dispatch redux event to try to add the new user
             dispatch(signup(vals))
             .then(res => { 
-                if(res) setSuccess(true);
+                if(usersState.currentUser) setSuccess(true);
                 else setError(true); 
             })
             .catch(() => { setError(true); })

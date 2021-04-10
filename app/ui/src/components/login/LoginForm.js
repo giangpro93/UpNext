@@ -45,7 +45,7 @@ export default function LoginForm(props) {
         if(validateLogin()) {
             dispatch(login(vals))
             .then(res => {
-                if(res) {
+                if(usersState.currentUser) {
                     setSuccess(true);
                     onClose();
                 }
