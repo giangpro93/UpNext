@@ -5,7 +5,9 @@ import { Input } from '../common/Input'
 import useForm from '../../hooks/useForm'
 import { DialogForm } from '../common/DialogForm'
 import Snackbar from '../common/Snackbar';
-
+import { useStyles } from './styles';
+import { Avatar, Paper } from '@material-ui/core';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 const initialLogin = {
     email: '',
     password: ''
@@ -13,7 +15,7 @@ const initialLogin = {
 
 
 export default function LoginForm(props) {
-
+const classes = useStyles();
     const { open, onClose } = props;
 
     const {vals, errs, setErrs, onChange} = useForm(initialLogin, validateLogin);
@@ -56,40 +58,47 @@ export default function LoginForm(props) {
     }
 
     return (
-        <>
-            <DialogForm 
-                open={open}
-                onClose={onClose}
-                title='Log In'
-                cancelLabel='Cancel'
-                onCancel={onClose}
-                confirmLabel='Log In'
-                onConfirm={onLoginSubmit}>
-                <Input.TextInput
-                    label='Email'
-                    name='email'
-                    value={vals.email}
-                    onChange={onChange}
-                    type='email'
-                    error={errs.email}
-                    helperText={errs.email}
-                    />
-                <Input.TextInput
-                    label='Password'
-                    name='password'
-                    value={vals.password}
-                    onChange={onChange}
-                    type='password'
-                    error={errs.password}
-                    helperText={errs.password}
-                    />
-            </DialogForm>
-            <Snackbar
-                open={success || error}
-                onClose={() => { setSuccess(false); setError(false); }}
-                severity={success ? 'success' : 'error'}
-                message={success ? 'Login Successful' : 'Login Failed'}
-            />
-        </>
+      <div className={classes.main}>
+          <Paper className={classes.paper}>
+              <Avatar className={classes.avatar}>
+                  <PeopleAltIcon className={classes.icon}/>
+              </Avatar>
+              <div>
+              <Input.TextInput
+                  label='Email'
+                  name='email'
+                  value={vals.email}
+                  onChange={onChange}
+                  type='email'
+                  error={errs.email}
+                  helperText={errs.email}
+                  />
+              <Input.TextInput
+                  label='Password'
+                  name='password'
+                  value={vals.password}
+                  onChange={onChange}
+                  type='password'
+                  error={errs.password}
+                  helperText={errs.password}
+                  />
+                  <Input.ButtonInput
+                      label='Log In'
+                      onClick={onLoginSubmit}
+                      className={classes.button}
+                      fullWidth
+                      disableRipple
+                  />
+              </div>
+          </Paper>
+          <Snackbar
+              open={success || error}
+              onClose={() => { setSuccess(false); setError(false); }}
+              severity={success ? 'success' : 'error'}
+              message={success ? 'Login Successful' : 'Login Failed'}
+          />
+      </div>
+
+
     )
 }
