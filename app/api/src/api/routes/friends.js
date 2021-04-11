@@ -14,6 +14,14 @@ router.post('/', function(req, res) {
     respond(req, res, FriendRequest.create);
 });
 
+router.get('/unaccepted/:requested_id', function(req, res) {
+    respond(req, res, FriendRequest.getUnacceptedUsersOf, req.params.requested_id);
+});
+
+router.get('/accepted/:id', function(req, res) {
+    respond(req, res, FriendRequest.getUserFriends, req.params.id);
+});
+
 router.get('/:requester_id/:requested_id', function(req, res) {
     const { requester_id, requested_id } = req.params;
     respond(req, res, FriendRequest.get, {requester_id, requested_id});
@@ -21,14 +29,6 @@ router.get('/:requester_id/:requested_id', function(req, res) {
 
 router.put('/accept', function(req, res) {
     respond(req, res, FriendRequest.accept);
-});
-
-router.get('/unaccepted/:requested_id', function(req, res) {
-    respond(req, res, FriendRequest.getUnacceptedUsersOf, req.params.requested_id);
-});
-
-router.get('/accepted/:id', function(req, res) {
-    respond(req, res, FriendRequest.getUserFriends, req.params.id);
 });
 
 router.delete('/:id1/:id2', function(req, res) {

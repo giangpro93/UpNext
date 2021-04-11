@@ -4,44 +4,48 @@ import { useSelector } from 'react-redux';
 import { Input } from '../common/Input';
 import EditProfileForm from './EditProfileForm';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import UserRelationButtons from '../user/UserRelationButtons';
 
 export default function ProfileCard(props) {
     const { user } = props;
     const currentUser = useSelector(state => state.users.currentUser);
     const [editProfileWindow, setEditProfileWindow] = useState(false);
-    
+
     const isMe = user.id === currentUser.id;
+    const targetUser = isMe ? currentUser : user;
+    
     return (
-        <>
-        <Card raised variant='outlined' style={{display: 'inline-block'}}>
+        <div style={{ width: '100%', textAlign: 'center', padding: '20px'}}>
+        <Card raised variant='outlined' style={{display: 'block'}}>
             <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                    Profile Info
+                <p><AccountCircleIcon style={{ width: '80px', height: '80px'}}/></p>
+                <Typography variant="h3">
+                    {targetUser.name}
                 </Typography>
-                <AccountCircleIcon />
-                <Typography>
-                    Name: {user.name}
+                <Typography gutterBottom variant="h6">
+                   {targetUser.email}
                 </Typography>
-                <Typography>
-                    Email: {user.email}
-                </Typography>
-                <Typography>
-                    Bio: {user.description}
+                <Typography variant='subtitle1'>
+                    {targetUser.description}
                 </Typography>
             </CardContent>
             <CardActions>
-            {isMe &&
+            <div style={{ width: '100%', textAlign: 'center'}}>
+            {isMe ?
                 <Input.ButtonInput
                     label='Edit Profile'
                     onClick={() => { setEditProfileWindow(true); }}
+                    color='primary'
                 />
+                : <UserRelationButtons user={targetUser} />
             }
+            </div>
             </CardActions>
         </Card>
         <EditProfileForm
             open={editProfileWindow}
             onClose={() => { setEditProfileWindow(false); }}
             />
-        </>
+        </div>
     )
 }
