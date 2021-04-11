@@ -15,6 +15,16 @@ export const signup = createAsyncThunk(
     }
 )
 
+export const update = createAsyncThunk(
+    'users/update',
+    function(updateInfo, { rejectWithValue }) {
+        return api.users.update(updateInfo)
+        .catch(err =>
+            rejectWithValue(err.response.data)
+        )
+    }
+)
+
 export const login = createAsyncThunk(
     'users/login',
     async (loginInfo, { rejectWithValue }) => {

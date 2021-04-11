@@ -4,7 +4,7 @@ import { Input } from './Input'
 
 export function DialogForm(props) {
 
-    const { children, open, onClose, title, cancelLabel, onCancel, confirmLabel, onConfirm, submitDisabled } = props;
+    const { children, open, onClose, title, cancelLabel, onCancel, confirmLabel, onConfirm, submitDisabled, ...other } = props;
 
     return (
     <div>
@@ -12,6 +12,7 @@ export function DialogForm(props) {
             open={open} 
             onClose={onClose} 
             aria-labelledby="form-dialog-title"
+            {...other}
         >
             <DialogTitle id="form-dialog-title">{title}</DialogTitle>
             <DialogContent dividers>
