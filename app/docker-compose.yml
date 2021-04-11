@@ -2,28 +2,28 @@
 
 version: '3'
 services:
-  db:
-    container_name: db
-    image: cykline/upnext-db
-    restart: unless-stopped
-    env_file: ./api/.env
-    ports:
-    - "3306:3306"
-  db-setup:
-    container_name: db-setup
-    image: cykline/upnext-api
-    command: node /api/src/db_initialize.js
-    restart: on-failure
-    env_file: ./api/.env
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
-      MYSQL_HOSTNAME: db
-    volumes:
-      - ./api/src/:/api/src/
-    links:
-      - db
-    depends_on:
-      - db
+  # db:
+  #   container_name: db
+  #   image: cykline/upnext-db
+  #   restart: unless-stopped
+  #   env_file: ./api/.env
+  #   ports:
+  #   - "3306:3306"
+  # db-setup:
+  #   container_name: db-setup
+  #   image: cykline/upnext-api
+  #   command: node /api/src/db_initialize.js
+  #   restart: on-failure
+  #   env_file: ./api/.env
+  #   environment:
+  #     CHOKIDAR_USEPOLLING: "true"
+  #     MYSQL_HOSTNAME: db
+  #   volumes:
+  #     - ./api/src/:/api/src/
+  #   links:
+  #     - db
+  #   depends_on:
+  #     - db
   api:
     container_name: api
     image: cykline/upnext-api
@@ -32,13 +32,13 @@ services:
     env_file: ./api/.env
     environment:
       CHOKIDAR_USEPOLLING: "true"
-      MYSQL_HOSTNAME: db
+      # MYSQL_HOSTNAME: db
     volumes:
       - ./api/src/:/api/src/
-    links:
-      - db
-    depends_on:
-      - db
+    # links:
+    #   - db
+    # depends_on:
+    #   - db
     ports:
       - "9000:9000"
   ui:

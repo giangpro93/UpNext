@@ -34,7 +34,7 @@ function LoggedIn() {
     return (
         <>
             <Appbar />
-            <Container>
+            <Container >
                 <Switch>
                     <Route exact path="/">
                         <Dashboard />

@@ -8,7 +8,7 @@ const removeSpaces = str => str.split(' ').join('');
 const userFromName = (name, is_prof) => ({
     name,
     email: removeSpaces(name) + '@ku.edu',
-    description: `Hi, my name is ${name}` + is_prof ? 'I am a professor at KU' : 'I am a student at KU' ,
+    description: `Hi, my name is ${name}. ${is_prof ? 'I am a professor at KU' : 'I am a student at KU'}` ,
     password: 'password'
 });
 

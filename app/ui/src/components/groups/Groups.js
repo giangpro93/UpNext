@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
 		  		justifyContent: 'flex-start',
 		  		flexWrap: 'wrap',
 		  		bottomMargin: 16,
-
 		    },
 
 	  groupPaper: {

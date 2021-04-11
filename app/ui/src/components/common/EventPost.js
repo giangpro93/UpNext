@@ -1,5 +1,6 @@
 import React from 'react';
-import {makeStyles, Card, CardHeader, CardContent, Avatar, Typography} from '@material-ui/core';
+import {makeStyles, Card, CardHeader, CardContent, Avatar, Typography, Link} from '@material-ui/core';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 const useStyles = makeStyles ((theme) => ({
     root: {
@@ -8,7 +9,8 @@ const useStyles = makeStyles ((theme) => ({
         flexWrap: 'wrap',
     },
     card: {
-        width: 800,
+        display: 'flex',
+        flexDirection: 'column',
         marginBottom: 16,
         marginRight: 16,
         marginLeft: 16,
@@ -30,15 +32,15 @@ export default function EventPost( props ) {
                     </Avatar>
                 }
                 title = {props.title}
-                subheader = {props.location}
+                subheader = {
+                    <Typography display='block' components='p'>
+                        {props.start+" - "+props.end+" "}
+                        <LocationOnIcon fontSize="inherit"/>
+                        <Link href={"http://maps.google.com/maps?q="+props.location}>{props.location}</Link>
+                    </Typography>                    
+                }
             />
             <CardContent>
-                <Typography display='block' components='p'>
-                    Time: {props.time}
-                </Typography>
-                <Typography display='block' components='p'>
-                    Date: {props.date}
-                </Typography>
                 <Typography display='block' components='p'>
                     {props.desc}
                 </Typography>
