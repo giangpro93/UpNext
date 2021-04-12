@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { useLocation } from "react-router-dom";
-import { makeStyles,Typography, Button,Card,CardContent,CardHeader,Avatar} from '@material-ui/core/';
+import { makeStyles,Typography, Button,Card,CardContent,CardHeader,Avatar,Link} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import GroupEventsEdit from './GroupEventsEdit'
 import {useState} from 'react';
 import { useEffect } from "react";
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
 const useStyles = makeStyles((theme) => ({
 	  root: {
@@ -57,7 +58,8 @@ const classes = useStyles()
 
 					<CardContent>
 						<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-							{"Location: " + event.location}
+							Location: <LocationOnIcon fontSize="inherit"/>
+							<Link href={"http://maps.google.com/maps?q="+event.location}>{event.location}</Link>
 
 						</Typography>
 			<Typography display='block' variant="subtitle1" color="textPrimary" component="p">

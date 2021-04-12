@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { makeStyles,Typography,TextField, Button,Tooltip,Card,CardContent,CardHeader,Avatar,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle} from '@material-ui/core/';
+import { makeStyles,Typography,TextField, Button,Tooltip,Card,CardContent,CardHeader,Avatar,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,Link} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
 import {useState} from 'react';
 import { useEffect } from "react";
 import GroupTasksEdit from './GroupTasksEdit'
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 const useStyles = makeStyles((theme) => ({
 	  root: {
 				display: 'flex',
@@ -56,7 +57,9 @@ export default function GroupTasksDisplay(props) {
 
 				<CardContent>
 					<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-						{event.location}
+						Location:
+						<LocationOnIcon fontSize="inherit"/>
+						<Link href={"http://maps.google.com/maps?q="+event.location}>{event.location}</Link>
 
 					</Typography>
 		<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
@@ -64,7 +67,7 @@ export default function GroupTasksDisplay(props) {
 		</Typography>
 		{props.groupOwner === true ? (
 			<div>
-		<Button onClick={() => { props.deleteEvent(event.id); }} color="primary">
+		<Button onClick={() => { props.deleteEvent(event.id); }} color="primary" style={{marginRight: 8}}>
 			Delete
 		</Button>
 
