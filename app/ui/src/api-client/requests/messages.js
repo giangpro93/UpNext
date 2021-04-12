@@ -21,12 +21,12 @@ function create(message) {
 
 function recentMessengers(entity_id) {
     return logAPICall(entity_id, () => 
-        axiosInstance.get(`/messages/${entity_id}`)
+        axiosInstance.get(`/messages/recent/${entity_id}`)
     );
 }
 
 function getConversation(messengers) {
     return logAPICall(messengers, () => 
-        axiosInstance.get('/messages/conversation/', {data: messengers})
+        axiosInstance.get(`/messages/conversation/${messengers.id1}/${messengers.id2}`)
     );
 }

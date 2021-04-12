@@ -46,16 +46,30 @@ function getRecentCorrespondents(entity_id) {
         .leftJoin('Entity', 'Message.receiver_id', 'Entity.id')
         .where('Message.sender_id', entity_id)
 
-    return db.with('t', db =>
-        db.select('t.id', 't.name', 't.email', 't.time')
+    // return db.with('t', db =>
+    //     db.select('t.id', 't.name', 't.email', 't.time')
+    //     .from(db =>
+    //         (query1(db)
+    //         .union(query2)).as('t')      
+    //     )
+    //     .orderBy('t.time', 'desc')
+    // )
+    // .distinct('t.id', 't.name', 't.email')
+    // .from('t');
+
+    return db.select('t.id', 't.name', 't.email', 't.time')
         .from(db =>
-            (query1(db)
-            .union(query2)).as('t')      
+            query1(db)
+            .union(db => query2(db))
+            .as('t')
         )
-        .orderBy('t.time', 'desc')
-    )
-    .distinct('t.id', 't.name', 't.email')
-    .from('t');
+        .whereRaw(`time >= ALL 
+                (select created_at as time
+                from Message
+                where (Message.sender_id = t.id and Message.receiver_id = ${entity_id})
+                or (Message.sender_id = ${entity_id} and Message.receiver_id = t.id)
+                )`)
+        .orderBy('t.time', 'desc');
 }
 
 function getConversation({ id1, id2 }) {
