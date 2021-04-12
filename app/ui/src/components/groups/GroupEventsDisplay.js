@@ -43,7 +43,7 @@ const classes = useStyles()
 	return(
 		<div className={classes.eventBoard}>
 			{props.events.map(event => (
-				<div>
+				<div key={event.id}>
 			<Card key={event.id} className={classes.card}>
 					<CardHeader
 						avatar={
@@ -65,11 +65,11 @@ const classes = useStyles()
 			</Typography>
 			{props.groupOwner === true ? (
 				<div>
-			<Button onClick={() => { props.deleteEvent(event.id); }} color="primary">
+			<Button variant='contained' onClick={() => { props.deleteEvent(event.id); }} color="primary">
 				Delete
 			</Button>
 
-			<Button onClick={() => { setEventName(event.title); setEventLocation(event.location); setEventStart(event.start); setEventEnd(event.end); setEventDesc(event.description); setEventID(event.id); setEditWindow(true);}} color="primary" >
+			<Button variant='contained' onClick={() => { setEventName(event.title); setEventLocation(event.location); setEventStart(event.start); setEventEnd(event.end); setEventDesc(event.description); setEventID(event.id); setEditWindow(true);}} color="primary" >
 				Edit
 			</Button>
 			</div>

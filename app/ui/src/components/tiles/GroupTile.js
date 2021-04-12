@@ -8,7 +8,7 @@ import ConfirmDialog from '../common/ConfirmDialog';
 import api from '../../api-client/api';
 
 export default function GroupTile(props) {
-    const { group, paperStyle, ...other } = props;
+    const { group, onButtonClickSuccess, paperStyle, ...other } = props;
     const location = useLocation();
     const history = useHistory();
     const currentUser = useSelector(state => state.users.currentUser);
@@ -55,8 +55,10 @@ export default function GroupTile(props) {
                     onClick={e => {
                         api.memberships.create({user_id: currentUser.id, group_id: group.id, is_admin: false})
                         .then(res => {
-                            if(res) setSuccess(true);
-                            else setError(true);
+                            if(res) {
+                                setSuccess(true);
+                                if(onButtonClickSuccess) onButtonClickSuccess();
+                            } else setError(true);
                         })
                         .catch(() => { setError(true); })
                     }}
@@ -79,7 +81,10 @@ export default function GroupTile(props) {
                     onConfirm={() => {
                         api.memberships.deleteMembership({user_id: currentUser.id, group_id: group.id})
                         .then(res => {
-                            if(res) setSuccess(true);
+                            if(res) {
+                                setSuccess(true);
+                                if(onButtonClickSuccess) onButtonClickSuccess();
+                            }
                             else setError(true);
                         })
                         .catch(() => { setError(true); })

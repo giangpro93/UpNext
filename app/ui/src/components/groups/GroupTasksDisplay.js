@@ -42,7 +42,7 @@ export default function GroupTasksDisplay(props) {
 	return(
 		<div className={classes.eventBoard}>
 		{props.tasks.map(event => (
-			<div>
+			<div key={event.id}>
 		<Card key={event.id} className={classes.card}>
 				<CardHeader
 					avatar={

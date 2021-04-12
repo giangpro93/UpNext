@@ -29,7 +29,7 @@ const orgNames = ['Investing Club', 'Programming Club', 'Running Club'];
 const createProfessors = () => Promise.all(professorNames.map(name => Models.User.create(userFromName(name, true))));
 const createStudents = () => Promise.all(studentNames.map(name => Models.User.create(userFromName(name, false))));
 const createClasses = () => Promise.all(classNames.map(name => Models.Group.create(groupFromName(name, true))));
-const createOrgs = () => Promise.all(orgNames.map(name => Models.Group.create(groupFromName(name, true))));
+const createOrgs = () => Promise.all(orgNames.map(name => Models.Group.create(groupFromName(name, false))));
 
 exports.seed = function(knex) {
     return createProfessors()

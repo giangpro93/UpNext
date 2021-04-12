@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {useState} from 'react';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { makeStyles, Paper, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField} from '@material-ui/core/';
+import { makeStyles, Paper, Button,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle,TextField, Typography} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import Snackbar from '../common/Snackbar';
@@ -116,11 +116,11 @@ export default function Groups(props) {
 	<div>
 	<div>
 		<div className={classes.createGroupButton}>
-		 <Button variant="outlined" color="primary" onClick={() => { setCreateGroupWindow(true); }} style={{marginTop: 8}}>
+		 <Button variant="contained" color="primary" onClick={() => { setCreateGroupWindow(true); }} style={{marginTop: 8}}>
 						 Create Group
 		 </Button>
 		</div>
-		<h3>my groups </h3>
+		<Typography variant='h4'>My Groups </Typography>
 		</div>
 	  <div className={classes.root}>
 

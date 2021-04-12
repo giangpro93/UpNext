@@ -9,7 +9,7 @@ import { Typography } from '@material-ui/core';
 
 export default function UserRelationButtons(props) {
 
-    const { user } = props;
+    const { user, onClickSuccess } = props;
 
     const currentUser = useSelector(state => state.users.currentUser);
 
@@ -82,8 +82,10 @@ export default function UserRelationButtons(props) {
                     onClick={e => {
                         func()
                         .then(res => {
-                            if(res) setSuccess(true);
-                            else setError(true);
+                            if(res) {
+                                setSuccess(true);
+                                if(onClickSuccess) onClickSuccess();
+                            } else setError(true);
                         })
                         .catch(() => { setError(true); })
                     }}
@@ -107,8 +109,10 @@ export default function UserRelationButtons(props) {
                     onConfirm={() => {
                         func2()
                         .then(res => {
-                            if(res) setSuccess(true);
-                            else setError(true);
+                            if(res) {
+                                setSuccess(true);
+                                if(onClickSuccess) onClickSuccess();
+                            } else setError(true);
                         })
                         .catch(() => { setError(true); })
                     }}

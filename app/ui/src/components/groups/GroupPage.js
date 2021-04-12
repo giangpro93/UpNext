@@ -283,7 +283,7 @@ export default function GroupPage(props) {
 	        return (
 			        <div>
 			          <div>
-										 <Button variant="outlined" color="primary" onClick={() => { goBack();}} style={{marginTop: 8}}>
+										 <Button variant="contained" color="primary" onClick={() => { goBack();}} style={{marginTop: 8}}>
 													 Back
 										 </Button>
 			         </div>
@@ -309,7 +309,7 @@ export default function GroupPage(props) {
 
 			{isAdmin === true ? (
 				         <div className={classes.createPostButton}>
-				         		<Button variant="outlined" color="primary" onClick={() => { setEventWindow(true); }}>
+				         		<Button variant="contained" color="primary" onClick={() => { setEventWindow(true); }}>
 				                		Create Event
 				         		</Button>
 										<CreatePost evntEnd={eventEnd}evntStart={eventStart} makePost={createPost} evntWindow={eventWindow} setEvntWindow={setEventWindow} setEvntName={setEventName} setEvntDesc={setEventDescription} setEvntStart={setEventStart} setEvntEnd={setEventEnd} setEvntLoc={setEventLocation} evntType={eventType} setEvntType={setEventType}/>

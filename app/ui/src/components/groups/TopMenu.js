@@ -70,11 +70,11 @@ useEffect(() => {
 			</div>
 		<div className={classes.topMenuStyle}>
 		{props.isOwner === true ? (
-			<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { setEditGroupWindow(true);}}>
+			<Button variant="contained" color="primary" className={classes.leaveGroupButton} onClick={() => { setEditGroupWindow(true);}}>
 						Edit
 			</Button>
 		) : null}
-			<Button variant="outlined" color="primary" className={classes.leaveGroupButton} onClick={() => { props.leave();}}>
+			<Button variant="contained" color="primary" className={classes.leaveGroupButton} onClick={() => { props.leave();}}>
 						{props.joined ? 'Leave' : 'Join'}
 			</Button>
 		</div>

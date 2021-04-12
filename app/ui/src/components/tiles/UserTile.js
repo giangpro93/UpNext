@@ -5,7 +5,7 @@ import api from '../../api-client/api';
 import UserRelationButtons from '../user/UserRelationButtons';
 
 export default function UserTile(props) {
-    const { user, paperStyle, ...other } = props;
+    const { user, onButtonClickSuccess, paperStyle, ...other } = props;
     const location = useLocation();
     const history = useHistory();
 
@@ -29,7 +29,7 @@ export default function UserTile(props) {
             paperStyle={paperStyle}
             onClick={onTileClick}
         >
-            <UserRelationButtons user={user} />
+            <UserRelationButtons onClickSuccess={onButtonClickSuccess} user={user} />
         </EntityTile>
         </>
     )
