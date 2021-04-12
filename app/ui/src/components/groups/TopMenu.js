@@ -63,7 +63,7 @@ useEffect(() => {
 								<InfoIcon />
 							</IconButton>
 				</Tooltip>
-				 <GroupDescription window={informationWindow} setWindow={setInformationWindow} groupName={groupName} groupDesc={groupDesc}/>
+				 <GroupDescription window={informationWindow} setWindow={setInformationWindow} groupName={groupName} groupDesc={groupDesc} groupEmail={groupEmail}/>
 				<h4 style={{marginLeft: 8,  cursor:'pointer',marginTop: 16}} onClick={() => { props.setUserDisplay(true); }}>
 				{props.users.length} Members
 				</h4>

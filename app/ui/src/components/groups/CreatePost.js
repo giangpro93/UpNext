@@ -43,9 +43,9 @@ export default function CreatePost(props) {
 		 key = "three"
 	 margin="dense"
 			 label="Start"
+			 defaultValue="2021-04-14T12:15"
 				 type="datetime-local"
 			 onChange={(e) => props.setEvntStart(e.target.value)}
-			 defaultValue="2021-04-24T10:30"
 			 InputLabelProps={{
 					shrink: true,
 					}}
@@ -60,7 +60,7 @@ export default function CreatePost(props) {
 			 label="End"
 				 type="datetime-local"
 				 onChange={(e) => props.setEvntEnd(e.target.value)}
-			 defaultValue="2021-04-24T11:30"
+			 defaultValue="2021-04-14T12:30"
 			 InputLabelProps={{
 					shrink: true,
 					}}
@@ -75,7 +75,7 @@ export default function CreatePost(props) {
 			 label="End"
 				 type="time"
 				 onChange={(e) => props.setEvntEnd(props.evntStart.substring(0,11) + e.target.value)}
-			 defaultValue="11:30"
+			 defaultValue="12:30"
 			 InputLabelProps={{
 					shrink: true,
 					}}

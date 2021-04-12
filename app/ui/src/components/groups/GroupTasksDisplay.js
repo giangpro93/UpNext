@@ -57,9 +57,11 @@ export default function GroupTasksDisplay(props) {
 
 				<CardContent>
 					<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-						Location:
-						<LocationOnIcon fontSize="inherit"/>
-						<Link href={"http://maps.google.com/maps?q="+event.location}>{event.location}</Link>
+					{(event.location.includes("Virtual") || event.location.includes("Online") || event.location.includes("Home"))
+					? <div>Location: {event.location} </div>
+					:<div>Location: <LocationOnIcon fontSize="inherit"/>
+					<Link href={"http://maps.google.com/maps?q="+event.location}>{event.location}</Link></div>
+				}
 
 					</Typography>
 		<Typography display='block' variant="subtitle1" color="textPrimary" component="p">

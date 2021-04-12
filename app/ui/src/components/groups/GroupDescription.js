@@ -8,10 +8,17 @@ export default function GroupDescription(props) {
 
 	return(
 		<Dialog open={props.window} onClose={() => { props.setWindow(false); }} aria-labelledby="form-dialog-title">
-																					<DialogTitle id="form-dialog-title">{props.groupName}</DialogTitle>
+																					<DialogTitle id="form-dialog-title">{props.groupName + ": "}</DialogTitle>
 																					<DialogContent>
 																						<DialogContentText>
+																						<div>
+																						<div>
+																						 {"Email: " + props.groupEmail}
+																						 </div>
+																						 <div>
 																							{props.groupDesc}
+																							</div>
+																							</div>
 																							</DialogContentText>
 																							</DialogContent>
 																					<DialogActions>

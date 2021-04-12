@@ -58,8 +58,11 @@ const classes = useStyles()
 
 					<CardContent>
 						<Typography display='block' variant="subtitle1" color="textSecondary" component="p">
-							Location: <LocationOnIcon fontSize="inherit"/>
-							<Link href={"http://maps.google.com/maps?q="+event.location}>{event.location}</Link>
+						{(event.location.includes("Virtual") || event.location.includes("Online") || event.location.includes("Home"))
+						? <div>Location: {event.location} </div>
+						:<div>Location: <LocationOnIcon fontSize="inherit"/>
+						<Link href={"http://maps.google.com/maps?q="+event.location}>{event.location}</Link></div>
+					}
 
 						</Typography>
 			<Typography display='block' variant="subtitle1" color="textPrimary" component="p">
@@ -67,11 +70,11 @@ const classes = useStyles()
 			</Typography>
 			{props.groupOwner === true ? (
 				<div>
-			<Button variant='contained' onClick={() => { props.deleteEvent(event.id); }} color="primary">
+			<Button color='primary' onClick={() => { props.deleteEvent(event.id); }} color="primary" style={{marginRight: 8}}>
 				Delete
 			</Button>
 
-			<Button variant='contained' onClick={() => { setEventName(event.title); setEventLocation(event.location); setEventStart(event.start); setEventEnd(event.end); setEventDesc(event.description); setEventID(event.id); setEditWindow(true);}} color="primary" >
+			<Button color='secondary' onClick={() => { setEventName(event.title); setEventLocation(event.location); setEventStart(event.start); setEventEnd(event.end); setEventDesc(event.description); setEventID(event.id); setEditWindow(true);}} color="primary" >
 				Edit
 			</Button>
 			</div>
