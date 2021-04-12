@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {useState} from 'react';
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { makeStyles, Paper, Button,TextField} from '@material-ui/core/';
+import { makeStyles, Paper, Button,TextField, Typography} from '@material-ui/core/';
 import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import GroupTile from '../tiles/GroupTile';
@@ -125,7 +125,9 @@ function goToGroupPage(name,id,desc,email,admin,is_member){
 	 	 type="text"
 	 	 fullWidth
 	  />
-		Groups:
+		{groupTiles.length > 0 && 
+			<Typography variant='h5'>Groups</Typography>
+		}
 		{
 groupTiles.map(group => (
 	// <Paper key={group.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack} onClick={() => goToGroup(group.name,group.id,group.description,group.email)}>
@@ -134,7 +136,9 @@ groupTiles.map(group => (
 	<GroupTile key={group.id} group={group} />
 ))
    }
-	 Users:
+	 {userTiles.length > 0 && 
+			<Typography variant='h5'>Users</Typography>
+	}
 	 {
 		userTiles.map(user => (
 			<UserTile key={user.id} user={user} />
