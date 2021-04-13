@@ -1,6 +1,11 @@
 const db = require('./knex_db');
 const initial = require('./db/seeds/01_initial');
+const migration = require('./db/migrations/20210305120924_initial');
 const demo_data = require('./db/seeds/02_demo_data.js');
+
+const migrations = () => 
+    migration.down(db)
+    .then(() => migration.up(db));
 
 const seeds = () => demo_data.seed(db);
     // initial.seed(db)
@@ -9,9 +14,10 @@ const seeds = () => demo_data.seed(db);
 module.exports = { setup, setupWithRetries };
 
 function setup() {
-    return db.migrate.down()
-    .then(() => db.migrate.latest())
-    .then(() => seeds());
+    // return db.migrate.down()
+    // .then(() => db.migrate.latest())
+    // .then(() => seeds());
+    return migrations().then(seeds)
 }
 
 function delay(ms) {
@@ -25,7 +31,10 @@ function retryWithDelay(p, tries, ms) {
     ? Promise.reject('Number of retries exceeded')
     : delay(ms)
         .then(p)
-        .catch(err => retryWithDelay(p, tries - 1, ms));
+        .catch(err => {
+            console.log(err);
+            return retryWithDelay(p, tries - 1, ms);
+        });
 }
 
 function setupWithRetries(tries=10, delay_ms=5000) {

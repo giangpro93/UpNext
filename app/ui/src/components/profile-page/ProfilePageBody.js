@@ -114,7 +114,7 @@ export default function ProfilePageBody(props) {
                 {isMe && 
                 <TabPanel value={value} index={2}>
                     { unacceptedFriends.data &&
-                        unacceptedFriends.length > 0
+                        unacceptedFriends.data.length > 0
                         ? unacceptedFriends.data.map(u => 
                             <UserTile 
                               key={u.id} 
