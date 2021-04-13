@@ -13,6 +13,7 @@ import Profile from '../profile/Profile'
 import Connect from '../connect/Connect'
 import Dashboard from '../dashboard/Dashboard'
 import MessagePage from '../messages/MessagePage';
+import MessagesPage from '../messages-page/MessagesPage';
 // import Profile from '../profile/Profile'
 // const useStyles = makeStyles(theme => ({
 //     content: theme.mixins.toolbar
@@ -56,7 +57,8 @@ function LoggedIn() {
                         Create
                     </Route>
                     <Route exact path="/messages">
-                        <MessagePage />
+                        {/* <MessagePage /> */}
+                        <MessagesPage />
                     </Route>
                     <Route exact path="/profile">
                         {/* <Profile /> */}

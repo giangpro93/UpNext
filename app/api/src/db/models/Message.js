@@ -84,5 +84,5 @@ function getConversation({ id1, id2 }) {
         this.where('sender_id', id2)
         .andWhere('receiver_id', id1)
     })
-    .orderBy('created_at', 'desc');
+    .orderBy('created_at', 'asc');
 }
