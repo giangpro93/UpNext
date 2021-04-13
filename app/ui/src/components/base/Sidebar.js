@@ -35,7 +35,6 @@ export default function Sidebar(props) {
                 <SidebarItem onClose={onClose} to="/schedule" text='Schedule' icon={<CalendarTodayIcon />} />
                 <SidebarItem onClose={onClose} to="/groups" text='Groups' icon={<GroupIcon />} />
                 <SidebarItem onClose={onClose} to="/connect" text='Connect' icon={<GroupAddIcon />} />
-                <SidebarItem onClose={onClose} to="/create" text='Create' icon={<AddCircleIcon />} />
                 <SidebarItem onClose={onClose} to="/messages" text='Messages' icon={<MessageIcon />} />
             </List>
         </Drawer>
