@@ -26,9 +26,10 @@ const useStyles = makeStyles((theme) => ({
 		      		width: 'max-content',
 		     			color: 'white',
 		      		height: '40%',
-		  				backgroundColor: "#3CB371",
+		  				backgroundColor: "#0E9594",
 		  				'&:hover': {
-							background:'#3CB371',
+							background:'#0E9594',
+
 			},
 		  				cursor: 'pointer',
 
