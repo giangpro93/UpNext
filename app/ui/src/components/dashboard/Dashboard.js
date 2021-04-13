@@ -79,10 +79,10 @@ export default function Dashboard(){
     return (
     <div>
         <div>
-            <h3> Happenning </h3>
+            <h3> Happening </h3>
             {
                 happenning.length === 0 &&
-                <p> "There is nothing happenning" </p>
+                <p> There is nothing happening right now </p>
             }
             {
                 happenning.length > 0 && 
@@ -99,10 +99,10 @@ export default function Dashboard(){
             }
         </div>
         <div>
-            <h3> Upcomming Today </h3>
+            <h3> Upcoming Today </h3>
             {
                 upcomming.length === 0 &&
-                "There is nothing upcomming today"
+                "There is nothing upcoming today"
             }
             {
                 upcomming.length > 0 && 
