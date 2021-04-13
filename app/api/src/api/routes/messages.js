@@ -18,8 +18,9 @@ router.get('/recent/:entity_id', function(req, res) {
     respond(req, res, Message.getRecentCorrespondents, req.params.entity_id);
 });
 
-router.get('/conversation/', function(req, res) {
-    respond(req, res, Message.getConversation);
+router.get('/conversation/:id1/:id2', function(req, res) {
+    const { id1, id2 } = req.params;
+    respond(req, res, Message.getConversation, {id1, id2});
 });
 
 module.exports = router;

@@ -7,6 +7,7 @@ import {useHistory} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import GroupTile from '../tiles/GroupTile';
 import UserTile from '../tiles/UserTile';
+import EntityTile from '../tiles/EntityTile';
 const api = require('../../api-client/api.js');
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Connect(props) {
+	const { disableButtons, onTileClick } = props;
 	const location = useLocation();
 	const history = useHistory();
 	const classes = useStyles();
@@ -74,17 +76,19 @@ export default function Connect(props) {
 			}
 
 		});
+
+		const excludeMe = users => users.filter(u => u.id !== currentUser.id);
  {/*users searching. returns all users if no search term given*/}
 		var userSearchPromise = api.users.search(searchTerm)
 		userSearchPromise.then((users) => {
 
 			if(users !== "" && users !== null){
-				setUserTiles(users)
+				setUserTiles(disableButtons ? excludeMe(users) : users)
 			}
 			else{
 				var allUserPromise = api.users.getAll()
 				allUserPromise.then((userss) => {
-					setUserTiles(userss)
+					setUserTiles(disableButtons ? excludeMe(userss) : userss)
 				});
 			}
 
@@ -129,19 +133,20 @@ function goToGroupPage(name,id,desc,email,admin,is_member){
 			<Typography variant='h5'>Groups</Typography>
 		}
 		{
-groupTiles.map(group => (
-	// <Paper key={group.id} className={classes.groupPaper} onMouseOver={changeBackground} onMouseOut={changeBack} onClick={() => goToGroup(group.name,group.id,group.description,group.email)}>
-	// 	<div className={classes.groupNames}>{group.name}</div>
-	// </Paper>
-	<GroupTile key={group.id} group={group} />
-))
+		groupTiles.map(group => (
+			disableButtons
+			? <EntityTile key={group.id} entity={group} onClick={() => { onTileClick(group); }} />
+			: <GroupTile key={group.id} group={group} />
+		))
    }
 	 {userTiles.length > 0 && 
 			<Typography variant='h5'>Users</Typography>
 	}
 	 {
 		userTiles.map(user => (
-			<UserTile key={user.id} user={user} />
+			disableButtons
+			? <EntityTile key={user.id} entity={user} onClick={() => { onTileClick(user); }}/>
+			: <UserTile key={user.id} user={user} />
 		))
 	 }
 	 </div>

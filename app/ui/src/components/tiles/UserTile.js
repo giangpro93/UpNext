@@ -5,11 +5,12 @@ import api from '../../api-client/api';
 import UserRelationButtons from '../user/UserRelationButtons';
 
 export default function UserTile(props) {
-    const { user, onButtonClickSuccess, paperStyle, ...other } = props;
+    const { user, onClick, onButtonClickSuccess, paperStyle, ...other } = props;
     const location = useLocation();
     const history = useHistory();
 
-
+    // this is the default 'onClick' behavior
+    // overriden by the props.onClick function
     function onTileClick() {
         api.users.getById(user.id)
         .then(res => {
@@ -27,9 +28,12 @@ export default function UserTile(props) {
         <EntityTile
             entity={user}
             paperStyle={paperStyle}
-            onClick={onTileClick}
+            onClick={onClick ? onClick : onTileClick}
         >
-            <UserRelationButtons onClickSuccess={onButtonClickSuccess} user={user} />
+            <UserRelationButtons 
+                onClickSuccess={onButtonClickSuccess} 
+                user={user} 
+            />
         </EntityTile>
         </>
     )
