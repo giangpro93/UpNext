@@ -53,9 +53,9 @@ function LoggedIn() {
                     <Route exact path="/connect">
                         <Connect />
                     </Route>
-                    <Route exact path="/create">
+                    {/* <Route exact path="/create">
                         Create
-                    </Route>
+                    </Route> */}
                     <Route exact path="/messages">
                         {/* <MessagePage /> */}
                         <MessagesPage />
