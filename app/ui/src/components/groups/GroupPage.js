@@ -14,6 +14,7 @@ import UserDisplay from './UserDisplay'
 import { dateInputFormat, toUTC, format, dateStrFormat } from '../schedule/dates';
 import GroupEventsDisplay from './GroupEventsDisplay'
 import GroupTasksDisplay from './GroupTasksDisplay'
+import MessagesPage from '../messages-page/MessagesPage';
 var owner = false;
 const api = require('../../api-client/api.js');
 const useStyles = makeStyles((theme) => ({
@@ -291,19 +292,25 @@ export default function GroupPage(props) {
 							 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
 				 		 			<Tab label={groupEvents.length + " Events"} {...a11yProps(0)}/>
 				 					<Tab label={groupTasks.length + " Tasks"} {...a11yProps(1)}/>
+									{ isAdmin && 
+										<Tab label='Group Messages' {...a11yProps(2)} />
+									}
 			 				 </Tabs>
 							 <UserDisplay users={groupUsers} window={userWindow} openWindow={setUserWindow} isOwner={isAdmin} makeAdmin={makeAdminFunc}/>
 
 
 
-							<TabPanel value={value} index={0}>
-			         <GroupEventsDisplay events={groupEvents} groupOwner={isAdmin} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost} />
-
+					<TabPanel value={value} index={0}>
+			    	<GroupEventsDisplay events={groupEvents} groupOwner={isAdmin} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost} />
 			       </TabPanel>
 			       <TabPanel value={value} index={1}>
 			       <GroupTasksDisplay tasks={groupTasks} groupOwner={isAdmin} deleteEvent={deleteEventFunc} editLoad={setLoadCreatePost}/>
-
 			       </TabPanel>
+				   { isAdmin && 
+				   	<TabPanel value={value} index={2}>
+						<MessagesPage entity={{ id: groupId, name: groupName }} />
+					</TabPanel>
+				   }
 
 
 

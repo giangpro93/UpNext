@@ -11,7 +11,7 @@ import NewMessageDialogBox from './NewMessageDialogBox';
 export default function MessagesPage(props) {
     const { entity } = props;
     const currentUser = useSelector(state => state.users.currentUser);
-    const targetEntity = entity ? entity : currentUser;
+    const targetEntity = (entity && entity.id) ? entity : currentUser;
 
     // signals update of recentMessengers list
     const [updateRecentMessengers, setUpdateRecentMessengers] = useState(0);
@@ -20,7 +20,7 @@ export default function MessagesPage(props) {
     const [selected, setSelected] = useState(0);
 
     const recentMessengers = useAsync(() =>
-        api.messages.recentMessengers(currentUser.id),
+        api.messages.recentMessengers(targetEntity.id),
         [targetEntity, selected, updateRecentMessengers]
     );
 
@@ -89,6 +89,7 @@ export default function MessagesPage(props) {
                 <Grid item xs={9}>
                 {other && 
                 <Conversation
+                    entityId={targetEntity.id}
                     otherId={other.id}
                     otherName={other.name}
                     onUpdate={() => { 

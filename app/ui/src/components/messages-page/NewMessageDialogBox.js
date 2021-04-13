@@ -7,8 +7,8 @@ import Conversation from './Conversation';
 
 export default function NewMessageDialogBox(props) {
 
-    const { entityId, open, onSend, onClose } = props;
-    const [otherId, setOtherId] = useState(null);
+    const { entityId, other_id, open, onSend, onClose } = props;
+    const [otherId, setOtherId] = useState(other_id ? other_id : null);
 
     function handleClose() {
         onClose();
