@@ -41,7 +41,7 @@ const useStyles = makeStyles ((theme) => ({
     },
 }));
 
-export default function EventPost( props ) {
+export default function TaskPost( props ) {
     const classes = useStyles();
     return (
         <Card className={classes.card}>
@@ -56,9 +56,7 @@ export default function EventPost( props ) {
                 title = {<b>{props.title}</b>}
                 subheader = {
                     <Typography display='block' components='p'>
-                        <Button className={classes.mybutton1}>{props.start+" - "+props.end}</Button>
-                        
-                        <Button className={classes.mybutton2} href={"http://maps.google.com/maps?q="+props.location} component={Link}><LocationOnIcon fontSize="inherit"/>{props.location}</Button>
+                        <Button className={classes.mybutton1}>{props.due}</Button>
                     </Typography>                    
                 }
             />
